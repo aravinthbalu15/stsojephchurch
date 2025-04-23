@@ -1,0 +1,17 @@
+.card-header {
+    background-color: #f5f5f5;
+    font-size: 18px;
+  }
+  
+  .admin-dash{
+    margin-top: 220px;
+  }
+
+  .announcement-preview {
+    max-height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

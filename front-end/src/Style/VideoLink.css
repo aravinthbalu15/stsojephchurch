@@ -1,0 +1,188 @@
+/* Video Section */
+.video-section {
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  max-width: 1400px; /* Prevent it from becoming too wide */
+}
+
+/* Video Wrapper - Centers everything */
+.video-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Video Scroll Container */
+.video-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Hide scrollbar for smooth look */
+  -ms-overflow-style: none;
+  width: 85%; /* Adjust to be responsive */
+  max-width: 1200px;
+  padding: 10px;
+  margin: auto;
+}
+
+/* Hide scrollbar on Chrome/Safari */
+.video-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Video Items */
+.video-item {
+  flex: 0 0 auto;
+  width: 350px; /* Default width */
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-item video {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* Hover Effect */
+.video-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Navigation Arrows */
+.nav-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: #333;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px;
+  z-index: 100;
+}
+
+/* Adjust Left & Right Arrow Position */
+.nav-icon.left {
+  left: -30px;
+}
+
+.nav-icon.right {
+  right: -30px;
+}
+
+/* Hover Effect */
+.nav-icon:hover {
+  color: white;
+  background: red;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Read More Button */
+.read-more-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, red, darkred);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.read-more-btn:hover {
+  background: linear-gradient(135deg, darkred, black);
+  transform: translateY(-3px);
+}
+
+/* ---------------------- Responsive Styles ---------------------- */
+
+/* Tablets (Max 1024px) */
+@media (max-width: 1024px) {
+  .video-container {
+    width: 95%;
+  }
+
+  .video-item {
+    width: 300px;
+  }
+
+  .nav-icon {
+    font-size: 1.8rem;
+    padding: 8px;
+  }
+
+  .nav-icon.left {
+    left: 10px;
+  }
+
+  .nav-icon.right {
+    right: 10px;
+  }
+}
+
+/* Mobile Devices (Max 768px) */
+@media (max-width: 768px) {
+  .video-container {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .video-item {
+    width: 280px;
+  }
+
+  .nav-icon {
+    font-size: 1.5rem;
+    padding: 6px;
+  }
+
+  .nav-icon.left {
+    left: 5px;
+  }
+
+  .nav-icon.right {
+    right: 5px;
+  }
+
+  .read-more-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+}
+
+/* Small Mobile Devices (Max 480px) */
+@media (max-width: 480px) {
+  .video-container {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: scroll;
+    gap: 5px;
+  }
+
+  .video-item {
+    width: 230px;
+  }
+
+  .nav-icon {
+    display: none; /* Hide arrows on very small screens */
+  }
+
+  .read-more-btn {
+    width: 100%;
+    padding: 10px;
+  }
+}

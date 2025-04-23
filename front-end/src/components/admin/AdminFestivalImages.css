@@ -1,0 +1,26 @@
+.admin-festival{
+    margin-top: 200px;
+    padding-top: 200px;
+    padding-bottom: 90px;
+}
+
+.admin-festival {
+    padding: 20px;
+  }
+  
+  .event-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .image-card {
+    background-color: #f9f9f9;
+    transition: transform 0.2s ease;
+  }
+  
+  .image-card:hover {
+    transform: translateY(-5px);
+  }
+  

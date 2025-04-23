@@ -1,0 +1,13 @@
+/* AdminDashBoard.css */
+.card {
+    border-radius: 1rem;
+    transition: all 0.2s ease-in-out;
+  }
+  .card:hover {
+    transform: scale(1.03);
+  }
+  
+  .admin-dash-board{
+    padding-top: 190px;
+    padding-bottom: 150px;
+  }

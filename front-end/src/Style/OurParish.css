@@ -1,0 +1,152 @@
+ /* General Styling */
+.parish-container {
+    text-align: center;
+    margin: auto;
+    background-color: #f5f3f3;
+    padding-top: 140px;
+}
+
+/* Title */
+.parish-title {
+    font-size: 28px;
+    margin-bottom: 40px;
+}
+
+/* Top Single Member (Priest) */
+.parish-president-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+/* Members Grid (Vice-President, Secretary, etc.) */
+.parish-members-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding-top: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+/* Parish Council Grid */
+.parish-council-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Member Card */
+.parish-member-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    width: 100%;
+    max-width: 220px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.parish-member-card:hover {
+    transform: scale(1.05);
+    background: #e2e6ea;
+}
+
+/* Member Image */
+.parish-member-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+}
+
+/* Member Name */
+.parish-member-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Popup Styling */
+.parish-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+.parish-popup-content {
+    background: rgb(243, 237, 237);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 250px;
+}
+
+.parish-popup-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Close Button */
+.parish-close-btn {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: crimson;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.parish-close-btn:hover {
+    background: darkred;
+}
+
+/* ------------------------------------ */
+/* Responsive Design for Mobile Devices */
+/* ------------------------------------ */
+
+@media screen and (max-width: 768px) {
+    .parish-members-list {
+        flex-direction: column; /* Stack members in a column */
+        align-items: center;
+        gap: 20px;
+    }
+
+    .parish-council-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .parish-member-card {
+        max-width: 90%; /* Make cards take full width on mobile */
+    }
+
+    .parish-president-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .parish-container{
+        padding-top: 50px;
+    }
+}

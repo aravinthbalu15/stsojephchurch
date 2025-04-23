@@ -1,0 +1,93 @@
+/* Section title */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+/* Card Styling */
+.president-card {
+  width: 280px;
+  height: auto;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  padding: 20px;
+  text-align: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.president-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Image Styling */
+.president-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ddd;
+  margin-bottom: 10px;
+}
+
+/* Name Styling */
+.president-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .president-card {
+    width: 250px;
+  }
+
+  .president-img {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .president-card {
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .president-img {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .president-card {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .president-img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .president-name {
+    font-size: 1rem;
+  }
+}

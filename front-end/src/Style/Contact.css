@@ -1,0 +1,123 @@
+
+.contact-section {
+    position: relative; /* Necessary for overlay positioning */
+    padding: 50px 20px;
+    background: url('../images/image1.png'); /* Add your image path here */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-section::before {
+    content: ''; /* Creates the overlay */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Darkens the background */
+    z-index: 1; /* Makes sure overlay is behind the text/content */
+}
+
+.contact-container {
+    position: relative; /* Ensures the container is on top of the overlay */
+    max-width: 600px;
+    margin: auto;
+    animation: fadeInUp 1s ease-in-out;
+    background: rgba(0, 0, 0, 0.3); /* Slightly darkened background for the container */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 2; /* Ensures the container is above the overlay */
+   
+}
+
+.contact-container h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #FFD700;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #FFD700;
+    outline: none;
+}
+
+.contact-form button {
+    background: linear-gradient(45deg, #FFD700, #ff7e5f);
+    color: black;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.contact-form button:hover {
+    background: linear-gradient(45deg, #f5c400, #feb47b);
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.contact-form button:active {
+    transform: scale(0.98);
+}
+
+.contact-details {
+    margin-top: 30px;
+    font-size: 1rem;
+}
+
+.contact-details p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+    transition: color 0.3s ease;
+}
+
+.contact-details p:hover {
+    color: #FFD700;
+}
+
+/* Smooth Fade-in Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

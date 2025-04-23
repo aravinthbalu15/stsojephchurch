@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* General container styling */
+.anbiyangal-container {
+  padding-top: 100px;
+  padding-bottom: 50px;
+  width: 90%;
+  margin: auto;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: left;
+  margin-left: 20px;
+}
+
+.members-list12 {
+  display: flex;
+
+  justify-content: center;
+  gap: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1100px;
+}
+
+/* Subtitle */
+.section-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  text-align: left;
+  margin-left: 20px;
+}
+
+/* Left Side - Circular Images */
+.left-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Image Box */
+.image-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: transform 0.3s ease-in-out;
+  flex-wrap: wrap;
+}
+
+.image-box:hover {
+  transform: scale(1.05);
+}
+
+/* Circular Images */
+.circle-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ddd;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.circle-img:hover {
+  transform: rotate(10deg) scale(1.1);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Text Content */
+.text-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.image-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  transition: color 0.3s ease-in-out;
+}
+
+.image-desc {
+  font-size: 1rem;
+  color: #555;
+  max-width: 300px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.image-box:hover .image-title {
+  color: #007bff;
+}
+
+.image-box:hover .image-desc {
+  opacity: 0.8;
+}
+
+/* Right Side - Rectangular Image */
+.right-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Rectangular Image */
+.rect-img {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.rect-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Right Side Text */
+.rect-title {
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  transition: color 0.3s ease-in-out;
+}
+
+.rect-desc {
+  font-size: 1rem;
+  color: #555;
+  max-width: 500px;
+  text-align: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.right-side:hover .rect-title {
+  color: #28a745;
+}
+
+.right-side:hover .rect-desc {
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .anbiyangal-container {
+    padding-top: 80px;
+  }
+
+  .members-list12 {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .left-side, .right-side {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .image-box {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .circle-img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .rect-img {
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .text-content {
+    text-align: center;
+  }
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+  .anbiyangal-container {
+    padding-top: 50px;
+  }
+
+  .section-title, .section-subtitle {
+    text-align: center;
+    margin-left: 0;
+  }
+
+  .members-list12 {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .image-box {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .circle-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .rect-img {
+    width: 100%;
+  }
+
+  .text-content {
+    text-align: center;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .anbiyangal-container {
+    padding-top: 30px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .image-box {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .circle-img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .rect-img {
+    width: 95%;
+  }
+
+  .text-content {
+    text-align: center;
+  }
+}

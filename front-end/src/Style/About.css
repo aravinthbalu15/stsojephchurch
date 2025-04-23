@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* General container styling */
+.anbiyangal-container {
+  padding-top: 100px;
+  padding-bottom: 50px;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section-subtitle {
+  font-size: 1.7rem;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Centered Image with Text */
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Image Styling */
+.rect-img-about {
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.rect-img-about:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Paragraph below the image */
+.image-caption {
+  margin-top: 15px;
+  font-size: 1rem;
+  color: #555;
+  max-width: 500px;
+  text-align: center;
+}
+
+/* Right & Left Side Text */
+.right-side,
+.left-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Align text vertically */
+}
+
+/* General text styling */
+.history-text {
+  font-size: 18.5px;
+  line-height: 1.6;
+  text-align: justify;
+  padding: 0 20px; /* Adds space between text & image */
+}
+
+/* Moving images slightly for better alignment */
+.text-center img:first-child {
+  margin-left: -20px; /* Move left-side image slightly left */
+}
+
+.text-center img:last-child {
+  margin-right: -20px; /* Move right-side image slightly right */
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .anbiyangal-container {
+    padding-top: 50px;
+    padding-bottom: 30px;
+  }
+
+  .history-text {
+    padding: 0 10px;
+    text-align: justify;
+  }
+
+  .rect-img-about {
+    width: 100%;
+  }
+
+  .text-center img:first-child,
+  .text-center img:last-child {
+    margin: 0; /* Reset margins for small screens */
+  }
+
+  .image-container {
+    padding: 10px;
+  }
+
+  .image-caption {
+    font-size: 0.9rem;
+  }
+}

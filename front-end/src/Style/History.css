@@ -1,0 +1,142 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Wrapper */
+.history-section {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Flex Container */
+.history-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+/* Image Column */
+.history-image-wrapper {
+  flex: 1 1 40%;
+}
+
+.history-image {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+  transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+}
+
+.history-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Text Column */
+.history-text-wrapper {
+  flex: 1 1 55%;
+}
+
+/* Heading */
+.history-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e1e2f;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.history-heading::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 80px;
+  height: 4px;
+  background: #ff5733;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+/* Paragraph */
+.history-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #333;
+  text-align: justify;
+  margin-top: 10px;
+}
+
+/* View More */
+.history-view-more {
+  color: #ff5733;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 1.1rem;
+  position: relative;
+}
+
+.history-view-more::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ff5733;
+  transform: scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.history-view-more:hover::after {
+  transform: scaleX(1);
+}
+
+.history-view-more:hover {
+  color: #d43f00;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.history-heading,
+.history-text,
+.history-image,
+.history-view-more {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .history-heading {
+    font-size: 2rem;
+  }
+
+  .history-text {
+    font-size: 1rem;
+  }
+
+  .history-content-wrapper {
+    flex-direction: column;
+  }
+}
