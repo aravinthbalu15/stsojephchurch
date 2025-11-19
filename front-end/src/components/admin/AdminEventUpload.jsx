@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import './AdminEventUpload.css';
@@ -13,6 +13,9 @@ const AdminEventUpload = () => {
   });
 
   const [loading, setLoading] = useState(false);
+
+  // Reference for file input (to reset it)
+  const fileInputRef = useRef(null);
 
   // Fetch all events
   const fetchEvents = async () => {
@@ -35,11 +38,17 @@ const AdminEventUpload = () => {
     setEventData(prevData => ({ ...prevData, image: e.target.files[0] }));
   };
 
+  // Reset file input box
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   // Upload event with confirmation
   const handleEventUpload = async (e) => {
     e.preventDefault();
 
-    // Show confirmation before uploading
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "Do you want to upload this event?",
@@ -62,8 +71,15 @@ const AdminEventUpload = () => {
         await axios.post('http://localhost:9000/api/events/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
+
         Swal.fire('Success', 'Event uploaded successfully!', 'success');
+
+        // Reset form
         setEventData({ title: '', description: '', category: '', image: null });
+
+        // Reset file input
+        resetFileInput();
+
         fetchEvents();
       } catch (error) {
         console.error("Error uploading event:", error.response?.data || error.message);
@@ -76,7 +92,6 @@ const AdminEventUpload = () => {
 
   // Delete event with confirmation
   const handleDelete = async (id) => {
-    // Show confirmation before deleting
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "Do you really want to delete this event?",
@@ -90,6 +105,10 @@ const AdminEventUpload = () => {
       try {
         await axios.delete(`http://localhost:9000/api/events/${id}`);
         Swal.fire('Deleted', 'Event deleted successfully', 'success');
+
+        // Reset file input
+        resetFileInput();
+
         fetchEvents();
       } catch (error) {
         console.error("Error deleting event:", error.response?.data || error.message);
@@ -105,7 +124,9 @@ const AdminEventUpload = () => {
   return (
     <div className="upcoming-event container py-4">
       <h2 className="mb-4">Upload New Event</h2>
+
       <form onSubmit={handleEventUpload} className="mb-5">
+
         <div className="mb-3">
           <input
             type="text"
@@ -117,6 +138,7 @@ const AdminEventUpload = () => {
             required
           />
         </div>
+
         <div className="mb-3">
           <textarea
             name="description"
@@ -127,17 +149,22 @@ const AdminEventUpload = () => {
             required
           />
         </div>
+
+        {/* Category dropdown (fixed) */}
         <div className="mb-3">
-          <input
-            type="text"
+          <select
             name="category"
             value={eventData.category}
             onChange={handleInputChange}
             className="form-control"
-            placeholder="Event Category (e.g., upcoming, current)"
             required
-          />
+          >
+            <option value="">Select Category</option>
+            <option value="current">Current</option>
+            <option value="upcoming">Upcoming</option>
+          </select>
         </div>
+
         <div className="mb-3">
           <input
             type="file"
@@ -145,8 +172,10 @@ const AdminEventUpload = () => {
             onChange={handleFileChange}
             accept="image/*"
             required
+            ref={fileInputRef} // assigned ref
           />
         </div>
+
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? 'Uploading...' : 'Upload Event'}
         </button>
@@ -172,18 +201,21 @@ const AdminEventUpload = () => {
                   <h5 className="card-title">{event.title}</h5>
                   <p className="card-text">{event.description}</p>
                   <p className="card-text"><strong>Category:</strong> {event.category}</p>
+
                   <button
                     className="btn btn-danger"
                     onClick={() => handleDelete(event._id)}
                   >
                     Delete
                   </button>
+
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
     </div>
   );
 };

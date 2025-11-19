@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
@@ -9,6 +9,9 @@ const AdminFestivalImages = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
+
+  // Reference for file input to reset after upload/delete
+  const fileInputRef = useRef(null);
 
   const fetchImages = async () => {
     try {
@@ -25,6 +28,13 @@ const AdminFestivalImages = () => {
 
   const handleImageChange = (e) => {
     setSelectedImage(e.target.files[0]);
+  };
+
+  // Reset file input programmatically
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -48,6 +58,10 @@ const AdminFestivalImages = () => {
       setMessage("Image uploaded successfully!");
       setTitle("");
       setSelectedImage(null);
+
+      // Reset file input after upload
+      resetFileInput();
+
       fetchImages();
 
       Swal.fire({
@@ -77,7 +91,12 @@ const AdminFestivalImages = () => {
         try {
           const response = await axios.delete(`http://localhost:9000/api/festival/${id}`);
           setMessage(response.data.message);
+
+          // Reset file input after deletion
+          resetFileInput();
+
           fetchImages();
+
           Swal.fire("Deleted!", "The image has been deleted.", "success");
         } catch (err) {
           setMessage("Failed to delete image.");
@@ -105,7 +124,12 @@ const AdminFestivalImages = () => {
 
         <Form.Group controlId="formImage" className="mb-3">
           <Form.Label>Choose an image</Form.Label>
-          <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            ref={fileInputRef} // FILE INPUT RESET FIX
+          />
         </Form.Group>
 
         <Button variant="primary" type="submit">
@@ -118,7 +142,11 @@ const AdminFestivalImages = () => {
         {images.map((image) => (
           <Col key={image._id} md={4} sm={6} xs={12} className="mb-4">
             <div className="image-card p-3 border rounded shadow-sm h-100 text-center">
-              <img src={image.url} alt={image.title} className="img-fluid rounded event-img mb-2" />
+              <img
+                src={image.url}
+                alt={image.title}
+                className="img-fluid rounded event-img mb-2"
+              />
               <h5 className="mt-2">{image.title}</h5>
               <Button variant="danger" onClick={() => confirmDelete(image._id)} className="mt-2">
                 Delete

@@ -26,16 +26,15 @@ const AdminVideos = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!title || !videoFile) {
-      Swal.fire('Missing Fields', 'Please fill in all fields.', 'warning');
+      Swal.fire('Missing Fields', 'Please enter title & choose video.', 'warning');
       return;
     }
 
     const confirm = await Swal.fire({
       title: 'Upload Video?',
-      text: 'Are you sure you want to upload this video?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Yes, Upload',
+      confirmButtonText: 'Yes, Upload'
     });
 
     if (!confirm.isConfirmed) return;
@@ -46,20 +45,25 @@ const AdminVideos = () => {
 
     setUploading(true);
     try {
-      const res = await axios.post(
+      await axios.post(
         'http://localhost:9000/api/videos/upload-video',
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
-      setVideos([res.data.video, ...videos]);
+      Swal.fire('Success', 'Video uploaded successfully!', 'success');
+
+      // **RESET fields**
       setTitle('');
       setVideoFile(null);
+      document.getElementById("videoInput").value = "";
 
-      Swal.fire('✅ Success', 'Video uploaded successfully!', 'success');
+      // **Fetch updated list again**
+      fetchVideos();
+
     } catch (err) {
       console.error('Error uploading video:', err);
-      Swal.fire('❌ Error', 'Upload failed.', 'error');
+      Swal.fire('Error', 'Upload failed.', 'error');
     } finally {
       setUploading(false);
     }
@@ -68,27 +72,30 @@ const AdminVideos = () => {
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
       title: 'Delete Video?',
-      text: 'Are you sure you want to delete this video?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, Delete',
+      confirmButtonText: 'Delete'
     });
 
     if (!confirm.isConfirmed) return;
 
     try {
       await axios.delete(`http://localhost:9000/api/videos/delete-video/${id}`);
-      setVideos(videos.filter((v) => v._id !== id));
-      Swal.fire('Deleted!', 'Video has been deleted.', 'success');
+      Swal.fire('Deleted!', 'Video removed successfully!', 'success');
+
+      // **Refresh list**
+      fetchVideos();
+
     } catch (err) {
       console.error('Error deleting video:', err);
-      Swal.fire('❌ Error', 'Deletion failed.', 'error');
+      Swal.fire('Error', 'Deletion failed.', 'error');
     }
   };
 
   return (
     <div className="container admin-upload-image py-5">
       <h2 className="text-center mb-4">Upload Video</h2>
+
       <form onSubmit={handleUpload}>
         <div className="form-group mb-3">
           <label>Video Title:</label>
@@ -97,19 +104,20 @@ const AdminVideos = () => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
           />
         </div>
+
         <div className="form-group mb-3">
           <label>Select Video:</label>
           <input
+            id="videoInput"
             className="form-control"
             type="file"
             accept="video/*"
             onChange={(e) => setVideoFile(e.target.files[0])}
-            required
           />
         </div>
+
         <Button type="submit" variant="primary" disabled={uploading}>
           {uploading ? <Spinner animation="border" size="sm" /> : 'Upload'}
         </Button>
@@ -120,15 +128,12 @@ const AdminVideos = () => {
         {videos.map((video) => (
           <div key={video._id} className="col-sm-6 col-md-4 mb-4">
             <div className="gallery-card p-2 border rounded shadow-sm">
-              <video
-                controls
-                width="100%"
-                style={{ height: '200px', objectFit: 'cover' }}
-              >
+              <video controls width="100%" style={{ height: '200px', objectFit: 'cover' }}>
                 <source src={video.secure_url} type="video/mp4" />
-                Your browser does not support the video tag.
               </video>
+
               <h6 className="mt-2">{video.title}</h6>
+
               <Button
                 variant="danger"
                 className="mt-2"

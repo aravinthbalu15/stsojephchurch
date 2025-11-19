@@ -1,0 +1,58 @@
+/* Simple, clean circular layout — no hover effects */
+
+.old-pre{
+    margin-top: 150px;
+    padding-top: 150px;
+}
+
+/* card container */
+.priest-card{
+  width: 100%;
+  max-width: 260px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  padding: 12px;
+  /* no hover transform or effects */
+}
+
+/* circular image 150x150 */
+.priest-img{
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+  border: 3px solid #f0f0f0;
+}
+
+/* description styling */
+.priest-desc{
+  max-width: 220px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  min-height: 48px; /* equalize card heights */
+}
+
+/* remove bootstrap-like hover effects if any */
+.priest-card * {
+  transition: none !important;
+}
+
+/* responsive tweaks */
+@media (max-width: 576px) {
+  .priest-card {
+    max-width: 100%;
+  }
+
+  .priest-img {
+    width: 120px;
+    height: 120px;
+  }
+}

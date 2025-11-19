@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Modal, Button, Spinner } from 'react-bootstrap';
 import Swal from 'sweetalert2';
@@ -14,6 +14,8 @@ const AdminImageUpload = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [uploading, setUploading] = useState(false);
 
+  const fileInputRef = useRef(null);          //  <-- FILE INPUT RESET FIX
+
   useEffect(() => {
     fetchAllImages();
   }, []);
@@ -24,6 +26,18 @@ const AdminImageUpload = () => {
       setImages(response.data);
     } catch (error) {
       console.error("Fetching images failed:", error);
+    }
+  };
+
+  const resetFields = () => {
+    setMonth('');
+    setTitle('');
+    setDescription('');
+    setImageFile(null);
+
+    // RESET FILE INPUT 100%
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -52,14 +66,13 @@ const AdminImageUpload = () => {
     formData.append('image', imageFile);
 
     setUploading(true);
+
     try {
       const res = await axios.post('http://localhost:9000/api/images/upload-image', formData);
       setImages(prev => [res.data.image, ...prev]);
-      setTitle('');
-      setDescription('');
-      setImageFile(null);
-      setMonth('');
-      setShowModal(false);
+
+      resetFields();                     // <-- RESET ALL FIELDS + FILE INPUT
+
       Swal.fire('Success', 'Image uploaded successfully!', 'success');
     } catch (error) {
       console.error("Upload error:", error);
@@ -82,7 +95,10 @@ const AdminImageUpload = () => {
 
     try {
       await axios.delete(`http://localhost:9000/api/images/delete-image/${id}`);
-      setImages((prev) => prev.filter((img) => img._id !== id));
+      setImages(prev => prev.filter(img => img._id !== id));
+
+      resetFields();             // <-- ALSO RESET AFTER DELETE
+
       Swal.fire('Deleted', 'Image has been deleted.', 'success');
     } catch (error) {
       console.error("Delete error:", error);
@@ -93,9 +109,10 @@ const AdminImageUpload = () => {
   return (
     <div className="container admin-upload-image py-5">
       <h2 className="text-center mb-4">📷 Upload Image to Monthly Gallery</h2>
+
       <form onSubmit={handleUpload}>
         <div className="form-group mb-3">
-          <label>Category:</label>
+          <label>Category (Month):</label>
           <select
             className="form-control"
             value={month}
@@ -132,7 +149,10 @@ const AdminImageUpload = () => {
 
         <div className="form-group mb-3">
           <label>Image:</label>
+
+          {/* FIXED FILE INPUT (with RESET) */}
           <input
+            ref={fileInputRef}
             className="form-control"
             type="file"
             accept="image/*"
@@ -147,6 +167,7 @@ const AdminImageUpload = () => {
       </form>
 
       <h3 className="text-center mt-5">🖼️ Uploaded Images</h3>
+
       <div className="row mt-4">
         {images.map((img) => (
           <div key={img._id} className="col-sm-6 col-md-4 mb-4">
@@ -158,8 +179,11 @@ const AdminImageUpload = () => {
                 onClick={() => { setSelectedItem(img); setShowModal(true); }}
                 style={{ cursor: 'pointer', height: '200px', objectFit: 'cover', width: '100%' }}
               />
+
+              <h6 className="text-primary fw-bold">{img.month}</h6> {/* SHOW MONTH */}
               <h5 className="mb-1">{img.title}</h5>
               <p className="text-muted small">{img.description}</p>
+
               <Button variant="danger" size="sm" onClick={() => handleDelete(img._id)}>
                 Delete
               </Button>
@@ -168,12 +192,16 @@ const AdminImageUpload = () => {
         ))}
       </div>
 
+      {/* IMAGE PREVIEW MODAL */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
         {selectedItem && (
           <>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedItem.title}</Modal.Title>
+              <Modal.Title>
+                {selectedItem.title} — <span className="text-primary">{selectedItem.month}</span>
+              </Modal.Title>
             </Modal.Header>
+
             <Modal.Body className="text-center">
               <img
                 src={selectedItem.url}

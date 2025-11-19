@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
 import "../Style/Videos.css";
 
@@ -20,18 +20,23 @@ const Videos = () => {
   }, []);
 
   return (
-    <Container className="videos mt-5">
-      <h2 className="text-center mb-4">Our Videos</h2>
+    <Container className="mt-5 mb-5 video-sections">
+      <h2 className=" videoss mt-5 text-center mb-4 text-primary fw-bold">Our Videos</h2>
+
       <Row>
         {videos.map((video) => (
           <Col md={4} sm={6} xs={12} key={video._id} className="mb-4">
-            <div className="video-container">
-              <video width="100%" height="250" controls>
-                <source src={video.secure_url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <h5 className="mt-2 text-center">{video.title}</h5>
-            </div>
+            <Card className="shadow-sm video-cards h-100">
+              <div className="video-wrappers">
+                <video className="w-100" controls>
+                  <source src={video.secure_url} type="video/mp4" />
+                </video>
+              </div>
+
+              {/* <Card.Body className="text-center">
+                <Card.Title className="fw-semibold fs-5">{video.title}</Card.Title>
+              </Card.Body> */}
+            </Card>
           </Col>
         ))}
       </Row>

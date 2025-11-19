@@ -1,52 +1,51 @@
 import cloudinary from '../config/cloudinary.js';
 import FestivalImage from '../models/FestivalImage.js';
+import streamifier from "streamifier";
 
-// Upload image
+// FAST UPLOAD (NO BASE64)
 export const uploadImage = async (req, res) => {
   try {
-    const b64 = req.file.buffer.toString("base64");
-    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+    const file = req.file;
 
-    const result = await cloudinary.uploader.upload(dataURI, {
-      folder: "festival_gallery",
-    });
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: "festival_gallery" },
+      async (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          return res.status(500).json({ error: "Upload failed" });
+        }
 
-    const newImage = new FestivalImage({
-      url: result.secure_url,
-      public_id: result.public_id,
-    });
+        const newImage = new FestivalImage({
+          url: result.secure_url,
+          public_id: result.public_id,
+          title: req.body.title,
+        });
 
-    await newImage.save();
-    res.status(200).json(newImage);
+        await newImage.save();
+        res.status(200).json(newImage);
+      }
+    );
+
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
   } catch (err) {
-    console.error("Error uploading image:", err);
     res.status(500).json({ error: "Upload failed" });
   }
 };
 
-// Get all images
-export const getAllImages = async (req, res) => {
-  try {
-    const images = await FestivalImage.find().sort({ uploadedAt: -1 });
-    res.json(images);
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching images" });
-  }
-};
 
-// Delete image
+//delete
 export const deleteImage = async (req, res) => {
   try {
     const image = await FestivalImage.findById(req.params.id);
     if (!image) return res.status(404).json({ error: "Image not found" });
 
-    // Delete from Cloudinary
     await cloudinary.uploader.destroy(image.public_id);
 
-    // Delete from MongoDB
-    await image.remove();
+    await FestivalImage.findByIdAndDelete(req.params.id);
+
     res.json({ message: "Image deleted" });
   } catch (err) {
     res.status(500).json({ error: "Delete failed" });
   }
 };
+
