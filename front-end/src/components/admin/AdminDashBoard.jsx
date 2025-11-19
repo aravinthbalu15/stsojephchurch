@@ -8,7 +8,7 @@ const AdminDashBoard = () => {
   const buttons = [
     { title: 'Manage Events', route: '/add-events' },
     { title: 'Manage Main Events', route: '/add-festivals' },
-    { title: 'Learn & Grow', route: '/admin/events' },
+    { title: 'Manage-Time', route: '/add-time' },
 
 
     { title: 'Add Announcements', route: '/add-announcement' },
@@ -16,6 +16,15 @@ const AdminDashBoard = () => {
     { title: 'Add Videos', route: '/add-videos' },
     { title: 'Add Heart Convent', route: '/add-heart-convent' },
     { title: 'Add Priest', route: '/add-priest' },
+    { title: 'Add OurParish', route: '/add-ourparish' },
+    { title: 'Add Anbiyam-Coordination', route: '/add-parish-coordination' },
+    { title: 'Add Home Gallery-Images', route: '/add-imagLink' },
+    { title: 'Add Home Videos', route: '/add-videoLink' },
+    { title: 'Add President', route: '/add-president' },
+
+
+
+
   ];
 
   return (

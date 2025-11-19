@@ -15,9 +15,9 @@ const AdminOldPriest = () => {
   });
   const [selectedPriest, setSelectedPriest] = useState(null);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false); // ← ADDED
   const fileInputRef = useRef(null);
 
-  // Fetch all priests
   const fetchPriests = async () => {
     try {
       const response = await axios.get("http://localhost:9000/api/oldpriests");
@@ -32,7 +32,6 @@ const AdminOldPriest = () => {
     fetchPriests();
   }, []);
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewPriest((prevState) => ({
@@ -48,7 +47,6 @@ const AdminOldPriest = () => {
     }));
   };
 
-  // Reset form helper
   const resetForm = () => {
     setNewPriest({
       name: "",
@@ -63,14 +61,14 @@ const AdminOldPriest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true); // ← ADDED
 
-    // validate
     if (!newPriest.name || !newPriest.description || !newPriest.dob_start || !newPriest.dob_end) {
       Swal.fire("Error", "Please fill in all required fields.", "error");
+      setUploading(false); // ← ADDED
       return;
     }
 
-    // create formdata
     const formData = new FormData();
     formData.append("name", newPriest.name);
     formData.append("description", newPriest.description);
@@ -81,15 +79,18 @@ const AdminOldPriest = () => {
     try {
       const res = await axios.post("http://localhost:9000/api/oldpriests/old", formData);
       Swal.fire("Success!", "Priest added successfully.", "success");
-      // Append returned priest if backend returns created object
+
       if (res.data) setPriests((prev) => [...prev, res.data]);
       else fetchPriests();
+
       resetForm();
     } catch (err) {
       console.error("Error adding priest:", err);
       Swal.fire("Error!", "There was an error adding the priest.", "error");
       setError("Error adding priest");
     }
+
+    setUploading(false); // ← ADDED
   };
 
   const handleDelete = (id) => {
@@ -133,6 +134,7 @@ const AdminOldPriest = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true); // ← ADDED
 
     if (!selectedPriest) return;
 
@@ -149,18 +151,21 @@ const AdminOldPriest = () => {
         formData
       );
       Swal.fire("Updated!", "Priest updated successfully.", "success");
-      // update list
+
       if (res.data) {
-        setPriests((prev) => prev.map((p) => (p._id === selectedPriest._id ? res.data : p)));
-      } else {
-        fetchPriests();
-      }
+        setPriests((prev) =>
+          prev.map((p) => (p._id === selectedPriest._id ? res.data : p))
+        );
+      } else fetchPriests();
+
       resetForm();
     } catch (err) {
       console.error(err);
       Swal.fire("Error!", "There was an error updating the priest.", "error");
       setError("Error updating priest");
     }
+
+    setUploading(false); // ← ADDED
   };
 
   return (
@@ -233,9 +238,14 @@ const AdminOldPriest = () => {
             </Form.Group>
 
             <div className="d-flex gap-2">
-              <Button variant="primary" type="submit">
-                {selectedPriest ? "Update Priest" : "Add Priest"}
+              <Button variant="primary" type="submit" disabled={uploading}>
+                {uploading
+                  ? "Uploading..."
+                  : selectedPriest
+                  ? "Update Priest"
+                  : "Add Priest"}
               </Button>
+
               {selectedPriest && (
                 <Button variant="secondary" onClick={resetForm}>
                   Cancel
@@ -252,20 +262,22 @@ const AdminOldPriest = () => {
         {priests.map((priest) => (
           <div key={priest._id} className="col-sm-6 col-md-4 mb-4 d-flex justify-content-center">
             <div className="priest-card text-center p-3">
-              <img
-                src={priest.imageUrl}
-                alt={priest.name}
-                className="priest-img"
-                width={150}
-                height={150}
-              />
+              <img 
+  src={priest.imageUrl}
+  alt={priest.name}
+  className="priest-img"
+  style={{ marginLeft: "33px" }}  // increase this value
+  width={150}
+  height={150}
+/>
+
               <div className="mt-3">
                 <strong className="d-block">{priest.name}</strong>
                 <small className="d-block text-muted">
-                  {priest.dob_start ? new Date(priest.dob_start).toLocaleDateString() : ""}
-                  {" - "}
+                  {priest.dob_start ? new Date(priest.dob_start).toLocaleDateString() : ""}{" - "}
                   {priest.dob_end ? new Date(priest.dob_end).toLocaleDateString() : ""}
                 </small>
+
                 <p className="mt-2 mb-2 priest-desc">{priest.description}</p>
 
                 <div className="d-flex justify-content-center gap-2">

@@ -9,8 +9,8 @@ const AdminFestivalImages = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false); // 🔥 Upload animation
 
-  // Reference for file input to reset after upload/delete
   const fileInputRef = useRef(null);
 
   const fetchImages = async () => {
@@ -30,7 +30,6 @@ const AdminFestivalImages = () => {
     setSelectedImage(e.target.files[0]);
   };
 
-  // Reset file input programmatically
   const resetFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -43,6 +42,8 @@ const AdminFestivalImages = () => {
       setMessage("Please select an image and enter a title.");
       return;
     }
+
+    setUploading(true); // 🔥 Start spinner animation
 
     const formData = new FormData();
     formData.append("image", selectedImage);
@@ -59,9 +60,7 @@ const AdminFestivalImages = () => {
       setTitle("");
       setSelectedImage(null);
 
-      // Reset file input after upload
       resetFileInput();
-
       fetchImages();
 
       Swal.fire({
@@ -77,6 +76,8 @@ const AdminFestivalImages = () => {
         text: "There was an error uploading the image.",
       });
     }
+
+    setUploading(false); // 🔥 Stop animation
   };
 
   const confirmDelete = (id) => {
@@ -92,9 +93,7 @@ const AdminFestivalImages = () => {
           const response = await axios.delete(`http://localhost:9000/api/festival/${id}`);
           setMessage(response.data.message);
 
-          // Reset file input after deletion
           resetFileInput();
-
           fetchImages();
 
           Swal.fire("Deleted!", "The image has been deleted.", "success");
@@ -128,12 +127,23 @@ const AdminFestivalImages = () => {
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            ref={fileInputRef} // FILE INPUT RESET FIX
+            ref={fileInputRef}
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Upload
+        <Button variant="primary" type="submit" disabled={uploading}>
+          {uploading ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Uploading...
+            </>
+          ) : (
+            "Upload"
+          )}
         </Button>
       </Form>
 
@@ -141,14 +151,18 @@ const AdminFestivalImages = () => {
       <Row>
         {images.map((image) => (
           <Col key={image._id} md={4} sm={6} xs={12} className="mb-4">
-            <div className="image-card p-3 border rounded shadow-sm h-100 text-center">
+            <div className="image-card p-3 border rounded shadow-sm h-100 text-center fade-in">
               <img
                 src={image.url}
                 alt={image.title}
                 className="img-fluid rounded event-img mb-2"
               />
               <h5 className="mt-2">{image.title}</h5>
-              <Button variant="danger" onClick={() => confirmDelete(image._id)} className="mt-2">
+              <Button
+                variant="danger"
+                onClick={() => confirmDelete(image._id)}
+                className="mt-2"
+              >
                 Delete
               </Button>
             </div>
