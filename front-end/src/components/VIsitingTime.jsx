@@ -1,23 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { motion } from "framer-motion";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../Style/VisitingTime.css";
 
 const VisitingTime = () => {
   const [expanded, setExpanded] = useState(false);
+  const [visitingTime, setVisitingTime] = useState(null);
+
+  const fetchVisitingTime = async () => {
+    try {
+      const res = await axios.get("http://localhost:9000/api/visiting-time");
+      setVisitingTime(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchVisitingTime();
+  }, []);
+
+  if (!visitingTime) {
+    return <div className="text-center mt-5">Loading...</div>;
+  }
 
   return (
     <div className="container d-flex justify-content-center mt-5">
-      <motion.div
-        className="church-card p-4 shadow-lg rounded-4"
+      <motion.div className="church-card p-4 shadow-lg rounded-4"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="d-flex align-items-center">
-          <motion.div
-            className="church-icon-wrapper"
+          <motion.div className="church-icon-wrapper"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.4 }}
@@ -30,9 +47,9 @@ const VisitingTime = () => {
             <p className="text-muted">Experience peace and serenity at our church.</p>
 
             <h5 className="text-success">⏰ Regular Days</h5>
-            <p>Monday to Friday: 9:00 AM – 5:00 PM</p>
-            <p>Saturday: 9:00 AM – 1:00 PM</p>
-            <p>Sunday: 6:00 AM – 8:00 PM</p>
+            <p>Monday to Friday: {visitingTime.regularDays.mondayToFriday}</p>
+            <p>Saturday: {visitingTime.regularDays.saturday}</p>
+            <p>Sunday: {visitingTime.regularDays.sunday}</p>
 
             <motion.div
               initial={{ height: 0, opacity: 0 }}
@@ -43,27 +60,16 @@ const VisitingTime = () => {
               <h5 className="text-warning">🙏 Mass Timings</h5>
               <p>Weekdays:</p>
               <ul>
-                <li>Morning Mass: 6:30 AM</li>
-                <li>Noon Mass: 12:00 PM</li>
+                {visitingTime.massTimings.weekdays.map((time, index) => (
+                  <li key={index}>{time}</li>
+                ))}
               </ul>
               <p>Sunday Mass:</p>
               <ul>
-                <li>8:30 AM - 10:30 AM</li>
-                {/* <li>Second Mass: 8:00 AM</li> */}
-                {/* <li>Third Mass: 10:30 AM</li> */}
+                {visitingTime.massTimings.sunday.map((time, index) => (
+                  <li key={index}>{time}</li>
+                ))}
               </ul>
-
-              {/* <h5 className="text-danger">🌟 Special Services</h5> */}
-              {/* <ul> */}
-                {/* <li>Confession: Saturday | 5:00 PM – 6:00 PM</li> */}
-                {/* <li>Adoration: First Friday | 7:00 PM – 8:30 PM</li> */}
-                {/* <li>Baptisms: Sunday | 11:30 AM (By Appointment)</li> */}
-                {/* <li>Weddings: As per Church Schedule</li> */}
-              {/* </ul> */}
-
-              {/* <h5 className="text-info">🕒 Office Hours</h5>
-              <p>Monday to Friday: 9:00 AM – 5:00 PM</p>
-              <p>Saturday: 9:00 AM – 1:00 PM</p> */}
             </motion.div>
 
             <motion.button

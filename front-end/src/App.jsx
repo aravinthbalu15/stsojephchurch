@@ -68,6 +68,14 @@ import PrivateRoute from "./components/admin/PrivateRoute";
 import AdminFestivalImages from "./components/admin/AdminFestivalImages";
 import AdminHeartConvent from "./components/admin/AdminHeartConvent";
 import AdminOldPriest from "./components/admin/AdminOldPriest";
+import AdminParish from "./components/admin/AdminParish";
+import AdminTiming from "./components/admin/AdminTiming";
+import AdminAnbiyamCoordination from "./components/admin/AdminAnbiyamCoordination";
+import AdminVideoLink from "./components/admin/AdminVideoLink";
+import AdminImgLinkUpload from "./components/admin/AdminImgLinkUpload";
+import AdminPresident from "./components/admin/AdminPresident";
+
+
 function App() {
   const location = useLocation();
 
@@ -223,6 +231,8 @@ function App() {
   }
 />
 
+
+
 <Route
   path="/add-priest"
   element={
@@ -232,6 +242,66 @@ function App() {
     </PrivateRoute>
   }
 />
+
+<Route
+  path="/add-ourparish"
+  element={
+    <PrivateRoute>
+      <AdminParish/>
+     
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/add-parish-coordination"
+  element={
+    <PrivateRoute>
+      <AdminAnbiyamCoordination/>
+     
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/add-time"
+  element={
+    <PrivateRoute>
+      <AdminTiming />
+     
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/add-imagLink"
+  element={
+    <PrivateRoute>
+      < AdminImgLinkUpload/>
+     
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/add-videoLink"
+  element={
+    <PrivateRoute>
+      < AdminVideoLink/>
+     
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/add-president"
+  element={
+    <PrivateRoute>
+      < AdminPresident/>
+     
+    </PrivateRoute>
+  }
+/>
+
       </Routes>
       <Footer />
     </>

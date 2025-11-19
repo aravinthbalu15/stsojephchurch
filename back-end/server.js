@@ -12,37 +12,64 @@ import announcementRoutes from './routes/announcementRoutes.js';
 import festivalRoutes from './routes/festival.js';
 import eventRoutes from "./routes/eventRoutes.js";
 import heartConventRoutes from './routes/heartConventRoutes.js';
+import oldPriestRoutes from './routes/oldPriestRoutes.js';
+import acRouter from './routes/acRouter.js';
+import parishRouter from './routes/parishRouter.js';
+import vtRouter from "./routes/vtRoutes.js";
+import ImgLinkRouter from './routes/imgLinkRouter.js';
+import videoLinkRouter from './routes/videoLinkRouter.js';
 
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+/* ---------------------------------------
+   FIX 1: Increase body limit (413 error)
+---------------------------------------- */
+app.use(express.json({ limit: "200mb" }));
+app.use(express.urlencoded({ limit: "200mb", extended: true }));
+
+/* ---------------------------------------
+   FIX 2: Fix CORS error
+---------------------------------------- */
 app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
 
+/* ---------------------------------------
+   ROUTES
+---------------------------------------- */
 app.use('/api/videos', videoRoutes);
 app.use('/api', adminRoutes);
-app.use('/api/images', imageRoutes);  // ✅ Correctly wired
+app.use('/api/images', imageRoutes);
 app.use('/api', announcementRoutes);
 app.use("/api/festival", festivalRoutes);
 app.use("/api/events", eventRoutes);
 app.use('/api', heartConventRoutes);
-import oldPriestRoutes from './routes/oldPriestRoutes.js';
 app.use('/api/oldpriests', oldPriestRoutes);
+app.use('/api/acmembers', acRouter);
+app.use('/api/parish', parishRouter);
+app.use('/api/visiting-time', vtRouter);
+app.use('/api/imglink', ImgLinkRouter);
+app.use('/api/videolink', videoLinkRouter);
 
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+/* ---------------------------------------
+   404 Route Handler
+---------------------------------------- */
 app.use((req, res) => {
   res.status(404).send('Route not found');
 });
 
+/* ---------------------------------------
+   MONGO CONNECTION
+---------------------------------------- */
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("✅ Connected to MongoDB Atlas"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
+/* ---------------------------------------
+   SERVER START
+---------------------------------------- */
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
