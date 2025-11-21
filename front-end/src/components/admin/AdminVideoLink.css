@@ -1,4 +1,38 @@
-.add-link-video{
-    padding-top: 200px;
-    margin-top: 200px;
+.admin-linkvideo {
+  padding-top: 200px;
+  margin-top: 200px;
+}
+
+/* Upload big button */
+.upload-big-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+/* Small square-style video card */
+.video-card-small {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Make video box smaller (square look) */
+.video-wrapper-small {
+  width: 100%;
+  height: 180px;
+  background: #000;
+}
+
+.video-small {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.small-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }

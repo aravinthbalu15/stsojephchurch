@@ -1,4 +1,17 @@
-.img-lin{
-    padding-top: 200px;
-    margin-top: 200px;
+.img-link-admin {
+  padding-top: 200px;
+  margin-top: 200px;
+}
+
+/* Square look */
+.square-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Perfect square image */
+.square-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
 }

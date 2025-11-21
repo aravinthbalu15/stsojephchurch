@@ -23,30 +23,34 @@
   gap: 15px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* Hide scrollbar for smooth look */
+  scrollbar-width: none;
   -ms-overflow-style: none;
-  width: 85%; /* Adjust to be responsive */
+  width: 85%;
   max-width: 1200px;
   padding: 10px;
   margin: auto;
 }
 
-/* Hide scrollbar on Chrome/Safari */
 .video-container::-webkit-scrollbar {
   display: none;
 }
 
-/* Video Items */
+/* Video Items (Updated Size) */
 .video-item {
   flex: 0 0 auto;
-  width: 350px; /* Default width */
+  width: 400px !important;  /* Updated */
+  height: 220px !important; /* Updated */
   border-radius: 10px;
+  overflow: hidden;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Video element size (Updated) */
 .video-item video {
-  width: 100%;
+  width: 400px !important;   /* Updated */
+  height: 220px !important;  /* Updated */
+  object-fit: cover;
   border-radius: 10px;
 }
 
@@ -72,7 +76,6 @@
   z-index: 100;
 }
 
-/* Adjust Left & Right Arrow Position */
 .nav-icon.left {
   left: -30px;
 }
@@ -81,7 +84,6 @@
   right: -30px;
 }
 
-/* Hover Effect */
 .nav-icon:hover {
   color: white;
   background: red;
@@ -108,8 +110,6 @@
   transform: translateY(-3px);
 }
 
-/* ---------------------- Responsive Styles ---------------------- */
-
 /* Tablets (Max 1024px) */
 @media (max-width: 1024px) {
   .video-container {
@@ -117,7 +117,8 @@
   }
 
   .video-item {
-    width: 300px;
+    width: 150px !important;
+    height: 100px !important;
   }
 
   .nav-icon {
@@ -142,7 +143,8 @@
   }
 
   .video-item {
-    width: 280px;
+    width: 140px !important;
+    height: 90px !important;
   }
 
   .nav-icon {
@@ -174,11 +176,12 @@
   }
 
   .video-item {
-    width: 230px;
+    width: 120px !important;
+    height: 80px !important;
   }
 
   .nav-icon {
-    display: none; /* Hide arrows on very small screens */
+    display: none; /* Hide arrows on small screens */
   }
 
   .read-more-btn {

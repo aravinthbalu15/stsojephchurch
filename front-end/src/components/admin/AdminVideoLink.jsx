@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from "react";
+// AdminVideos.jsx
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
+import Swal from "sweetalert2";
+import { Container, Form, Button, Row, Col, Card, Spinner } from "react-bootstrap";
+import "./AdminVideoLink.css";
 
 const AdminVideos = () => {
   const [title, setTitle] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
+  const fileInputRef = useRef(null); // 👉 for resetting file input
 
   useEffect(() => {
     fetchVideos();
@@ -29,44 +35,66 @@ const AdminVideos = () => {
     });
   };
 
-const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!title || !videoFile) {
-    alert("Please select video and enter title");
-    return;
-  }
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!title || !videoFile) {
+      Swal.fire("Missing Fields", "Please select a video and enter a title!", "warning");
+      return;
+    }
 
-  try {
-    const base64Video = await toBase64(videoFile);
+    try {
+      setUploading(true);
+      const base64Video = await toBase64(videoFile);
 
-    await axios.post("http://localhost:9000/api/videolink", {
-      title,
-      videoBase64: base64Video, // ✔ FIXED
-    });
+      await axios.post("http://localhost:9000/api/videolink", {
+        title,
+        videoBase64: base64Video,
+      });
 
-    setTitle("");
-    setVideoFile(null);
-    fetchVideos();
-  } catch (err) {
-    console.error("Upload failed:", err);
-  }
-};
+      Swal.fire("Success!", "Video uploaded successfully!", "success");
 
+      // 👉 RESET INPUTS AFTER UPLOAD
+      setTitle("");
+      setVideoFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // reset file input
+      }
+
+      fetchVideos();
+    } catch (err) {
+      console.error("Upload failed:", err);
+      Swal.fire("Error!", "Video upload failed!", "error");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+    const confirmDelete = await Swal.fire({
+      title: "Are you sure?",
+      text: "This video will be deleted permanently!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (!confirmDelete.isConfirmed) return;
 
     try {
       await axios.delete(`http://localhost:9000/api/videolink/${id}`);
+      Swal.fire("Deleted!", "Video has been deleted.", "success");
       fetchVideos();
     } catch (err) {
       console.error("Delete failed:", err);
+      Swal.fire("Error!", "Failed to delete video.", "error");
     }
   };
 
   return (
-    <Container className="my-5">
-      <h2 className="mb-4">Upload Church Videos</h2>
+    <div className="my-5 admin-linkvideo container">
+      <h2 className="mb-4 fw-bold">Upload Church Videos</h2>
 
       <Form onSubmit={handleUpload}>
         <Form.Group controlId="videoTitle" className="mb-3">
@@ -84,28 +112,43 @@ const handleUpload = async (e) => {
           <Form.Control
             type="file"
             accept="video/*"
+            ref={fileInputRef} // 👉 added here
             onChange={(e) => setVideoFile(e.target.files[0])}
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Upload Video
+        <Button variant="primary" type="submit" disabled={uploading} className="upload-big-btn">
+          {uploading ? (
+            <>
+              <Spinner animation="border" size="sm" /> Uploading...
+            </>
+          ) : (
+            "Upload Video"
+          )}
         </Button>
       </Form>
 
       <hr className="my-5" />
 
-      <h3>Uploaded Videos</h3>
+      <h3 className="fw-bold">Uploaded Videos</h3>
+
       <Row>
         {videos.map((video) => (
-          <Col md={6} lg={4} key={video._id} className="mb-4">
-            <Card>
-              <video width="100%" controls>
-                <source src={video.videoUrl} type="video/mp4" />
-              </video>
-              <Card.Body>
-                <Card.Title>{video.title}</Card.Title>
-                <Button variant="danger" onClick={() => handleDelete(video._id)}>
+          <Col md={4} lg={3} key={video._id} className="mb-4">
+            <Card className="video-card-small shadow-sm">
+              <div className="video-wrapper-small">
+                <video className="video-small" controls>
+                  <source src={video.videoUrl} type="video/mp4" />
+                </video>
+              </div>
+              <Card.Body className="text-center p-2">
+                <Card.Title className="small-title">{video.title}</Card.Title>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  className="w-100"
+                  onClick={() => handleDelete(video._id)}
+                >
                   Delete
                 </Button>
               </Card.Body>
@@ -113,7 +156,7 @@ const handleUpload = async (e) => {
           </Col>
         ))}
       </Row>
-    </Container>
+    </div>
   );
 };
 

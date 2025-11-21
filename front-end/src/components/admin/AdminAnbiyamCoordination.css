@@ -1,4 +1,17 @@
-.an-co{
-    padding-top: 200px;
-    padding-bottom: 70px;
+.an-co {
+  padding-top: 200px;
+  padding-bottom: 70px;
+}
+
+/* square card */
+.square-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* square image */
+.square-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
 }

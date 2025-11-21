@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Button, Form, Modal, Card, Badge } from "react-bootstrap";
 import Swal from "sweetalert2";
@@ -14,6 +14,10 @@ const AdminParish = () => {
   const [editModal, setEditModal] = useState(false);
   const [editMember, setEditMember] = useState(null);
   const [filterCategory, setFilterCategory] = useState("all");
+
+  // 🔥 NEW → Refs to reset file inputs
+  const addFileRef = useRef(null);
+  const editFileRef = useRef(null);
 
   useEffect(() => {
     fetchMembers();
@@ -73,6 +77,12 @@ const AdminParish = () => {
       setDescription("");
       setImage(null);
       setCategory("member");
+
+      // 🔥 RESET FILE INPUT AFTER UPLOAD
+      if (addFileRef.current) {
+        addFileRef.current.value = "";
+      }
+
       fetchMembers();
     } catch {
       Swal.fire("Error!", "Upload failed.", "error");
@@ -84,6 +94,11 @@ const AdminParish = () => {
   const openEditModal = (member) => {
     setEditMember(member);
     setEditModal(true);
+
+    // 🔥 Clear file input when opening modal
+    if (editFileRef.current) {
+      editFileRef.current.value = "";
+    }
   };
 
   const handleEditSave = async () => {
@@ -102,6 +117,7 @@ const AdminParish = () => {
     formData.append("category", editMember.category);
     formData.append("name", editMember.name);
     formData.append("description", editMember.description);
+
     if (editMember.image) {
       formData.append("image", editMember.image);
     }
@@ -109,15 +125,23 @@ const AdminParish = () => {
     try {
       await axios.put(
         `http://localhost:9000/api/parish/${editMember._id}`,
-        editMember.image ? formData : {
-          category: editMember.category,
-          name: editMember.name,
-          description: editMember.description,
-          imageUrl: editMember.imageUrl,
-        }
+        editMember.image
+          ? formData
+          : {
+              category: editMember.category,
+              name: editMember.name,
+              description: editMember.description,
+              imageUrl: editMember.imageUrl,
+            }
       );
 
       Swal.fire("Updated!", "Member updated.", "success");
+
+      // 🔥 RESET FILE INPUT AFTER UPDATE
+      if (editFileRef.current) {
+        editFileRef.current.value = "";
+      }
+
       setEditModal(false);
       fetchMembers();
     } catch {
@@ -132,8 +156,6 @@ const AdminParish = () => {
 
   return (
     <div className="container mt-4">
-
-      {/* HEADER */}
       <h2 className="text-center mb-4">Parish Member Management</h2>
 
       {/* CATEGORY FILTER BUTTONS */}
@@ -191,6 +213,7 @@ const AdminParish = () => {
             <Form.Control
               type="file"
               required
+              ref={addFileRef}   // 🔥 ADDED REF
               onChange={(e) => setImage(e.target.files[0])}
             />
           </Form.Group>
@@ -265,7 +288,10 @@ const AdminParish = () => {
                 <Form.Control
                   value={editMember.description}
                   onChange={(e) =>
-                    setEditMember({ ...editMember, description: e.target.value })
+                    setEditMember({
+                      ...editMember,
+                      description: e.target.value,
+                    })
                   }
                 />
               </Form.Group>
@@ -274,6 +300,7 @@ const AdminParish = () => {
                 <Form.Label>Change Image</Form.Label>
                 <Form.Control
                   type="file"
+                  ref={editFileRef}   // 🔥 ADDED REF
                   onChange={(e) =>
                     setEditMember({ ...editMember, image: e.target.files[0] })
                   }

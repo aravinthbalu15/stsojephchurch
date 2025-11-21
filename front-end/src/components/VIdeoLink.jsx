@@ -13,13 +13,13 @@ const VideoLink = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Load Videos from Backend
+  // Fetch videos
   const fetchVideos = async () => {
     try {
       const res = await axios.get("http://localhost:9000/api/videolink");
       setVideos(res.data);
     } catch (err) {
-      console.error("Failed to load videos:", err);
+      console.log("Error loading videos", err);
     }
   };
 
@@ -27,6 +27,7 @@ const VideoLink = () => {
     fetchVideos();
   }, []);
 
+  // Auto Scroll
   useEffect(() => {
     checkScroll();
 
@@ -73,31 +74,30 @@ const VideoLink = () => {
       </h2>
 
       <div className="video-wrapper">
-        {/* Left Arrow */}
+
         {canScrollLeft && (
           <FaChevronLeft className="nav-icon left" onClick={scrollLeft} />
         )}
 
-        {/* Video Slider */}
         <div className="video-container" ref={scrollRef} onScroll={checkScroll}>
           {videos.length === 0 ? (
-            <p style={{ padding: "20px", fontSize: "18px" }}>Loading...</p>
+            <p className="loading-text">Loading...</p>
           ) : (
             videos.map((video) => (
-              <div key={video._id} className="video-item">
+              <div key={video._id} className="video-item float-card">
                 <video controls>
                   <source src={video.videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
                 </video>
-                <p className="video-title">{video.title}</p>
               </div>
             ))
           )}
         </div>
 
-        {/* Right Arrow */}
         {canScrollRight && (
           <FaChevronRight className="nav-icon right" onClick={scrollRight} />
         )}
+
       </div>
 
       <button className="read-more-btn" onClick={() => navigate("/videos")}>
