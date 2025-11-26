@@ -6,10 +6,12 @@ import "slick-carousel/slick/slick-theme.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../Style/Event.css";
 import axios from "axios";
+import { useTranslation } from "react-i18next"; // 🆕 Added
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
+  const { t } = useTranslation(); // 🆕 Added
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -27,7 +29,6 @@ const UpcomingEvents = () => {
     navigate(`/event/${eventId}`);
   };
 
-  // Dynamic slider settings generator
   const getSliderSettings = (eventCount) => ({
     dots: true,
     infinite: eventCount > 1,
@@ -41,27 +42,11 @@ const UpcomingEvents = () => {
     draggable: eventCount > 1,
     responsive: [
       {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 1,
-          arrows: eventCount > 1,
-          dots: eventCount > 1
-        }
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 1,
-          arrows: eventCount > 1,
-          dots: eventCount > 1
-        }
-      },
-      {
         breakpoint: 768,
         settings: {
           slidesToShow: 1,
-          arrows: eventCount > 1,
-          dots: eventCount > 1
+          dots: eventCount > 1,
+          arrows: false
         }
       }
     ]
@@ -77,12 +62,12 @@ const UpcomingEvents = () => {
   return (
     <div className="upcoming-events">
       <div className="row justify-content-between">
-        {/* Current Events Column */}
+        
         <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
           <div className="event-box p-3">
-            <h3 className="text-center event-titles">Current Events</h3>
+            <h3 className="text-center event-titles">{t("current_events")}</h3>
             {eventPostersLeft.length === 0 ? (
-              <p className="text-center">No current events.</p>
+              <p className="text-center">{t("no_current_events") || "No current events."}</p>
             ) : (
               <Slider {...getSliderSettings(eventPostersLeft.length)}>
                 {eventPostersLeft.map((event) => (
@@ -91,11 +76,7 @@ const UpcomingEvents = () => {
                     className="event-card"
                     onClick={() => handleEventClick(event._id)}
                   >
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="event-image"
-                    />
+                    <img src={event.image} alt={event.title} className="event-image" />
                     <p className="event-caption">{event.title}</p>
                   </div>
                 ))}
@@ -104,12 +85,11 @@ const UpcomingEvents = () => {
           </div>
         </div>
 
-        {/* Upcoming Events Column */}
         <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
           <div className="event-box p-3">
-            <h3 className="text-center event-titles">Upcoming Events</h3>
+            <h3 className="text-center event-titles">{t("upcoming_events")}</h3>
             {eventPostersRight.length === 0 ? (
-              <p className="text-center">No upcoming events.</p>
+              <p className="text-center">{t("no_upcoming_events") || "No upcoming events."}</p>
             ) : (
               <Slider {...getSliderSettings(eventPostersRight.length)}>
                 {eventPostersRight.map((event) => (
@@ -118,11 +98,7 @@ const UpcomingEvents = () => {
                     className="event-card"
                     onClick={() => handleEventClick(event._id)}
                   >
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="event-image"
-                    />
+                    <img src={event.image} alt={event.title} className="event-image" />
                     <p className="event-caption">{event.title}</p>
                   </div>
                 ))}
@@ -130,6 +106,7 @@ const UpcomingEvents = () => {
             )}
           </div>
         </div>
+
       </div>
     </div>
   );

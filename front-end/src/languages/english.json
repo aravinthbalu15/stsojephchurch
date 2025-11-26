@@ -1,0 +1,73 @@
+{
+  "title": "St Joseph's Church",
+  "kamplar": "Kamplar",
+
+  "home": "Home",
+  "about_us": "About Us",
+  "vision_mission": "Vision & Mission",
+  "history": "Our History",
+  "heart_convent": "Sacred Heart Convent",
+  "auditorium": "St.Joseph's Auditorium",
+  "old_priests": "Our Parish Priests",
+  "service_people": "Our People at God's Service",
+  "substation": "The Substation",
+
+  "administration": "Administration",
+  "parish_council": "Our Parish Pastoral Council",
+  "anbiyam_coordination": "Coordination of anbiyams",
+  "anbiyam": "Anbiyams",
+
+  "participatory_structures": "Participatary Structures",
+
+  "apostolic_societies": "Apostolic Societies",
+  "marial_sena": "Maria's Sena",
+  "vincent_de_paul": "Vincent De Paul Society",
+  "catholic_service": "Catholic Service Association",
+
+  "formation_groups": "Formation Organizations",
+  "balarsabha": "Balarsabha",
+  "children_movement": "Children Movement",
+  "iycs": "Young Christian Student Movement",
+  "youth_boys": "Youth Movement (Male)",
+  "youth_girls": "Youth Movement (Female)",
+  "women_movement": "Women's Movement",
+  "bible_committee": "Bible Committee",
+
+  "service_organizations": "Service Organizations",
+  "women_selfhelp": "Women's Self Help",
+  "kolping": "Kolping Movement",
+  "kaiakal": "Kaiakal Self Confidence Movement",
+  "foundation_growth": "Foundation Growth Association",
+
+  "worship_organizations": "Worship Organizations",
+  "worship_team": "Worship Team",
+  "choir": "Choir Group",
+  "altar_boys": "Altar Boys",
+
+  "main_events": "Main Events",
+  "announcements": "Announcements",
+
+  "gallery": "Gallery",
+  "images": "Images",
+  "videos": "Videos",
+
+  "language": "Language",
+  "english": "English",
+  "tamil": "Tamil",
+  "no_current_events": "No current events.",
+  "no_upcoming_events": "No upcoming events.",
+
+
+  "slider_proverbs": [
+    "Faith moves mountains",
+    "Grace guides the humble heart",
+    "In His light we see light",
+    "Love never fails"
+  ],
+  "slider_paragraphs": [
+    "John 15:13",
+    "Psalm 23:1",
+    "John 3:16",
+    "Love 3:90"
+  ]
+}
