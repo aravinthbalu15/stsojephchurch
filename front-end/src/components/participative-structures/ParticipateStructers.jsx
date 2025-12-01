@@ -1,19 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 import "../../Style/ParticipateStructers.css"; // Ensure you have this CSS file
+import { useTranslation } from "react-i18next"; // 🆕 Added
 
 const ParticipateStructers = () => {
+  const { t } = useTranslation(); // 🆕 Added
   const stats = [
     { value: "5", label: "திருத்தூதுக் கழகங்கள்", path: "/one" },
     { value: "7", label: "உருவாக்க அமைப்புகள்", path: "/two" },
-    { value: "4", label: "சேவை அமைப்புகள்", path: "/three" },
+    { value: "5", label: "சேவை அமைப்புகள்", path: "/three" },
     { value: "4", label: "வழிபாட்டு அமைப்புகள்", path: "/four" },
     { value: "3", label: "நிறைவு அமைப்புகள்", path: "/five" }
   ];
 
-  return (
+  return ( 
     <>
-      <h1 className="section-title mt-5">PARTICIPATORY STRUCTURES</h1>
+      <h1 className="section-title mt-5">{t("participatory_structures_title")}</h1>
       <div className="container text-center my-5">
         <div className="row justify-content-center mt-5">
           {stats.map((stat, index) => (

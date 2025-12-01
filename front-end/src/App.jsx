@@ -74,6 +74,8 @@ import AdminAnbiyamCoordination from "./components/admin/AdminAnbiyamCoordinatio
 import AdminVideoLink from "./components/admin/AdminVideoLink";
 import AdminImgLinkUpload from "./components/admin/AdminImgLinkUpload";
 import AdminPresident from "./components/admin/AdminPresident";
+import AdminFamily from "./components/admin/AdminFamily";
+import AdminAnbiyangal from "./components/admin/AdminAnbiyangal";
 
 
 function App() {
@@ -293,10 +295,29 @@ function App() {
 />
 
 <Route
+  path="/add-adminfaminly-number"
+  element={
+    <PrivateRoute>
+      < AdminFamily/>
+     
+    </PrivateRoute>
+  }
+/>
+
+<Route
   path="/add-president"
   element={
     <PrivateRoute>
       < AdminPresident/>
+     
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/add-adminanbiyangal"
+  element={
+    <PrivateRoute>
+      < AdminAnbiyangal/>
      
     </PrivateRoute>
   }

@@ -1,106 +1,88 @@
-import cloudinary from 'cloudinary';
-import President from '../models/presidentModel.js';
-import fs from 'fs';
+import President from "../models/presidentModel.js";
+import cloudinary from "../config/cloudinary.js";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-export const createPresident = async (req, res) => {
+export const getPresident = async (req, res) => {
   try {
-    const { name, description, role } = req.body;
-    const file = req.file;
-
-    const uploadResponse = await cloudinary.uploader.upload(file.path, {
-      folder: 'president_images',
-    });
-
-    const newPresident = new President({
-      name,
-      role,
-      description,
-      image: uploadResponse.secure_url,
-      cloudinary_id: uploadResponse.public_id,
-    });
-
-    await newPresident.save();
-    fs.unlinkSync(file.path);
-    res.status(201).json(newPresident);
+    const president = await President.findOne();
+    res.status(200).json(president);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to upload president data" });
-  }
-};
-
-export const getPresidents = async (req, res) => {
-  try {
-    const presidents = await President.find();
-    res.status(200).json(presidents);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to fetch president data" });
+    res.status(500).json({ message: "Error fetching data", error });
   }
 };
 
 export const updatePresident = async (req, res) => {
   try {
-    const { name, description, role } = req.body;
-    const file = req.file;
+    let president = await President.findOne();
+    if (!president) {
+      president = new President();
+    }
 
-    const existingPresident = await President.findById(req.params.id);
-    if (!existingPresident) return res.status(404).json({ message: "President not found" });
+    // HEAD UPDATE
+    if (req.body.head) {
+      if (req.body.head.image) {
+        if (president.head.cloudinaryId) {
+          await cloudinary.uploader.destroy(president.head.cloudinaryId);
+        }
 
-    // If a new image is uploaded, replace the old one
-    let updatedImage = existingPresident.image;
-    let updatedCloudinaryId = existingPresident.cloudinary_id;
+        const upload = await cloudinary.uploader.upload(req.body.head.image, {
+          folder: "president/head",
+        });
 
-    if (file) {
-      // Delete old image
-      if (existingPresident.cloudinary_id) {
-        await cloudinary.uploader.destroy(existingPresident.cloudinary_id);
+        president.head.imageUrl = upload.secure_url;
+        president.head.cloudinaryId = upload.public_id;
       }
 
-      // Upload new image
-      const result = await cloudinary.uploader.upload(file.path, { folder: 'president_images' });
-      updatedImage = result.secure_url;
-      updatedCloudinaryId = result.public_id;
-      fs.unlinkSync(file.path);
+      president.head.name = req.body.head.name;
+      president.head.description = req.body.head.description;
     }
 
-    const updatedPresident = await President.findByIdAndUpdate(
-      req.params.id,
-      {
-        name,
-        role,
-        description,
-        image: updatedImage,
-        cloudinary_id: updatedCloudinaryId,
-      },
-      { new: true }
-    );
+    // BISHOP UPDATE
+    if (req.body.bishop) {
+      if (req.body.bishop.image) {
+        if (president.bishop.cloudinaryId) {
+          await cloudinary.uploader.destroy(president.bishop.cloudinaryId);
+        }
 
-    res.status(200).json(updatedPresident);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to update president" });
-  }
-};
+        const upload = await cloudinary.uploader.upload(req.body.bishop.image, {
+          folder: "president/bishop",
+        });
 
-export const deletePresident = async (req, res) => {
-  try {
-    const president = await President.findById(req.params.id);
-    if (!president) return res.status(404).json({ message: "President not found" });
+        president.bishop.imageUrl = upload.secure_url;
+        president.bishop.cloudinaryId = upload.public_id;
+      }
 
-    if (president.cloudinary_id) {
-      await cloudinary.uploader.destroy(president.cloudinary_id);
+      president.bishop.name = req.body.bishop.name;
+      president.bishop.description = req.body.bishop.description;
+      president.bishop.description1 = req.body.bishop.description1;
+      president.bishop.description2 = req.body.bishop.description2;
     }
 
-    await President.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "President deleted successfully" });
+    // PARISH PRIEST UPDATE
+    if (req.body.parishPriest) {
+      if (req.body.parishPriest.image) {
+        if (president.parishPriest.cloudinaryId) {
+          await cloudinary.uploader.destroy(president.parishPriest.cloudinaryId);
+        }
+
+        const upload = await cloudinary.uploader.upload(req.body.parishPriest.image, {
+          folder: "president/parishPriest",
+        });
+
+        president.parishPriest.imageUrl = upload.secure_url;
+        president.parishPriest.cloudinaryId = upload.public_id;
+      }
+
+      president.parishPriest.name = req.body.parishPriest.name;
+      president.parishPriest.description1 = req.body.parishPriest.description1;
+      president.parishPriest.description2 = req.body.parishPriest.description2;
+      president.parishPriest.description3 = req.body.parishPriest.description3;
+    }
+
+    const updated = await president.save();
+    res.status(200).json(updated);
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to delete president" });
+    console.error("Error updating:", error);
+    res.status(500).json({ message: "Update failed", error });
   }
 };

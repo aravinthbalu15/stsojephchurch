@@ -1,0 +1,16 @@
+.admin-familycount{
+    padding-top: 200px;
+}
+.admin-familycount .card {
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.admin-familycount input {
+  border-width: 2px;
+}
+
+.admin-familycount input:focus {
+  border-color: #6a11cb !important;
+  box-shadow: none !important;
+}

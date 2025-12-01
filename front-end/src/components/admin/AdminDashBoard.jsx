@@ -21,8 +21,8 @@ const AdminDashBoard = () => {
     { title: 'Add Home Gallery-Images', route: '/add-imagLink' },
     { title: 'Add Home Videos', route: '/add-videoLink' },
     { title: 'Add President', route: '/add-president' },
-
-
+    { title: 'Add Family Members Total number', route: '/add-adminfaminly-number' },
+      { title: 'Add Anbiyangal', route: '/add-adminanbiyangal' },
 
 
   ];

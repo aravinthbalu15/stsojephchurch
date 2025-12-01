@@ -1,183 +1,174 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import "./AdminPresident.css";
+
+const API_URL = "http://localhost:9000/api/president";
 
 const AdminPresident = () => {
-  const [presidents, setPresidents] = useState([]);
-  const [formData, setFormData] = useState({
-    name: '',
-    role: '',
-    description: '',
-    image: null,
-  });
-  const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const fetchPresidents = async () => {
+  const [data, setData] = useState({
+    head: { name: "", description: "", imageUrl: "", image: "" },
+    bishop: { name: "", description: "", description1: "", description2: "", imageUrl: "", image: "" },
+    parishPriest: {
+      name: "",
+      description1: "",
+      description2: "",
+      description3: "",
+      imageUrl: "",
+      image: "",
+    },
+  });
+
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  const compressImage = (base64) =>
+    new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width * 0.5; 
+        canvas.height = img.height * 0.5;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.6));
+      };
+    });
+
+  const loadData = async () => {
     try {
-      const res = await axios.get('http://localhost:9000/api/presidents');
-      setPresidents(res.data);
+      const res = await axios.get(API_URL);
+      if (res.data) {
+        setData({
+          head: { ...res.data.head, image: "" },
+          bishop: { ...res.data.bishop, image: "" },
+          parishPriest: { ...res.data.parishPriest, image: "" },
+        });
+      }
     } catch (err) {
       console.error(err);
+      Swal.fire("Error", "Failed to load data", "error");
     }
   };
 
   useEffect(() => {
-    fetchPresidents();
+    loadData();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'image') {
-      setFormData({ ...formData, image: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+  const handleInput = (section, field, value) => {
+    setData((prev) => ({
+      ...prev,
+      [section]: { ...prev[section], [field]: value },
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleImage = async (section, file) => {
+    if (!file) return;
+    const base64 = await fileToBase64(file);
+    const compressed = await compressImage(base64);
 
-    const uploadData = new FormData();
-    uploadData.append('name', formData.name);
-    uploadData.append('role', formData.role);
-    uploadData.append('description', formData.description);
-    if (formData.image) uploadData.append('image', formData.image);
+    setData((prev) => ({
+      ...prev,
+      [section]: { ...prev[section], image: compressed, imageUrl: compressed },
+    }));
+  };
+
+  const saveData = async () => {
+    setLoading(true);
+
+    const requestBody = {
+      head: {
+        name: data.head.name,
+        description: data.head.description,
+        image: data.head.image || null,
+      },
+      bishop: {
+        name: data.bishop.name,
+        description: data.bishop.description,
+        description1: data.bishop.description1,
+        description2: data.bishop.description2,
+        image: data.bishop.image || null,
+      },
+      parishPriest: {
+        name: data.parishPriest.name,
+        description1: data.parishPriest.description1,
+        description2: data.parishPriest.description2,
+        description3: data.parishPriest.description3,
+        image: data.parishPriest.image || null,
+      },
+    };
 
     try {
-      if (editId) {
-        await axios.put(`http://localhost:9000/api/presidents/${editId}`, uploadData);
-        Swal.fire('Updated!', 'President details updated.', 'success');
-      } else {
-        await axios.post('http://localhost:9000/api/presidents', uploadData);
-        Swal.fire('Added!', 'President added successfully.', 'success');
-      }
-
-      setFormData({ name: '', role: '', description: '', image: null });
-      setEditId(null);
-      fetchPresidents();
+      await axios.put(API_URL, requestBody);
+      Swal.fire("Success!", "Updated Successfully", "success");
+      loadData();
     } catch (err) {
       console.error(err);
-      Swal.fire('Error', 'Something went wrong.', 'error');
+      Swal.fire("Error!", "Update failed", "error");
     }
-  };
 
-  const handleEdit = (president) => {
-    setFormData({
-      name: president.name,
-      role: president.role,
-      description: president.description,
-      image: null, // We'll upload a new one if needed
-    });
-    setEditId(president._id);
-  };
-
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this entry!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-    });
-
-    if (confirm.isConfirmed) {
-      try {
-        await axios.delete(`http://localhost:9000/api/presidents/${id}`);
-        Swal.fire('Deleted!', 'President has been deleted.', 'success');
-        fetchPresidents();
-      } catch (err) {
-        console.error(err);
-        Swal.fire('Error', 'Deletion failed.', 'error');
-      }
-    }
+    setLoading(false);
   };
 
   return (
-    <div className="container my-4">
-      <h2 className="mb-4">Admin - Manage Presidents</h2>
+    <div className="container admin-presi">
+      <h2 className="admin-title text-center mb-4">Admin - Manage President Section</h2>
 
-      <form onSubmit={handleSubmit} className="mb-5">
-        <div className="mb-3">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            className="form-control"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <input
-            type="text"
-            name="role"
-            placeholder="Role"
-            className="form-control"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <textarea
-            name="description"
-            placeholder="Description"
-            className="form-control"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <input
-            type="file"
-            name="image"
-            className="form-control"
-            accept="image/*"
-            onChange={handleChange}
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary">
-          {editId ? 'Update' : 'Add'} President
-        </button>
-      </form>
-
-      <div className="row">
-        {presidents.map((president) => (
-          <div className="col-md-4 mb-4" key={president._id}>
-            <div className="card h-100 text-center">
-              <img
-                src={president.image}
-                className="card-img-top"
-                alt={president.name}
-                style={{ height: '250px', objectFit: 'cover' }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{president.name}</h5>
-                <h6 className="card-subtitle text-muted">{president.role}</h6>
-                <p className="card-text">{president.description}</p>
-                <button
-                  onClick={() => handleEdit(president)}
-                  className="btn btn-warning me-2"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(president._id)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+      {/* HEAD */}
+      <div className="card shadow-lg p-4 mb-4">
+        <h4 className="fw-bold">Head</h4>
+        <input className="form-control mb-3" value={data.head.name} placeholder="Enter Name"
+          onChange={(e) => handleInput("head", "name", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.head.description} placeholder="Enter Description"
+          onChange={(e) => handleInput("head", "description", e.target.value)} />
+        <input type="file" className="form-control mb-3" accept="image/*"
+          onChange={(e) => handleImage("head", e.target.files[0])} />
+        {data.head.imageUrl && <img src={data.head.imageUrl} className="preview-img" />}
       </div>
+
+      {/* BISHOP */}
+      <div className="card shadow-lg p-4 mb-4">
+        <h4 className="fw-bold">Bishop</h4>
+        <input className="form-control mb-3" value={data.bishop.name} placeholder="Enter Name"
+          onChange={(e) => handleInput("bishop", "name", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.bishop.description} placeholder="Enter Description 1"
+          onChange={(e) => handleInput("bishop", "description", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.bishop.description1} placeholder="Enter Description 2"
+          onChange={(e) => handleInput("bishop", "description1", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.bishop.description2} placeholder="Enter Description 3"
+          onChange={(e) => handleInput("bishop", "description2", e.target.value)} />
+        <input type="file" className="form-control mb-3" accept="image/*"
+          onChange={(e) => handleImage("bishop", e.target.files[0])} />
+        {data.bishop.imageUrl && <img src={data.bishop.imageUrl} className="preview-img" />}
+      </div>
+
+      {/* PARISH PRIEST */}
+      <div className="card shadow-lg p-4 mb-4">
+        <h4 className="fw-bold">Parish Priest</h4>
+        <input className="form-control mb-3" value={data.parishPriest.name} placeholder="Enter Name"
+          onChange={(e) => handleInput("parishPriest", "name", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.parishPriest.description1} placeholder="Enter Description 1"
+          onChange={(e) => handleInput("parishPriest", "description1", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.parishPriest.description2} placeholder="Enter Description 2"
+          onChange={(e) => handleInput("parishPriest", "description2", e.target.value)} />
+        <textarea className="form-control mb-3" value={data.parishPriest.description3} placeholder="Enter Description 3"
+          onChange={(e) => handleInput("parishPriest", "description3", e.target.value)} />
+        <input type="file" className="form-control mb-3" accept="image/*"
+          onChange={(e) => handleImage("parishPriest", e.target.files[0])} />
+        {data.parishPriest.imageUrl && <img src={data.parishPriest.imageUrl} className="preview-img" />}
+      </div>
+
+      <button className="btn btn-success w-100 mb-5" disabled={loading} onClick={saveData}>
+        {loading ? "Updating..." : "Save All Changes"}
+      </button>
     </div>
   );
 };

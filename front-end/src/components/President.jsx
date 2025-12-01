@@ -1,46 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import AOS from "aos";
-import "aos/dist/aos.css"; // Import AOS styles
-import PresidentImage from "../images/aju.webp";
-import HeadImage from "../images/head.png";
-import SubImage from "../images/bishop.jpeg";
+import "aos/dist/aos.css";
 import "../Style/President.css";
+import PresidentSkeleton from "./PresidentSkeleton";
+
+const API_URL = "http://localhost:9000/api/president";
 
 const President = () => {
+  const [data, setData] = useState(null);
+
   useEffect(() => {
-    AOS.init({ duration: 1000 }); // Initialize AOS with animation duration
+    axios.get(API_URL).then((res) => setData(res.data));
+    AOS.init();
   }, []);
 
+  if (!data) return <PresidentSkeleton />;
+
+  const items = [
+    { role: "Head", ...data.head },
+    { role: "Bishop", ...data.bishop },
+    { role: "Parish Priest", ...data.parishPriest },
+  ];
+
   return (
-    <div className="container text-center ">
-    {/* <h2 className="fw-bold section-title">PRESIDENT</h2> */}
-    <div className="row justify-content-center">
-      {/* First image */}
-      <div className="col-lg-4 col-md-6 d-flex justify-content-center" data-aos="fade-right">
-        <div className="president-card">
-          <img src={HeadImage} alt="Head" className="president-img" />
-          <h5 className="president-name">Pope Francis</h5>
-        </div>
-      </div>
-  
-      {/* Second image */}
-      <div className="col-lg-4 col-md-6 d-flex justify-content-center" data-aos="fade-left">
-        <div className="president-card">
-          <img src={SubImage} alt="Sub Head" className="president-img" />
-          <h5 className="president-name">Most.Rev. Alber Anasthas <br></br> Bishop of Kuzhiturai</h5>
-        </div>
-      </div>
-  
-      {/* Third image */}
-      <div className="col-lg-4 col-md-6 d-flex justify-content-center" data-aos="fade-right">
-        <div className="president-card">
-          <img src={PresidentImage} alt="President" className="president-img" />
-          <h5 className="president-name">Rev.Fr.Maria William<br></br>Parish Priest<br></br>St.Joseph's Church Kamplar</h5>
-        </div>
+    <div className="container text-center">
+      <div className="row justify-content-center">
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            className="col-lg-4 col-md-6 d-flex justify-content-center"
+            data-aos={idx % 2 ? "fade-left" : "fade-right"}
+          >
+            <div className="president-card">
+              <img loading="lazy" src={item.imageUrl} alt={item.name} className="president-img" />
+
+              <h4 className="role-title mt-2">{item.role}</h4>
+              <h1 className="president-name">{item.name}</h1>
+
+              {item.description && <p>{item.description}</p>}
+              {item.description1 && <p>{item.description1}</p>}
+              {item.description2 && <p>{item.description2}</p>}
+              {item.description3 && <p>{item.description3}</p>}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  </div>
-  
   );
 };
 

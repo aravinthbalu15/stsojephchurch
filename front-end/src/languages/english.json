@@ -54,6 +54,8 @@
   "language": "Language",
   "english": "English",
   "tamil": "Tamil",
+  "current_events":"Current_Events",
+  "upcoming_events":"Upcoming_Events",
   "no_current_events": "No current events.",
   "no_upcoming_events": "No upcoming events.",
 
@@ -69,5 +71,12 @@
     "Psalm 23:1",
     "John 3:16",
     "Love 3:90"
-  ]
+  ],
+  "our_parish_community":"our_parish_community",
+  "families":"families",
+  "anbiyams":"anbiyams",
+  "participatory_structures_title":"participatory_structures",
+  "substation_title": "Our Lady of Loreto Church, Tholayavattam"
+
 }
+

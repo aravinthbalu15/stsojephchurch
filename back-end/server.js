@@ -18,7 +18,8 @@ import parishRouter from './routes/parishRouter.js';
 import vtRouter from "./routes/vtRoutes.js";
 import ImgLinkRouter from './routes/imgLinkRouter.js';
 import videoLinkRouter from './routes/videoLinkRouter.js';
-
+// 🆕 Family Route
+import familyRoutes from "./routes/familyRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 9000;
 
@@ -54,6 +55,17 @@ app.use('/api/parish', parishRouter);
 app.use('/api/visiting-time', vtRouter);
 app.use('/api/imglink', ImgLinkRouter);
 app.use('/api/videolink', videoLinkRouter);
+// 🆕 Added
+app.use("/api/family", familyRoutes);
+
+
+import anbiyamRoutes from "./routes/anbiyamRoutes.js";
+app.use("/api/anbiyam", anbiyamRoutes);
+
+import presidentRoutes from "./routes/presidentRoutes.js";
+
+app.use("/api/president", presidentRoutes);
+
 
 /* ---------------------------------------
    404 Route Handler

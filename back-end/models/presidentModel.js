@@ -1,24 +1,30 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const presidentSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const presidentSchema = new mongoose.Schema(
+  {
+    head: {
+      name: { type: String, required: true },
+      description: { type: String },
+      imageUrl: { type: String },
+      cloudinaryId: { type: String },
+    },
+    bishop: {
+      name: { type: String, required: true },
+      description: { type: String },
+      description1: { type: String },
+      imageUrl: { type: String },
+      cloudinaryId: { type: String },
+    },
+    parishPriest: {
+      name: { type: String, required: true },
+      description1: { type: String },
+      description2: { type: String },
+      description3: { type: String },
+      imageUrl: { type: String },
+      cloudinaryId: { type: String },
+    },
   },
-  image: {
-    type: String, // Store the Cloudinary URL of the image
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true, // e.g. President, Bishop, etc.
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-const President = mongoose.model('President', presidentSchema);
-
-export default President;
+export default mongoose.model("President", presidentSchema);

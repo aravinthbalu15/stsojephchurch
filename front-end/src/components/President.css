@@ -1,0 +1,31 @@
+.skeleton {
+  animation: shimmer 1.5s infinite linear;
+  background: #f0f0f0;
+}
+
+.skeleton-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  margin: 10px auto;
+}
+
+.skeleton-line {
+  width: 80%;
+  height: 18px;
+  background: #e0e0e0;
+  margin: 8px auto;
+  border-radius: 4px;
+}
+
+.skeleton-line.title {
+  width: 60%;
+  height: 22px;
+}
+
+@keyframes shimmer {
+  0% { opacity: .6; }
+  50% { opacity: 1; }
+  100% { opacity: .6; }
+}
