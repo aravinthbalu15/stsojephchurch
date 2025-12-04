@@ -4,8 +4,11 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Style/VideoLink.css";
+import { useTranslation } from "react-i18next"; // 🆕 Added
 
 const VideoLink = () => {
+    const { t } = useTranslation(); // 🆕 Added
+  
   const scrollRef = useRef(null);
   const navigate = useNavigate();
 
@@ -69,9 +72,7 @@ const VideoLink = () => {
 
   return (
     <Container className="video-section">
-      <h2 className="section-title">
-        Our <span className="highlights">Videos</span>
-      </h2>
+      <h2 className="section-title">{t("Our_Videos")}</h2>
 
       <div className="video-wrapper">
 

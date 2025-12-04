@@ -28,13 +28,15 @@ const VisitingTime = () => {
 
   return (
     <div className="container d-flex justify-content-center mt-5">
-      <motion.div className="church-card p-4 shadow-lg rounded-4"
+      <motion.div
+        className="church-card p-4 shadow-lg rounded-4"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="d-flex align-items-center">
-          <motion.div className="church-icon-wrapper"
+          <motion.div
+            className="church-icon-wrapper"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.4 }}
@@ -61,13 +63,14 @@ const VisitingTime = () => {
               <p>Weekdays:</p>
               <ul>
                 {visitingTime.massTimings.weekdays.map((time, index) => (
-                  <li key={index}>{time}</li>
+                  <li key={`${time}-${index}`}>{time}</li>
                 ))}
               </ul>
+
               <p>Sunday Mass:</p>
               <ul>
                 {visitingTime.massTimings.sunday.map((time, index) => (
-                  <li key={index}>{time}</li>
+                  <li key={`${time}-${index}`}>{time}</li>
                 ))}
               </ul>
             </motion.div>

@@ -1,47 +1,105 @@
-const cloudinary = require('cloudinary').v2;
-const Announcement = require('../models/Announcement'); // ✅ rename 'Image' to 'Announcement'
+import Announcement from "../models/Announcement.js";
+import cloudinary from "../config/cloudinary.js";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
+// Upload Base64 and return cloudinary URL
+const uploadToCloudinary = async (base64, folder) => {
+  const res = await cloudinary.uploader.upload(base64, {
+    folder,
+    resource_type: "auto",
+  });
+  return res.secure_url;
+};
 
-exports.uploadAnnouncement = async (req, res) => {
+// CREATE
+export const createAnnouncement = async (req, res) => {
   try {
-    const file = req.file;
-    const { title } = req.body;
+    const { title, description, category, eventDate, expiryDate, imageBase64, pdfBase64 } = req.body;
 
-    if (!file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
+    let imageUrl = "";
+    let pdfUrl = "";
 
-    const streamUpload = (fileBuffer) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { resource_type: 'auto' },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        );
-        stream.end(fileBuffer);
-      });
-    };
+    if (imageBase64) imageUrl = await uploadToCloudinary(imageBase64, "announcements");
+    if (pdfBase64) pdfUrl = await uploadToCloudinary(pdfBase64, "announcements");
 
-    const uploadResult = await streamUpload(file.buffer);
-
-    const newAnnouncement = new Announcement({
+    const announcement = await Announcement.create({
       title,
-      fileUrl: uploadResult.secure_url,
-      fileType: uploadResult.resource_type,
-      format: uploadResult.format,
+      description,
+      category,
+      eventDate,
+      expiryDate,
+      imageUrl,
+      pdfUrl,
     });
 
-    const saved = await newAnnouncement.save();
-    res.status(201).json({ message: 'Uploaded successfully', image: saved });
-  } catch (error) {
-    console.error('Upload error:', error);
-    res.status(500).json({ message: 'Server error during upload', error: error.message });
+    res.status(201).json({ success: true, data: announcement });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// GET ALL
+export const getAnnouncements = async (req, res) => {
+  try {
+    const announcements = await Announcement.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: announcements });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// GET ONE
+export const getAnnouncementById = async (req, res) => {
+  try {
+    const item = await Announcement.findById(req.params.id);
+    if (!item) return res.status(404).json({ success: false, message: "Not Found" });
+
+    res.json({ success: true, data: item });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// UPDATE
+export const updateAnnouncement = async (req, res) => {
+  try {
+    const { imageBase64, pdfBase64 } = req.body;
+
+    const existing = await Announcement.findById(req.params.id);
+    if (!existing) return res.status(404).json({ success: false, message: "Not Found" });
+
+    if (imageBase64) existing.imageUrl = await uploadToCloudinary(imageBase64, "announcements");
+    if (pdfBase64) existing.pdfUrl = await uploadToCloudinary(pdfBase64, "announcements");
+
+    Object.assign(existing, req.body);
+    const updated = await existing.save();
+
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// DELETE
+export const deleteAnnouncement = async (req, res) => {
+  try {
+    await Announcement.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Deleted" });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// VIEW COUNT
+export const incrementViewCount = async (req, res) => {
+  try {
+    const item = await Announcement.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: "Not Found" });
+
+    item.viewCount += 1;
+    await item.save();
+
+    res.json({ success: true, viewCount: item.viewCount });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
   }
 };

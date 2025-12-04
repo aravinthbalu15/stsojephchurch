@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../Style/Auditorium.css";
 import Image1 from "../images/Auditorium/1.png";
+import { useTranslation } from "react-i18next"; // 🆕 Added
 
 const Auditorium = () => {
+   const { t } = useTranslation(); // 🆕 Added
   const navigate = useNavigate();
 
   return (
@@ -26,12 +28,10 @@ const Auditorium = () => {
         {/* Text Section – Heading + Description */}
         <div className="col-md-6 order-3 order-md-2 ac-text-col">
           <h2 className="ac-main-heading text-md-start text-center mb-4">
-            <span className="ac-heading-gradient">St. Joseph's Auditorium</span>
+            <span className="ac-heading-gradient">{t("auditorium_title")}</span>
           </h2>
 
-          <p className="ac-description">
-            Valanar Arangam (St. Joseph's Auditorium) – The old church, now known as Valanar Arangam, has been serving as a meeting hall for pastoral activities and as a function hall for the people since 2015. This strong stone-built structure, rich in tradition, has been carefully renovated and preserved to honor its heritage.
-          </p>
+          <p className="ac-description">{t("auditorium_description")}</p>
         </div>
 
       </div>

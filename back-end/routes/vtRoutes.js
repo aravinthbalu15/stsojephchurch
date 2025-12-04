@@ -3,7 +3,6 @@ import { createVisitingTime, getVisitingTime, updateVisitingTime, deleteVisiting
 
 const router = express.Router();
 
-// API Routes
 router.post("/", createVisitingTime);
 router.get("/", getVisitingTime);
 router.put("/:id", updateVisitingTime);

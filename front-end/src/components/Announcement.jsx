@@ -1,71 +1,116 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Button } from 'react-bootstrap';
-import axios from 'axios';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
-import '../Style/Announcement.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Modal } from "react-bootstrap";
+import "../Style/Announcement.css";
 
-// Set worker source
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+const API_URL = "http://localhost:9000/api/announcements";
 
 const Announcement = () => {
   const [announcements, setAnnouncements] = useState([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    axios.get('http://localhost:9000/api/announcements')
-      .then((res) => setAnnouncements(res.data))
-      .catch((err) => console.error('Fetch error:', err));
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await axios.get(API_URL);
+        const today = new Date();
+
+        const validAnnouncements = (res.data?.data || []).filter(
+          (a) => !a.expiryDate || new Date(a.expiryDate) >= today
+        );
+
+        setAnnouncements(validAnnouncements);
+      } catch (err) {
+        console.log(err);
+        setAnnouncements([]);
+      }
+    };
+    fetchAnnouncements();
   }, []);
 
-  return (
-    <div className="container announcement">
-      <h2 className="text-center mb-4">📢 Announcements</h2>
-      <Row>
-        {announcements.map((item) => (
-          <Col md={12} key={item._id} className="mb-5">
-            <Card className="shadow-sm p-3">
-              <Card.Body>
-                <h4 className="text-center mb-3">{item.title}</h4>
+  const openImageModal = (imgUrl) => {
+    setSelectedImage(imgUrl);
+    setShowImageModal(true);
+  };
 
-                {item.fileType.includes('image') ? (
-                  <img
-                    src={item.fileUrl}
-                    alt={item.title}
-                    className="img-fluid rounded mb-3"
-                  />
-                ) : item.fileType.includes('video') ? (
-                  <video
-                    controls
-                    width="100%"
-                    className="rounded mb-3"
-                    src={item.fileUrl}
-                  ></video>
-                ) : item.fileType.includes('pdf') ? (
-                  <div className="pdf-preview mb-3">
-                    <a href={item.fileUrl} target="_blank" rel="noreferrer">
-                      <Card className="text-center shadow-sm">
-                        <Card.Body>
-                          <h5>📄 View PDF</h5>
-                          <Document file={item.fileUrl} loading="Loading PDF...">
-                            <Page pageNumber={1} width={200} />
-                          </Document>
-                        </Card.Body>
-                      </Card>
-                    </a>
-                  </div>
-                ) : (
-                  <a href={item.fileUrl} target="_blank" rel="noreferrer">
-                    <Button variant="link" className="text-primary">
-                      📁 Download File
-                    </Button>
-                  </a>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+  const general = announcements.filter(a => !a.imageUrl && !a.pdfUrl);
+  const images = announcements.filter(a => a.imageUrl && !a.pdfUrl);
+  const pdfs = announcements.filter(a => a.pdfUrl);
+
+  return (
+    <div className="ann-viewr announcement-wrapper container my-4">
+
+      <h3 className="section-title">Announcements</h3>
+      <div className="scroll-container">
+        <div className="scroll-content">
+          {general.map((g) => (
+            <span key={g._id} className="scroll-item">
+              <span className={`badge-category badge-${g.category}`}>
+                {g.category.toUpperCase()}
+              </span>
+              📌 {g.title}
+              &nbsp;&nbsp;&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <h3 className="section-title">Events & Highlights</h3>
+      <div className="scroll-container">
+        <div className="scroll-content">
+          {images.map((img) => (
+            <div
+              className="image-box"
+              key={img._id}
+              onClick={() => openImageModal(img.imageUrl)}
+            >
+              <img src={img.imageUrl} className="event-img" alt={img.title} />
+              <span className={`badge-category badge-${img.category}`}>
+                {img.category.toUpperCase()}
+              </span>
+              <p className="img-title mt-2 fw-bold">{img.title}</p>
+              <small className="text-muted">{new Date(img.createdAt).toLocaleDateString()}</small>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <h3 className="section-title">Important Documents</h3>
+      <div className="scroll-container">
+        <div className="scroll-content">
+          {pdfs.map((p) => (
+            <span key={p._id} className="scroll-item">
+
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                alt="pdf"
+                className="pdf-svg-icon"
+              />
+
+              {p.title} —
+
+              <a href={p.pdfUrl} target="_blank" download className="btn btn-link download-btn">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/992/992651.png"
+                  alt="download"
+                  className="download-icon"
+                />
+              </a>
+
+              &nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* IMAGE POPUP MODAL */}
+      <Modal centered show={showImageModal} onHide={() => setShowImageModal(false)} size="lg">
+        <Modal.Body className="text-center">
+          <img src={selectedImage} alt="view" className="modal-view-img img-fluid rounded" />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

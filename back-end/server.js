@@ -45,7 +45,7 @@ app.use(cors({
 app.use('/api/videos', videoRoutes);
 app.use('/api', adminRoutes);
 app.use('/api/images', imageRoutes);
-app.use('/api', announcementRoutes);
+app.use('/api/announcements', announcementRoutes);
 app.use("/api/festival", festivalRoutes);
 app.use("/api/events", eventRoutes);
 app.use('/api', heartConventRoutes);

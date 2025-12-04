@@ -35,13 +35,13 @@ const President = () => {
             <div className="president-card">
               <img loading="lazy" src={item.imageUrl} alt={item.name} className="president-img" />
 
-              <h4 className="role-title mt-2">{item.role}</h4>
+              {/* <h4 className="role-title mt-2">{item.role}</h4> */}
               <h1 className="president-name">{item.name}</h1>
 
-              {item.description && <p>{item.description}</p>}
-              {item.description1 && <p>{item.description1}</p>}
-              {item.description2 && <p>{item.description2}</p>}
-              {item.description3 && <p>{item.description3}</p>}
+              {item.description && <p className="president-name">{item.description}</p>}
+              {item.description1 && <p className="president-name">{item.description1}</p>}
+              {item.description2 && <p className="president-name">{item.description2}</p>}
+              {item.description3 && <p className="president-name">{item.description3}</p>}
             </div>
           </div>
         ))}

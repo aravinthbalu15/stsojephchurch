@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Container, Button } from "react-bootstrap";
 import axios from "axios";
 import "../Style/ImageLink.css";
+import { useTranslation } from "react-i18next"; // 🆕 Added
 
 const ImageLink = () => {
+    const { t } = useTranslation(); // 🆕 Added
   const [images, setImages] = useState([]);
 
   useEffect(() => {
@@ -14,7 +16,7 @@ const ImageLink = () => {
 
   return (
     <Container className="image-section mt-5">
-      <h2 className="section-title">Our <span className="highlights">Gallery</span></h2>
+      <h2 className="section-title ">{t("Our_Gallery")}</h2>
 
       <div className="gallery-wrapper">
         <div className="image-container">

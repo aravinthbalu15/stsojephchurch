@@ -1,174 +1,233 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Form, Button, Row, Col, Spinner } from 'react-bootstrap';
-import Swal from 'sweetalert2';
-import axios from 'axios';
-import './AdminAnnouncement.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./AdminAnnouncement.css"
+const API_URL = "http://localhost:9000/api/announcements";
 
 const AdminAnnouncement = () => {
-  const [imageTitle, setImageTitle] = useState('');
-  const [file, setFile] = useState(null);
   const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "general",
+    eventDate: "",
+    expiryDate: "",
+    imageBase64: "",
+    pdfBase64: "",
+  });
+
+  // Convert File to Base64
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  // Upload Image
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    Swal.fire({ title: "Uploading Image...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    const base64 = await fileToBase64(file);
+    setFormData({ ...formData, imageBase64: base64 });
+    Swal.close();
+  };
+
+  // Upload PDF
+  const handlePDFChange = async (e) => {
+    const file = e.target.files[0];
+    Swal.fire({ title: "Uploading PDF...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    const base64 = await fileToBase64(file);
+    setFormData({ ...formData, pdfBase64: base64 });
+    Swal.close();
+  };
+
+  // Fetch all announcements
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await axios.get(API_URL);
+      setAnnouncements(res.data?.data || []);
+    } catch (err) {
+      console.log(err);
+      setAnnouncements([]);
+    }
+  };
 
   useEffect(() => {
     fetchAnnouncements();
   }, []);
 
-  const fetchAnnouncements = async () => {
-    try {
-      const res = await axios.get('http://localhost:9000/api/announcements');
-      setAnnouncements(res.data);
-    } catch (err) {
-      console.error('Error fetching announcements:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpload = async (e) => {
+  // Submit (Create & Update)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!file || !imageTitle) {
-      Swal.fire('Missing Info', 'Please fill all fields before uploading.', 'warning');
-      return;
-    }
-
-    if (file.size > 10485760) {
-      Swal.fire('File Too Large', 'Upload file smaller than 10MB.', 'error');
-      return;
-    }
-
-    const confirm = await Swal.fire({
-      title: 'Upload Confirmation',
-      text: 'Are you sure you want to upload this file?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, upload it!',
-    });
-
-    if (confirm.isConfirmed) {
-      const formData = new FormData();
-      formData.append('title', imageTitle);
-      formData.append('file', file);
-
-      try {
-        const res = await axios.post('http://localhost:9000/api/announcements', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        setAnnouncements([res.data, ...announcements]);
-        setImageTitle('');
-        setFile(null);
-        Swal.fire('Success', 'File uploaded successfully!', 'success');
-      } catch (err) {
-        console.error('Upload failed:', err);
-        Swal.fire('Error', 'Upload failed', 'error');
+    try {
+      if (editingId) {
+        await axios.put(`${API_URL}/${editingId}`, formData);
+        Swal.fire("Updated!", "Announcement updated successfully", "success");
+      } else {
+        await axios.post(API_URL, formData);
+        Swal.fire("Created!", "Announcement added successfully", "success");
       }
+
+      setFormData({
+        title: "",
+        description: "",
+        category: "general",
+        eventDate: "",
+        expiryDate: "",
+        imageBase64: "",
+        pdfBase64: "",
+      });
+
+      setEditingId(null);
+      fetchAnnouncements();
+    } catch (err) {
+      Swal.fire("Error", err.message, "error");
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: 'Delete Confirmation',
-      text: 'Are you sure you want to delete this announcement?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+  // Edit
+  const handleEdit = (a) => {
+    setEditingId(a._id);
+    setFormData({
+      title: a.title,
+      description: a.description,
+      category: a.category,
+      eventDate: a.eventDate?.substring(0, 10),
+      expiryDate: a.expiryDate?.substring(0, 10),
+      imageBase64: "",
+      pdfBase64: "",
     });
+  };
 
-    if (confirm.isConfirmed) {
-      try {
-        await axios.delete(`http://localhost:9000/api/announcements/${id}`);
-        setAnnouncements(announcements.filter(item => item._id !== id));
-        Swal.fire('Deleted', 'Announcement deleted successfully', 'success');
-      } catch (err) {
-        console.error('Delete failed:', err);
-        Swal.fire('Error', 'Delete failed', 'error');
+  // Delete
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: "Delete this announcement?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "red",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`${API_URL}/${id}`);
+        fetchAnnouncements();
+        Swal.fire("Deleted!", "", "success");
       }
-    }
+    });
   };
 
   return (
-    <div className="container admin-dash py-5">
-      <h2 className="text-center mb-4">Admin Announcement Upload</h2>
+    <div className=" admin-dashannouncement container my-4">
+      <h2 className="fw-bold text-center mb-4">Admin Announcement Panel</h2>
 
-      <Card className="mb-4">
-        <Card.Body>
-          <Form onSubmit={handleUpload}>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Title</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter title"
-                    value={imageTitle}
-                    onChange={(e) => setImageTitle(e.target.value)}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Upload File</Form.Label>
-                  <Form.Control
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Button type="submit" variant="primary">Upload</Button>
-          </Form>
-        </Card.Body>
-      </Card>
+      {/* Form */}
+      <form className="card shadow p-4" onSubmit={handleSubmit}>
+        <input
+          className="form-control mb-2"
+          placeholder="Announcement Title"
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          required
+        />
 
-      <Card>
-        <Card.Header><strong>📢 All Announcements</strong></Card.Header>
-        <Card.Body>
-          {loading ? (
-            <div className="text-center"><Spinner animation="border" /></div>
-          ) : announcements.length === 0 ? (
-            <p>No announcements yet.</p>
+        <textarea
+          className="form-control mb-2"
+          placeholder="Description"
+          rows="4"
+          value={formData.description}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
+          required
+        ></textarea>
+
+        <select
+          className="form-select mb-2"
+          value={formData.category}
+          onChange={(e) =>
+            setFormData({ ...formData, category: e.target.value })
+          }
+        >
+          <option value="general">General</option>
+          <option value="event">Event</option>
+          <option value="meeting">Meeting</option>
+          <option value="mass">Mass</option>
+          <option value="festival">Festival</option>
+          <option value="obituary">Obituary</option>
+          <option value="youth">Youth</option>
+          <option value="children">Children</option>
+        </select>
+
+        <label className="fw-semibold">Event Date</label>
+        <input
+          type="date"
+          className="form-control mb-2"
+          value={formData.eventDate}
+          onChange={(e) =>
+            setFormData({ ...formData, eventDate: e.target.value })
+          }
+        />
+
+        <label className="fw-semibold">Expiry Date</label>
+        <input
+          type="date"
+          className="form-control mb-2"
+          value={formData.expiryDate}
+          onChange={(e) =>
+            setFormData({ ...formData, expiryDate: e.target.value })
+          }
+        />
+
+        <label>Upload Image</label>
+        <input type="file" className="form-control mb-2" onChange={handleImageChange} />
+
+        <label>Upload PDF (Optional)</label>
+        <input type="file" className="form-control mb-2" onChange={handlePDFChange} />
+
+        <button className="btn btn-primary w-100 mt-2">
+          {editingId ? "Update Announcement" : "Add Announcement"}
+        </button>
+      </form>
+
+      {/* Table */}
+      <h4 className="mt-4 fw-bold">All Announcements</h4>
+
+      <table className="table table-bordered table-hover mt-2">
+        <thead className="table-dark">
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Event Date</th>
+            <th>Image</th>
+            <th>PDF</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {announcements.length > 0 ? (
+            announcements.map((a) => (
+              <tr key={a._id}>
+                <td>{a.title}</td>
+                <td>{a.category}</td>
+                <td>{a.eventDate && a.eventDate.substring(0, 10)}</td>
+                <td>{a.imageUrl && <img src={a.imageUrl} width="60" alt="" />}</td>
+                <td>{a.pdfUrl && <a href={a.pdfUrl}>PDF</a>}</td>
+                <td>
+                  <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(a)}>Edit</button>
+                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(a._id)}>Delete</button>
+                </td>
+              </tr>
+            ))
           ) : (
-            <Row>
-              {announcements.map((item) => (
-                <Col md={6} lg={4} key={item._id} className="mb-4">
-                  <Card className="h-100 shadow-sm">
-                    <Card.Body>
-                      <Card.Title>{item.title}</Card.Title>
-                      <div className="announcement-preview mb-3">
-                        {item.fileType?.includes('image') ? (
-                          <img src={item.fileUrl} alt={item.title} className="img-fluid rounded" />
-                        ) : item.fileType?.includes('video') ? (
-                          <video controls width="100%" src={item.fileUrl}></video>
-                        ) : item.fileType?.includes('pdf') ? (
-                          <a href={item.fileUrl} target="_blank" rel="noopener noreferrer">
-                            📄 View PDF
-                          </a>
-                        ) : (
-                          <a href={item.fileUrl} target="_blank" rel="noopener noreferrer">
-                            📁 Download File
-                          </a>
-                        )}
-                      </div>
-                      <Button
-                        variant="danger"
-                        onClick={() => handleDelete(item._id)}
-                        className="w-100"
-                      >
-                        Delete
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
+            <tr><td colSpan="6" className="text-center py-3">No Announcements Found</td></tr>
           )}
-        </Card.Body>
-      </Card>
+        </tbody>
+      </table>
     </div>
   );
 };
