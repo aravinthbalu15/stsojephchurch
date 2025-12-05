@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import { FiZoomIn, FiZoomOut, FiX, FiMaximize2 } from "react-icons/fi";
-import "../Style/Festival.css"
+import "../Style/Festival.css";
+import { useTranslation } from "react-i18next";
+
 const Festival = () => {
+    const { t } = useTranslation();
+  
   const [show, setShow] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [zoom, setZoom] = useState(1);
@@ -34,8 +38,8 @@ const Festival = () => {
   };
 
   return (
-    <Container className="festival-container">
-      <h2 className="text-center event-title mt-5">🎉 2024 Event Highlights 🎊</h2>
+    <Container className="festival-main container">
+      <h2 className="text-center event-title mt-5">{t("festival")}</h2>
 
       <Row className="g-4 mt-4">
         {images.map((image, index) => (

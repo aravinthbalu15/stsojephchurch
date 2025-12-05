@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../Style/OldPriest.css";
-
+import { useTranslation } from "react-i18next";
 const OldPriest = () => {
+  const { t } = useTranslation();
   const [priests, setPriests] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +24,7 @@ const OldPriest = () => {
 
   return (
     <div className="our-parish-containers mt-5">
-      <h2 className="section-title mt-5">Our Former Parish Priests</h2>
+      <h2 className="section-title mt-5">{t("our_pariest")}</h2>
 
       {loading ? (
         <p className="loading-text">Loading...</p>

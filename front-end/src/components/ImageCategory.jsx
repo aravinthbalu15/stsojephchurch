@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import "../Style/ImageCategory.css";
 
 // Import images correctly
@@ -34,6 +36,7 @@ const categories = [
 ];
 
 const ImageCategory = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleCategoryClick = (path) => {
@@ -42,7 +45,7 @@ const ImageCategory = () => {
 
   return (
     <Container className="gallery-container ">
-      <h2 className="section-title mt-5">Image Categories</h2>
+      <h2 className="section-title mt-5">{t("image-category")}</h2>
       <Row>
         {categories.map((category, index) => (
           <Col md={4} sm={6} xs={12} key={index} className="mb-4">

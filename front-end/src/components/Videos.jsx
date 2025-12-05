@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
 import "../Style/Videos.css";
-
+import { useTranslation } from "react-i18next";
 const Videos = () => {
+  const { t } = useTranslation();
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const Videos = () => {
 
   return (
     <Container className="mt-5 mb-5 video-sections">
-      <h2 className=" videoss mt-5 text-center mb-4 text-primary fw-bold">Our Videos</h2>
+      <h2 className=" videoss mt-5 text-center mb-4 text-primary fw-bold">{t("videos")}</h2>
 
       <Row>
         {videos.map((video) => (

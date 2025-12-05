@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-
+import { useTranslation } from "react-i18next";
 import Image1 from "../images/heart-convent/1.png";
 import '../Style/HeartConvent.css';
 
 const HeartConvent = () => {
+  const { t } = useTranslation();
   const [dynamicImages, setDynamicImages] = useState([]);
 
   // Scroll Reveal Animation
@@ -31,9 +32,7 @@ const HeartConvent = () => {
 
   return (
     <div className="heart-convent container">
-      <h2 className="text-center mb-5 section-title scroll-reveal">
-        St. Joseph’s Church Sacred Heart Convent
-      </h2>
+      <h2 className="text-center mb-5 section-title scroll-reveal">{t("heart_convent")}</h2>
 
       {/* Main Image */}
       <div className="row mb-5 scroll-reveal">
