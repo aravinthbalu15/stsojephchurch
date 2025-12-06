@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../Style/VisitingTime.css";
 
 const VisitingTime = () => {
+    const { t } = useTranslation();
+  
   const [expanded, setExpanded] = useState(false);
   const [visitingTime, setVisitingTime] = useState(null);
 
@@ -45,13 +49,13 @@ const VisitingTime = () => {
           </motion.div>
 
           <div className="ms-4">
-            <h4 className="fw-bold text-primary">Visiting Hours</h4>
-            <p className="text-muted">Experience peace and serenity at our church.</p>
+            <h4 className="fw-bold text-primary">{t("vt_time")}</h4>
+            <p className="text-muted">{t("vt_desc")}</p>
 
-            <h5 className="text-success">⏰ Regular Days</h5>
-            <p>Monday to Friday: {visitingTime.regularDays.mondayToFriday}</p>
-            <p>Saturday: {visitingTime.regularDays.saturday}</p>
-            <p>Sunday: {visitingTime.regularDays.sunday}</p>
+            <h5 className="text-success">{t("vt_re")}</h5>
+            <p>{t("vt_mon_sun")}: {visitingTime.regularDays.mondayToFriday}</p>
+            <p>{t("vt_sa")}: {visitingTime.regularDays.saturday}</p>
+            <p>{t("vt_su")}: {visitingTime.regularDays.sunday}</p>
 
             <motion.div
               initial={{ height: 0, opacity: 0 }}
@@ -59,15 +63,15 @@ const VisitingTime = () => {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="church-content-hidden"
             >
-              <h5 className="text-warning">🙏 Mass Timings</h5>
-              <p>Weekdays:</p>
+              <h5 className="text-warning">{t("vt_mass")}</h5>
+              <p>{t("vt_week")}:</p>
               <ul>
                 {visitingTime.massTimings.weekdays.map((time, index) => (
                   <li key={`${time}-${index}`}>{time}</li>
                 ))}
               </ul>
 
-              <p>Sunday Mass:</p>
+              <p>{t("vt_sun_mass")}:</p>
               <ul>
                 {visitingTime.massTimings.sunday.map((time, index) => (
                   <li key={`${time}-${index}`}>{time}</li>

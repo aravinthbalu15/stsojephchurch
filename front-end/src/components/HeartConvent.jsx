@@ -44,11 +44,7 @@ const HeartConvent = () => {
       {/* Description */}
       <div className="row mb-5 scroll-reveal">
         <div className="col-md-10 offset-md-1 p-4 description">
-          <p className="fs-5 text-center mb-0">
-            Kamplar St. Joseph's Church Convent was consecrated on May 1, 1993, by Rev. Bishop Leon Dharmaraj...
-            <br /><br />
-            Currently, Reverend Sisters continue this mission through prayer, house visits, and assistance in liturgical services...
-          </p>
+          <p className="fs-5 text-center mb-0">{t("heart_con_desc")} </p>
         </div>
       </div>
 

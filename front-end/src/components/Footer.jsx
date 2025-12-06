@@ -1,21 +1,22 @@
 import React from "react";
 import "../Style/Footer.css";
 import { FaFacebook, FaInstagram, FaYoutube, FaTwitter, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+    const { t } = useTranslation();
+  
   return (
     <footer className="footer">
       <div className="footer-container">
         
         {/* Left Section - Church Info & Contact */}
         <div className="footer-info">
-          <h2 className="brand-name">St JOSEPH CHURCH</h2>
-          <p className="church-description">
-            "A place of worship, peace, and love. Join us in faith and fellowship."
-          </p>
+          <h2 className="brand-name">{t("title")}</h2>
+          <p className="church-description">{t("church_add_desc")}</p>
 
           <div className="contact-info">
-            <p><FaMapMarkerAlt />Kamplar, Tamil Nadu 629157</p>
+            <p><FaMapMarkerAlt />{t("church_address")}</p>
             <p><FaPhone /> +1 234 567 890</p>
             <p><FaEnvelope /> stjosephchurch@gmail.com</p>
           </div>
