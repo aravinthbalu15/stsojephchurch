@@ -258,6 +258,50 @@ const Nav = () => {
                   {t("heart_convent")}
                 </Link>
               </li>,
+              <li key="home6">
+                <Link
+                  className={`dropdown-item4 ${getActiveClass(
+                    "/auditorium"
+                  )}`}
+                  to="/auditorium"
+                  onClick={closeMenu}
+                >
+                  {t("auditorium")}
+                </Link>
+              </li>,
+              <li key="home7">
+                <Link
+                  className={`dropdown-item4 ${getActiveClass(
+                    "/old-priest"
+                  )}`}
+                  to="/old-priest"
+                  onClick={closeMenu}
+                >
+                  {t("old_priests")}
+                </Link>
+              </li>,
+              <li key="home8">
+                <Link
+                  className={`dropdown-item4 ${getActiveClass(
+                    "/service"
+                  )}`}
+                  to="/service"
+                  onClick={closeMenu}
+                >
+                  {t("service_people")}
+                </Link>
+              </li>,
+              <li key="home8">
+                <Link
+                  className={`dropdown-item4 ${getActiveClass(
+                    "/substation"
+                  )}`}
+                  to="/substation" substation
+                  onClick={closeMenu}
+                >
+                  {t("substation")}
+                </Link>
+              </li>,
             ])}
 
             {/* ===== 2. ADMINISTRATION DROPDOWN (3 items) ===== */}

@@ -31,7 +31,7 @@ const ImageLink = () => {
       </div>
 
       <Button className="view-more-btn" onClick={() => (window.location.href = "/images-category")}>
-        View More
+        {t("view_more")}
       </Button>
     </Container>
   );

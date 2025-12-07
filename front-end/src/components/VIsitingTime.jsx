@@ -3,7 +3,6 @@ import { Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../Style/VisitingTime.css";
 
@@ -84,7 +83,8 @@ const VisitingTime = () => {
               onClick={() => setExpanded(!expanded)}
               whileHover={{ scale: 1.1 }}
             >
-              {expanded ? "Show Less" : "Show More"}
+              {expanded ? t("show_less") : t("view_more")}
+
             </motion.button>
           </div>
         </div>

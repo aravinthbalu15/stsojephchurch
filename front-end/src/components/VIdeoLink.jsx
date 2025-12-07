@@ -102,7 +102,7 @@ const VideoLink = () => {
       </div>
 
       <button className="read-more-btn" onClick={() => navigate("/videos")}>
-        More Videos
+        {t("view_more")}
       </button>
     </Container>
   );

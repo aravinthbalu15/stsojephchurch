@@ -3,10 +3,12 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "react-bootstrap";
 import "../Style/Announcement.css";
+import { useTranslation } from "react-i18next";
 
 const API_URL = "http://localhost:9000/api/announcements";
 
 const Announcement = () => {
+  const { t } = useTranslation(); // 🆕 Added
   const [announcements, setAnnouncements] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
