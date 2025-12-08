@@ -10,17 +10,16 @@ const AdminHeartConvent = () => {
   const [images, setImages] = useState([]);
   const [formData, setFormData] = useState({ name: '', description: '', image: null });
   const [editingId, setEditingId] = useState(null);
-
   const [uploading, setUploading] = useState(false);
 
   const fileInputRef = useRef(null);
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/heartconvent`);
+      const res = await axios.get(`${API_BASE_URL}/api/heartconvent`);
       setImages(res.data);
     } catch (err) {
-      console.log(err);
+      console.log("Error fetching images:", err);
     }
   };
 
@@ -45,10 +44,10 @@ const AdminHeartConvent = () => {
       if (formData.image) data.append('image', formData.image);
 
       if (editingId) {
-        await axios.put(`${BASE_URL}/api/heartconvent/${editingId}`, data);
+        await axios.put(`${API_BASE_URL}/api/heartconvent/${editingId}`, data);
         Swal.fire('Success', 'Image updated successfully', 'success');
       } else {
-        await axios.post(`${BASE_URL}/api/heartconvent`, data);
+        await axios.post(`${API_BASE_URL}/api/heartconvent`, data);
         Swal.fire('Success', 'Image uploaded successfully', 'success');
       }
 
@@ -75,7 +74,7 @@ const AdminHeartConvent = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`${BASE_URL}/api/heartconvent/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/heartconvent/${id}`);
         Swal.fire('Deleted!', 'Image deleted successfully.', 'success');
         fetchImages();
       } catch (err) {
