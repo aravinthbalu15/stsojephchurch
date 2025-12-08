@@ -5,13 +5,15 @@ import Swal from "sweetalert2";
 import { Container, Form, Button, Row, Col, Card, Spinner } from "react-bootstrap";
 import "./AdminVideoLink.css";
 
+const API_URL = import.meta.env.VITE_API_URL; // ⭐ Global Backend URL
+
 const AdminVideos = () => {
   const [title, setTitle] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [videos, setVideos] = useState([]);
   const [uploading, setUploading] = useState(false);
 
-  const fileInputRef = useRef(null); // 👉 for resetting file input
+  const fileInputRef = useRef(null); // 👉 reset input ref
 
   useEffect(() => {
     fetchVideos();
@@ -19,21 +21,20 @@ const AdminVideos = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/videolink");
+      const res = await axios.get(`${API_URL}/api/videolink`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
     }
   };
 
-  const toBase64 = (file) => {
-    return new Promise((resolve, reject) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
-  };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -46,19 +47,16 @@ const AdminVideos = () => {
       setUploading(true);
       const base64Video = await toBase64(videoFile);
 
-      await axios.post("http://localhost:9000/api/videolink", {
+      await axios.post(`${API_URL}/api/videolink`, {
         title,
         videoBase64: base64Video,
       });
 
       Swal.fire("Success!", "Video uploaded successfully!", "success");
 
-      // 👉 RESET INPUTS AFTER UPLOAD
       setTitle("");
       setVideoFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // reset file input
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
 
       fetchVideos();
     } catch (err) {
@@ -72,7 +70,7 @@ const AdminVideos = () => {
   const handleDelete = async (id) => {
     const confirmDelete = await Swal.fire({
       title: "Are you sure?",
-      text: "This video will be deleted permanently!",
+      text: "This video will be permanently deleted!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -83,7 +81,7 @@ const AdminVideos = () => {
     if (!confirmDelete.isConfirmed) return;
 
     try {
-      await axios.delete(`http://localhost:9000/api/videolink/${id}`);
+      await axios.delete(`${API_URL}/api/videolink/${id}`);
       Swal.fire("Deleted!", "Video has been deleted.", "success");
       fetchVideos();
     } catch (err) {
@@ -112,19 +110,13 @@ const AdminVideos = () => {
           <Form.Control
             type="file"
             accept="video/*"
-            ref={fileInputRef} // 👉 added here
+            ref={fileInputRef}
             onChange={(e) => setVideoFile(e.target.files[0])}
           />
         </Form.Group>
 
         <Button variant="primary" type="submit" disabled={uploading} className="upload-big-btn">
-          {uploading ? (
-            <>
-              <Spinner animation="border" size="sm" /> Uploading...
-            </>
-          ) : (
-            "Upload Video"
-          )}
+          {uploading ? <><Spinner animation="border" size="sm" /> Uploading...</> : "Upload Video"}
         </Button>
       </Form>
 

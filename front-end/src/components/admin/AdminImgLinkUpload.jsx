@@ -4,16 +4,18 @@ import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "./AdminImgLinkUpload.css";
 
+const BASE_URL = `${import.meta.env.VITE_API_URL}`;   // ⭐ GLOBAL API BASE URL
+
 const AdminImgLink = () => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
   const [images, setImages] = useState([]);
   const [editId, setEditId] = useState(null);
-  const [loading, setLoading] = useState(false); // ⬅ Uploading... button
+  const [loading, setLoading] = useState(false);
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/imglink");
+      const res = await axios.get(`${BASE_URL}/api/imglink`);
       setImages(res.data);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -32,24 +34,22 @@ const AdminImgLink = () => {
     if (image) formData.append("image", image);
 
     try {
-      setLoading(true); // ⬅ Start loading
+      setLoading(true);
 
       if (editId) {
-        await axios.put(`http://localhost:9000/api/imglink/${editId}`, formData, {
+        await axios.put(`${BASE_URL}/api/imglink/${editId}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         Swal.fire("Updated!", "Image updated successfully!", "success");
       } else {
-        if (!image)
-          return Swal.fire("Error", "Please select an image", "error");
+        if (!image) return Swal.fire("Error", "Please select an image", "error");
 
-        await axios.post("http://localhost:9000/api/imglink", formData, {
+        await axios.post(`${BASE_URL}/api/imglink`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         Swal.fire("Uploaded!", "Image uploaded successfully!", "success");
       }
 
-      // ⬅ Reset fields after upload
       setTitle("");
       setImage(null);
       setEditId(null);
@@ -60,7 +60,7 @@ const AdminImgLink = () => {
       console.error("Upload error:", err);
       Swal.fire("Error", "Something went wrong!", "error");
     } finally {
-      setLoading(false); // ⬅ End loading
+      setLoading(false);
     }
   };
 
@@ -81,7 +81,7 @@ const AdminImgLink = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/imglink/${id}`);
+        await axios.delete(`${BASE_URL}/api/imglink/${id}`);
         fetchImages();
         Swal.fire("Deleted!", "Image has been deleted.", "success");
       } catch (err) {
@@ -95,7 +95,6 @@ const AdminImgLink = () => {
     <Container className="img-link-admin mt-5">
       <h3 className="mb-4">Manage Image Gallery</h3>
 
-      {/* FORM */}
       <Form onSubmit={handleSubmit} className="mb-5">
         <Form.Group controlId="formTitle" className="mb-3">
           <Form.Label>Image Title</Form.Label>
@@ -139,16 +138,11 @@ const AdminImgLink = () => {
         )}
       </Form>
 
-      {/* DISPLAY SECTION — SQUARE BOX FORMAT */}
       <Row>
         {images.map((img) => (
           <Col key={img._id} xs={12} sm={6} md={4} lg={3} className="mb-4">
             <Card className="square-card shadow-sm">
-              <Card.Img
-                variant="top"
-                src={img.imageUrl}
-                className="square-img"
-              />
+              <Card.Img variant="top" src={img.imageUrl} className="square-img" />
               <Card.Body className="text-center">
                 <Card.Title className="text-truncate">{img.title}</Card.Title>
 

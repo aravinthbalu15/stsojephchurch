@@ -1,40 +1,42 @@
-import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const PrivateRoute = ({ children }) => {
   const [auth, setAuth] = useState(null);
-  const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+
+    if (!token) {
+      setAuth(false);
+      return;
+    }
+
     const verifyToken = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/admin/verify-token', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await axios.get(`${API_URL}/api/admin/verify-token`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (response.status === 200) {
-          setAuth(true);
-        } else {
-          setAuth(false);
-        }
-      } catch (error) {
+        setAuth(res.status === 200);
+      } catch (err) {
         setAuth(false);
-        localStorage.removeItem('adminToken');
+        localStorage.removeItem("adminToken");
       }
     };
 
-    if (token) {
-      verifyToken();
-    } else {
-      setAuth(false);
-    }
-  }, [token]);
+    verifyToken();
+  }, []);
 
   if (auth === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="text-center mt-5 fw-bold">
+        Validating session...
+      </div>
+    );
   }
 
   return auth ? children : <Navigate to="/admin" />;

@@ -5,8 +5,6 @@ import "aos/dist/aos.css";
 import "../Style/Anbiyangal.css";
 import { Container, Row, Col } from "react-bootstrap";
 
-const API_URL = "http://localhost:9000/api/anbiyam";
-
 const Anbiyangal = () => {
   const [groups, setGroups] = useState([]);
   const [showButton, setShowButton] = useState(false);
@@ -26,7 +24,7 @@ const Anbiyangal = () => {
 
   const fetchGroups = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/acmembers`);
       setGroups(res.data);
     } catch (error) {
       console.error("Error loading Anbiyam:", error);

@@ -26,7 +26,7 @@ const AdminAddImages = () => {
     formData.append("image", image);
 
     try {
-      await axios.post("http://localhost:9000/upload", formData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/upload`, formData);
       setMessage("✅ Image uploaded successfully!");
       setTitle("");
       setImage(null);

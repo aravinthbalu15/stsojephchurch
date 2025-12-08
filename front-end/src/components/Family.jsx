@@ -9,7 +9,7 @@ const Family = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const response = await axios.get("http://localhost:9000/api/family");
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/family`);
       setStats(response.data);
     };
     fetchStats();

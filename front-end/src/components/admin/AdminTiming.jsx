@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminTiming.css";
 
+const API_URL = import.meta.env.VITE_API_URL;   // ⭐ COMMON BASE URL
+
 const AdminVisitingTime = () => {
   const [regularDays, setRegularDays] = useState({
     mondayToFriday: "",
@@ -20,7 +22,7 @@ const AdminVisitingTime = () => {
 
   const fetchVisitingTime = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/visiting-time");
+      const res = await axios.get(`${API_URL}/api/visiting-time`);
       setVisitingTimeData(res.data);
 
       if (res.data) {
@@ -29,11 +31,7 @@ const AdminVisitingTime = () => {
       }
     } catch (error) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "Failed to fetch visiting time data.",
-      });
+      Swal.fire("Error!", "Failed to fetch visiting time data.", "error");
     }
   };
 
@@ -45,61 +43,34 @@ const AdminVisitingTime = () => {
     e.preventDefault();
     try {
       if (visitingTimeData && visitingTimeData._id) {
-        await axios.put(`http://localhost:9000/api/visiting-time/${visitingTimeData._id}`, {
+        await axios.put(`${API_URL}/api/visiting-time/${visitingTimeData._id}`, {
           regularDays,
           massTimings,
         });
 
-        Swal.fire({
-          icon: "success",
-          title: "Updated!",
-          text: "Visiting time updated successfully!",
-          toast: true,
-          timer: 1500,
-          showConfirmButton: false,
-          position: "top-end",
-        });
+        Swal.fire("Updated!", "Visiting time updated successfully!", "success");
       } else {
-        await axios.post("http://localhost:9000/api/visiting-time", {
+        await axios.post(`${API_URL}/api/visiting-time`, {
           regularDays,
           massTimings,
         });
 
-        Swal.fire({
-          icon: "success",
-          title: "Created!",
-          text: "Visiting time created successfully!",
-          toast: true,
-          timer: 1500,
-          showConfirmButton: false,
-          position: "top-end",
-        });
+        Swal.fire("Created!", "Visiting time created successfully!", "success");
       }
 
       fetchVisitingTime();
     } catch (error) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "Something went wrong while saving.",
-      });
+      Swal.fire("Error!", "Something went wrong while saving.", "error");
     }
   };
 
   const handleDelete = async () => {
     try {
       if (visitingTimeData && visitingTimeData._id) {
-        await axios.delete(`http://localhost:9000/api/visiting-time/${visitingTimeData._id}`);
-        Swal.fire({
-          icon: "success",
-          title: "Deleted!",
-          text: "Visiting time deleted successfully!",
-          toast: true,
-          timer: 1500,
-          showConfirmButton: false,
-          position: "top-end",
-        });
+        await axios.delete(`${API_URL}/api/visiting-time/${visitingTimeData._id}`);
+
+        Swal.fire("Deleted!", "Visiting time deleted successfully!", "success");
 
         setRegularDays({ mondayToFriday: "", saturday: "", sunday: "" });
         setMassTimings({ weekdays: [], sunday: [] });
@@ -107,11 +78,7 @@ const AdminVisitingTime = () => {
       }
     } catch (error) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "Failed to delete visiting time.",
-      });
+      Swal.fire("Error!", "Failed to delete visiting time.", "error");
     }
   };
 

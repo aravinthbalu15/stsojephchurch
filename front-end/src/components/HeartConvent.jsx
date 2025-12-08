@@ -25,7 +25,7 @@ const HeartConvent = () => {
 
   // Fetch Gallery images
   useEffect(() => {
-    axios.get('http://localhost:9000/api/heartconvent')
+    axios.get(`${import.meta.env.VITE_API_URL}/api/heartconvent`)
       .then(res => setDynamicImages(res.data))
       .catch(err => console.error("Error fetching images:", err));
   }, []);

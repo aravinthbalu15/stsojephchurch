@@ -14,7 +14,7 @@ const VisitingTime = () => {
 
   const fetchVisitingTime = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/visiting-time");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/visiting-time`);
       setVisitingTime(res.data);
     } catch (error) {
       console.error(error);

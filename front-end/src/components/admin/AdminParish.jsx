@@ -4,6 +4,8 @@ import { Button, Form, Modal, Card, Badge } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "./AdminParish.css";
 
+const BASE_URL = `${import.meta.env.VITE_API_URL}`;   // ⭐ GLOBAL API
+
 const AdminParish = () => {
   const [category, setCategory] = useState("member");
   const [name, setName] = useState("");
@@ -15,18 +17,17 @@ const AdminParish = () => {
   const [editMember, setEditMember] = useState(null);
   const [filterCategory, setFilterCategory] = useState("all");
 
-  // 🔥 NEW → Refs to reset file inputs
   const addFileRef = useRef(null);
   const editFileRef = useRef(null);
+
+  const fetchMembers = async () => {
+    const res = await axios.get(`${BASE_URL}/api/parish`);
+    setMembers(res.data);
+  };
 
   useEffect(() => {
     fetchMembers();
   }, []);
-
-  const fetchMembers = async () => {
-    const res = await axios.get("http://localhost:9000/api/parish");
-    setMembers(res.data);
-  };
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -39,7 +40,7 @@ const AdminParish = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/parish/${id}`);
+        await axios.delete(`${BASE_URL}/api/parish/${id}`);
         Swal.fire("Deleted!", "Member removed.", "success");
         fetchMembers();
       } catch (error) {
@@ -70,7 +71,7 @@ const AdminParish = () => {
 
     try {
       setUploading(true);
-      await axios.post("http://localhost:9000/api/parish", formData);
+      await axios.post(`${BASE_URL}/api/parish`, formData);
       Swal.fire("Success!", "Parish member added.", "success");
 
       setName("");
@@ -78,10 +79,7 @@ const AdminParish = () => {
       setImage(null);
       setCategory("member");
 
-      // 🔥 RESET FILE INPUT AFTER UPLOAD
-      if (addFileRef.current) {
-        addFileRef.current.value = "";
-      }
+      if (addFileRef.current) addFileRef.current.value = "";
 
       fetchMembers();
     } catch {
@@ -94,11 +92,7 @@ const AdminParish = () => {
   const openEditModal = (member) => {
     setEditMember(member);
     setEditModal(true);
-
-    // 🔥 Clear file input when opening modal
-    if (editFileRef.current) {
-      editFileRef.current.value = "";
-    }
+    if (editFileRef.current) editFileRef.current.value = "";
   };
 
   const handleEditSave = async () => {
@@ -124,7 +118,7 @@ const AdminParish = () => {
 
     try {
       await axios.put(
-        `http://localhost:9000/api/parish/${editMember._id}`,
+        `${BASE_URL}/api/parish/${editMember._id}`,
         editMember.image
           ? formData
           : {
@@ -137,10 +131,7 @@ const AdminParish = () => {
 
       Swal.fire("Updated!", "Member updated.", "success");
 
-      // 🔥 RESET FILE INPUT AFTER UPDATE
-      if (editFileRef.current) {
-        editFileRef.current.value = "";
-      }
+      if (editFileRef.current) editFileRef.current.value = "";
 
       setEditModal(false);
       fetchMembers();
@@ -158,7 +149,6 @@ const AdminParish = () => {
     <div className="container mt-4">
       <h2 className="text-center mb-4">Parish Member Management</h2>
 
-      {/* CATEGORY FILTER BUTTONS */}
       <div className="d-flex justify-content-center gap-3 mb-4 category-buttons">
         {["all", "head", "subhead", "member"].map((cat) => (
           <Button
@@ -172,7 +162,6 @@ const AdminParish = () => {
         ))}
       </div>
 
-      {/* ADD FORM */}
       <div className="p-4 shadow-sm mb-5">
         <h4>Add Parish Member</h4>
         <Form onSubmit={handleSubmit}>
@@ -213,7 +202,7 @@ const AdminParish = () => {
             <Form.Control
               type="file"
               required
-              ref={addFileRef}   // 🔥 ADDED REF
+              ref={addFileRef}
               onChange={(e) => setImage(e.target.files[0])}
             />
           </Form.Group>
@@ -224,7 +213,6 @@ const AdminParish = () => {
         </Form>
       </div>
 
-      {/* MEMBERS GRID */}
       <h3 className="mb-3">Members</h3>
       <div className="row">
         {filteredList.map((m) => (
@@ -238,9 +226,7 @@ const AdminParish = () => {
                   {m.category.toUpperCase()}
                 </Badge>
                 <div className="d-flex justify-content-between">
-                  <Button size="sm" onClick={() => openEditModal(m)}>
-                    Edit
-                  </Button>
+                  <Button size="sm" onClick={() => openEditModal(m)}>Edit</Button>
                   <Button size="sm" variant="danger" onClick={() => handleDelete(m._id)}>
                     Delete
                   </Button>
@@ -251,7 +237,6 @@ const AdminParish = () => {
         ))}
       </div>
 
-      {/* EDIT MODAL */}
       <Modal show={editModal} onHide={() => setEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Member</Modal.Title>
@@ -288,10 +273,7 @@ const AdminParish = () => {
                 <Form.Control
                   value={editMember.description}
                   onChange={(e) =>
-                    setEditMember({
-                      ...editMember,
-                      description: e.target.value,
-                    })
+                    setEditMember({ ...editMember, description: e.target.value })
                   }
                 />
               </Form.Group>
@@ -300,7 +282,7 @@ const AdminParish = () => {
                 <Form.Label>Change Image</Form.Label>
                 <Form.Control
                   type="file"
-                  ref={editFileRef}   // 🔥 ADDED REF
+                  ref={editFileRef}
                   onChange={(e) =>
                     setEditMember({ ...editMember, image: e.target.files[0] })
                   }
@@ -310,12 +292,8 @@ const AdminParish = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setEditModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleEditSave}>
-            Save
-          </Button>
+          <Button variant="secondary" onClick={() => setEditModal(false)}>Cancel</Button>
+          <Button variant="primary" onClick={handleEditSave}>Save</Button>
         </Modal.Footer>
       </Modal>
     </div>

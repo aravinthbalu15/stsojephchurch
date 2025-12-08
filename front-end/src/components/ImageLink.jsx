@@ -9,7 +9,7 @@ const ImageLink = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:9000/api/imglink")
+    axios.get(`${import.meta.env.VITE_API_URL}/api/imglink`)
       .then(res => setImages(res.data))
       .catch(err => console.error("Error fetching images:", err));
   }, []);

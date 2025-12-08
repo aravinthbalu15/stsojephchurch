@@ -4,9 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "react-bootstrap";
 import "../Style/Announcement.css";
 import { useTranslation } from "react-i18next";
-
-const API_URL = "http://localhost:9000/api/announcements";
-
 const Announcement = () => {
   const { t } = useTranslation(); // 🆕 Added
   const [announcements, setAnnouncements] = useState([]);
@@ -16,7 +13,7 @@ const Announcement = () => {
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const res = await axios.get(API_URL);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/announcements`);
         const today = new Date();
 
         const validAnnouncements = (res.data?.data || []).filter(

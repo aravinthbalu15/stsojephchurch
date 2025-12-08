@@ -11,7 +11,7 @@ const OurParish = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await axios.get("http://localhost:9000/api/parish");
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/parish`);
         const data = res.data;
         setHead(data.filter((item) => item.category === "head"));
         setSubhead(data.filter((item) => item.category === "subhead"));

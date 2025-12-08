@@ -4,6 +4,8 @@ import { Modal, Button, Spinner } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import '../../components/admin/AdminImageUpload.css';
 
+const BASE_URL = `${import.meta.env.VITE_API_URL}`;   // ⭐ Using env BASE URL
+
 const AdminImageUpload = () => {
   const [month, setMonth] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -14,7 +16,7 @@ const AdminImageUpload = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  const fileInputRef = useRef(null);          //  <-- FILE INPUT RESET FIX
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchAllImages();
@@ -22,7 +24,7 @@ const AdminImageUpload = () => {
 
   const fetchAllImages = async () => {
     try {
-      const response = await axios.get('http://localhost:9000/api/images');
+      const response = await axios.get(`${BASE_URL}/api/images`);
       setImages(response.data);
     } catch (error) {
       console.error("Fetching images failed:", error);
@@ -35,10 +37,7 @@ const AdminImageUpload = () => {
     setDescription('');
     setImageFile(null);
 
-    // RESET FILE INPUT 100%
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleUpload = async (e) => {
@@ -68,11 +67,10 @@ const AdminImageUpload = () => {
     setUploading(true);
 
     try {
-      const res = await axios.post('http://localhost:9000/api/images/upload-image', formData);
+      const res = await axios.post(`${BASE_URL}/api/images/upload-image`, formData);
       setImages(prev => [res.data.image, ...prev]);
 
-      resetFields();                     // <-- RESET ALL FIELDS + FILE INPUT
-
+      resetFields();
       Swal.fire('Success', 'Image uploaded successfully!', 'success');
     } catch (error) {
       console.error("Upload error:", error);
@@ -94,10 +92,10 @@ const AdminImageUpload = () => {
     if (!confirm.isConfirmed) return;
 
     try {
-      await axios.delete(`http://localhost:9000/api/images/delete-image/${id}`);
+      await axios.delete(`${BASE_URL}/api/images/delete-image/${id}`);
       setImages(prev => prev.filter(img => img._id !== id));
 
-      resetFields();             // <-- ALSO RESET AFTER DELETE
+      resetFields();
 
       Swal.fire('Deleted', 'Image has been deleted.', 'success');
     } catch (error) {
@@ -123,34 +121,22 @@ const AdminImageUpload = () => {
             {[
               "January", "February", "March", "April", "May", "June",
               "July", "August", "September", "October", "November", "December"
-            ].map((m) => <option key={m} value={m}>{m}</option>)}
+            ].map(m => <option key={m} value={m}>{m}</option>)}
           </select>
         </div>
 
         <div className="form-group mb-3">
           <label>Title:</label>
-          <input
-            className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
+          <input className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </div>
 
         <div className="form-group mb-3">
           <label>Description:</label>
-          <textarea
-            className="form-control"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
+          <textarea className="form-control" value={description} onChange={(e) => setDescription(e.target.value)} required />
         </div>
 
         <div className="form-group mb-3">
           <label>Image:</label>
-
-          {/* FIXED FILE INPUT (with RESET) */}
           <input
             ref={fileInputRef}
             className="form-control"
@@ -167,7 +153,6 @@ const AdminImageUpload = () => {
       </form>
 
       <h3 className="text-center mt-5">🖼️ Uploaded Images</h3>
-
       <div className="row mt-4">
         {images.map((img) => (
           <div key={img._id} className="col-sm-6 col-md-4 mb-4">
@@ -176,12 +161,12 @@ const AdminImageUpload = () => {
                 src={img.url}
                 alt={img.title}
                 className="img-fluid mb-2"
-                onClick={() => { setSelectedItem(img); setShowModal(true); }}
                 style={{ cursor: 'pointer', height: '200px', objectFit: 'cover', width: '100%' }}
+                onClick={() => { setSelectedItem(img); setShowModal(true); }}
               />
 
-              <h6 className="text-primary fw-bold">{img.month}</h6> {/* SHOW MONTH */}
-              <h5 className="mb-1">{img.title}</h5>
+              <h6 className="text-primary fw-bold">{img.month}</h6>
+              <h5>{img.title}</h5>
               <p className="text-muted small">{img.description}</p>
 
               <Button variant="danger" size="sm" onClick={() => handleDelete(img._id)}>
@@ -192,7 +177,6 @@ const AdminImageUpload = () => {
         ))}
       </div>
 
-      {/* IMAGE PREVIEW MODAL */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
         {selectedItem && (
           <>
@@ -203,12 +187,7 @@ const AdminImageUpload = () => {
             </Modal.Header>
 
             <Modal.Body className="text-center">
-              <img
-                src={selectedItem.url}
-                alt={selectedItem.title}
-                className="img-fluid"
-                style={{ maxHeight: '70vh' }}
-              />
+              <img src={selectedItem.url} className="img-fluid" style={{ maxHeight: '70vh' }} />
               <p className="mt-3">{selectedItem.description}</p>
             </Modal.Body>
           </>

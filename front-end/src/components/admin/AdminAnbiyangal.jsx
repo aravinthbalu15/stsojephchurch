@@ -4,8 +4,7 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./adminAnbiyangal.css"
 
-const API_URL = "http://localhost:9000/api/anbiyam";
-
+const API_URL = `${import.meta.env.VITE_API_URL}/api/anbiyam`;
 const AdminAnbiyam = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);

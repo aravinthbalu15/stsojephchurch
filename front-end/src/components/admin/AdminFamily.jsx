@@ -4,12 +4,14 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminFamily.css";
 
+const API_BASE_URL = "https://your-backend-url.onrender.com"; // 🔁 Replace with actual Render backend URL
+
 const AdminFamily = () => {
   const [stats, setStats] = useState({ families: "", anbiyams: "" });
 
   useEffect(() => {
     axios
-      .get("http://localhost:9000/api/family")
+      .get(`${API_BASE_URL}/api/family`)
       .then((res) => {
         if (res.data) setStats(res.data);
       })
@@ -22,7 +24,7 @@ const AdminFamily = () => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put("http://localhost:9000/api/family", stats);
+      await axios.put(`${API_BASE_URL}/api/family`, stats);
       Swal.fire("Updated!", "Family stats updated successfully!", "success");
     } catch (error) {
       Swal.fire("Error!", "Failed to update data", "error");
@@ -31,7 +33,7 @@ const AdminFamily = () => {
 
   return (
     <div className="admin-familycount container mt-5 mb-5 admin-familycount">
-      <div className=" shadow-lg p-4">
+      <div className="shadow-lg p-4">
         <h2 className="text-center mb-4 fw-bold">Update Family & Anbiyam Count</h2>
 
         <div className="mb-3">

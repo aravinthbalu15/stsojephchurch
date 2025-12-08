@@ -17,7 +17,7 @@ const Festival = () => {
   // Fetch images from the backend
   const fetchImages = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/festival/images");
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/festival/images`);
       setImages(response.data);
     } catch (err) {
       console.error("Error fetching images", err);

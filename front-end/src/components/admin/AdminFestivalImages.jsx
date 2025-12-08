@@ -4,18 +4,20 @@ import Swal from "sweetalert2";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import "./AdminFestivalImages.css";
 
+const BASE_URL = "https://your-render-backend-url.onrender.com"; // ⭐ Change only here
+
 const AdminFestivalImages = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
-  const [uploading, setUploading] = useState(false); // 🔥 Upload animation
+  const [uploading, setUploading] = useState(false); 
 
   const fileInputRef = useRef(null);
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/festival/images");
+      const response = await axios.get(`${BASE_URL}/api/festival/images`);
       setImages(response.data);
     } catch (err) {
       setMessage("Failed to fetch images.");
@@ -43,17 +45,15 @@ const AdminFestivalImages = () => {
       return;
     }
 
-    setUploading(true); // 🔥 Start spinner animation
+    setUploading(true);
 
     const formData = new FormData();
     formData.append("image", selectedImage);
     formData.append("title", title);
 
     try {
-      await axios.post("http://localhost:9000/api/festival/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      await axios.post(`${BASE_URL}/api/festival/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       setMessage("Image uploaded successfully!");
@@ -77,7 +77,7 @@ const AdminFestivalImages = () => {
       });
     }
 
-    setUploading(false); // 🔥 Stop animation
+    setUploading(false);
   };
 
   const confirmDelete = (id) => {
@@ -90,7 +90,7 @@ const AdminFestivalImages = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.delete(`http://localhost:9000/api/festival/${id}`);
+          const response = await axios.delete(`${BASE_URL}/api/festival/${id}`);
           setMessage(response.data.message);
 
           resetFileInput();

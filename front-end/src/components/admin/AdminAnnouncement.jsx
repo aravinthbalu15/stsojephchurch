@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminAnnouncement.css"
-const API_URL = "http://localhost:9000/api/announcements";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/announcements`;
 
 const AdminAnnouncement = () => {
   const [announcements, setAnnouncements] = useState([]);

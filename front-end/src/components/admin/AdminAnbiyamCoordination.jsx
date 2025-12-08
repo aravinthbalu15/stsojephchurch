@@ -16,7 +16,7 @@ const AdminAnbiyamCoordination = () => {
 
   const fetchMembers = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/acmembers");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/acmembers`);
       setMembers(res.data);
     } catch (error) {
       console.error(error);
@@ -50,10 +50,11 @@ const AdminAnbiyamCoordination = () => {
       setLoading(true); // ⬅ Button loading starts
 
       if (editId) {
-        await axios.put(`http://localhost:9000/api/acmembers/${editId}`, data);
-        Swal.fire("Updated!", "Member updated successfully.", "success");
+          await axios.put(`${import.meta.env.VITE_API_URL}/api/acmembers/${editId}`, data);
+          Swal.fire("Updated!", "Member updated successfully.", "success");
       } else {
-        await axios.post("http://localhost:9000/api/acmembers", data);
+                await axios.post(`${import.meta.env.VITE_API_URL}/api/acmembers`, data);
+
         Swal.fire("Created!", "Member created successfully.", "success");
       }
 
@@ -82,7 +83,8 @@ const AdminAnbiyamCoordination = () => {
     if (!confirmResult.isConfirmed) return;
 
     try {
-      await axios.delete(`http://localhost:9000/api/acmembers/${id}`);
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/acmembers/${id}`);
+
       Swal.fire("Deleted!", "Member deleted successfully.", "success");
       fetchMembers();
     } catch (error) {

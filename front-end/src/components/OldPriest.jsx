@@ -10,7 +10,7 @@ const OldPriest = () => {
   useEffect(() => {
     const fetchPriests = async () => {
       try {
-        const res = await axios.get("http://localhost:9000/api/oldpriests");
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/oldpriests`);
         setPriests(res.data);
       } catch (error) {
         console.error("Error fetching priests:", error);

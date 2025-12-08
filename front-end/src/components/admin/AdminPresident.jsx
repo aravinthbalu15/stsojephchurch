@@ -3,14 +3,21 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "./AdminPresident.css";
 
-const API_URL = "http://localhost:9000/api/president";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/president`;  // ⭐ GLOBAL URL
 
 const AdminPresident = () => {
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState({
     head: { name: "", description: "", imageUrl: "", image: "" },
-    bishop: { name: "", description: "", description1: "", description2: "", imageUrl: "", image: "" },
+    bishop: {
+      name: "",
+      description: "",
+      description1: "",
+      description2: "",
+      imageUrl: "",
+      image: "",
+    },
     parishPriest: {
       name: "",
       description1: "",
@@ -35,7 +42,7 @@ const AdminPresident = () => {
       img.src = base64;
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        canvas.width = img.width * 0.5; 
+        canvas.width = img.width * 0.5;
         canvas.height = img.height * 0.5;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -125,45 +132,99 @@ const AdminPresident = () => {
       {/* HEAD */}
       <div className="card shadow-lg p-4 mb-4">
         <h4 className="fw-bold">Head</h4>
-        <input className="form-control mb-3" value={data.head.name} placeholder="Enter Name"
-          onChange={(e) => handleInput("head", "name", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.head.description} placeholder="Enter Description"
-          onChange={(e) => handleInput("head", "description", e.target.value)} />
-        <input type="file" className="form-control mb-3" accept="image/*"
-          onChange={(e) => handleImage("head", e.target.files[0])} />
+        <input
+          className="form-control mb-3"
+          value={data.head.name}
+          placeholder="Enter Name"
+          onChange={(e) => handleInput("head", "name", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.head.description}
+          placeholder="Enter Description"
+          onChange={(e) => handleInput("head", "description", e.target.value)}
+        />
+        <input
+          type="file"
+          className="form-control mb-3"
+          accept="image/*"
+          onChange={(e) => handleImage("head", e.target.files[0])}
+        />
         {data.head.imageUrl && <img src={data.head.imageUrl} className="preview-img" />}
       </div>
 
       {/* BISHOP */}
       <div className="card shadow-lg p-4 mb-4">
         <h4 className="fw-bold">Bishop</h4>
-        <input className="form-control mb-3" value={data.bishop.name} placeholder="Enter Name"
-          onChange={(e) => handleInput("bishop", "name", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.bishop.description} placeholder="Enter Description 1"
-          onChange={(e) => handleInput("bishop", "description", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.bishop.description1} placeholder="Enter Description 2"
-          onChange={(e) => handleInput("bishop", "description1", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.bishop.description2} placeholder="Enter Description 3"
-          onChange={(e) => handleInput("bishop", "description2", e.target.value)} />
-        <input type="file" className="form-control mb-3" accept="image/*"
-          onChange={(e) => handleImage("bishop", e.target.files[0])} />
+        <input
+          className="form-control mb-3"
+          value={data.bishop.name}
+          placeholder="Enter Name"
+          onChange={(e) => handleInput("bishop", "name", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.bishop.description}
+          placeholder="Enter Description 1"
+          onChange={(e) => handleInput("bishop", "description", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.bishop.description1}
+          placeholder="Enter Description 2"
+          onChange={(e) => handleInput("bishop", "description1", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.bishop.description2}
+          placeholder="Enter Description 3"
+          onChange={(e) => handleInput("bishop", "description2", e.target.value)}
+        />
+        <input
+          type="file"
+          className="form-control mb-3"
+          accept="image/*"
+          onChange={(e) => handleImage("bishop", e.target.files[0])}
+        />
         {data.bishop.imageUrl && <img src={data.bishop.imageUrl} className="preview-img" />}
       </div>
 
       {/* PARISH PRIEST */}
       <div className="card shadow-lg p-4 mb-4">
         <h4 className="fw-bold">Parish Priest</h4>
-        <input className="form-control mb-3" value={data.parishPriest.name} placeholder="Enter Name"
-          onChange={(e) => handleInput("parishPriest", "name", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.parishPriest.description1} placeholder="Enter Description 1"
-          onChange={(e) => handleInput("parishPriest", "description1", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.parishPriest.description2} placeholder="Enter Description 2"
-          onChange={(e) => handleInput("parishPriest", "description2", e.target.value)} />
-        <textarea className="form-control mb-3" value={data.parishPriest.description3} placeholder="Enter Description 3"
-          onChange={(e) => handleInput("parishPriest", "description3", e.target.value)} />
-        <input type="file" className="form-control mb-3" accept="image/*"
-          onChange={(e) => handleImage("parishPriest", e.target.files[0])} />
-        {data.parishPriest.imageUrl && <img src={data.parishPriest.imageUrl} className="preview-img" />}
+        <input
+          className="form-control mb-3"
+          value={data.parishPriest.name}
+          placeholder="Enter Name"
+          onChange={(e) => handleInput("parishPriest", "name", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.parishPriest.description1}
+          placeholder="Enter Description 1"
+          onChange={(e) => handleInput("parishPriest", "description1", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.parishPriest.description2}
+          placeholder="Enter Description 2"
+          onChange={(e) => handleInput("parishPriest", "description2", e.target.value)}
+        />
+        <textarea
+          className="form-control mb-3"
+          value={data.parishPriest.description3}
+          placeholder="Enter Description 3"
+          onChange={(e) => handleInput("parishPriest", "description3", e.target.value)}
+        />
+        <input
+          type="file"
+          className="form-control mb-3"
+          accept="image/*"
+          onChange={(e) => handleImage("parishPriest", e.target.files[0])}
+        />
+        {data.parishPriest.imageUrl && (
+          <img src={data.parishPriest.imageUrl} className="preview-img" />
+        )}
       </div>
 
       <button className="btn btn-success w-100 mb-5" disabled={loading} onClick={saveData}>

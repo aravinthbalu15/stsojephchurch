@@ -3,6 +3,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import './AdminEventUpload.css';
 
+const API_BASE_URL = "https://your-backend-url.onrender.com";  // 🔁 Replace here only once
+
 const AdminEventUpload = () => {
   const [events, setEvents] = useState([]);
   const [eventData, setEventData] = useState({
@@ -14,38 +16,32 @@ const AdminEventUpload = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // Reference for file input (to reset it)
   const fileInputRef = useRef(null);
 
-  // Fetch all events
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:9000/api/events');
+      const response = await axios.get(`${API_BASE_URL}/api/events`);
       setEvents(response.data);
     } catch (error) {
       console.error('Error fetching events:', error.response?.data || error.message);
     }
   };
 
-  // Input text change handler
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEventData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  // Image file change handler
   const handleFileChange = (e) => {
     setEventData(prevData => ({ ...prevData, image: e.target.files[0] }));
   };
 
-  // Reset file input box
   const resetFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  // Upload event with confirmation
   const handleEventUpload = async (e) => {
     e.preventDefault();
 
@@ -68,18 +64,14 @@ const AdminEventUpload = () => {
       formData.append('image', eventData.image);
 
       try {
-        await axios.post('http://localhost:9000/api/events/upload', formData, {
+        await axios.post(`${API_BASE_URL}/api/events/upload`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 
         Swal.fire('Success', 'Event uploaded successfully!', 'success');
 
-        // Reset form
         setEventData({ title: '', description: '', category: '', image: null });
-
-        // Reset file input
         resetFileInput();
-
         fetchEvents();
       } catch (error) {
         console.error("Error uploading event:", error.response?.data || error.message);
@@ -90,7 +82,6 @@ const AdminEventUpload = () => {
     }
   };
 
-  // Delete event with confirmation
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
@@ -103,12 +94,9 @@ const AdminEventUpload = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/events/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/events/${id}`);
         Swal.fire('Deleted', 'Event deleted successfully', 'success');
-
-        // Reset file input
         resetFileInput();
-
         fetchEvents();
       } catch (error) {
         console.error("Error deleting event:", error.response?.data || error.message);
@@ -126,7 +114,6 @@ const AdminEventUpload = () => {
       <h2 className="mb-4">Upload New Event</h2>
 
       <form onSubmit={handleEventUpload} className="mb-5">
-
         <div className="mb-3">
           <input
             type="text"
@@ -150,7 +137,6 @@ const AdminEventUpload = () => {
           />
         </div>
 
-        {/* Category dropdown (fixed) */}
         <div className="mb-3">
           <select
             name="category"
@@ -172,7 +158,7 @@ const AdminEventUpload = () => {
             onChange={handleFileChange}
             accept="image/*"
             required
-            ref={fileInputRef} // assigned ref
+            ref={fileInputRef}
           />
         </div>
 
@@ -200,7 +186,9 @@ const AdminEventUpload = () => {
                 <div className="card-body">
                   <h5 className="card-title">{event.title}</h5>
                   <p className="card-text">{event.description}</p>
-                  <p className="card-text"><strong>Category:</strong> {event.category}</p>
+                  <p className="card-text">
+                    <strong>Category:</strong> {event.category}
+                  </p>
 
                   <button
                     className="btn btn-danger"
@@ -208,7 +196,6 @@ const AdminEventUpload = () => {
                   >
                     Delete
                   </button>
-
                 </div>
               </div>
             </div>

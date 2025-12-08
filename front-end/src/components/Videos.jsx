@@ -10,7 +10,7 @@ const Videos = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await axios.get('http://localhost:9000/api/videos');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/videos`);
         setVideos(res.data);
       } catch (err) {
         console.error('Error fetching videos:', err);

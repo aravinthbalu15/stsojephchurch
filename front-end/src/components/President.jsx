@@ -5,13 +5,12 @@ import "aos/dist/aos.css";
 import "../Style/President.css";
 import PresidentSkeleton from "./PresidentSkeleton";
 
-const API_URL = "http://localhost:9000/api/president";
 
 const President = () => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios.get(API_URL).then((res) => setData(res.data));
+    axios.get(`${import.meta.env.VITE_API_URL}/api/president`).then((res) => setData(res.data));
     AOS.init();
   }, []);
 

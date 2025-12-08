@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Button, Spinner } from 'react-bootstrap';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import './AdminVideos.css';
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { Button, Spinner } from "react-bootstrap";
+import Swal from "sweetalert2";
+import "./AdminVideos.css";
+
+const API_URL = import.meta.env.VITE_API_URL; // ⭐ Back-end root URL
 
 const AdminVideos = () => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [videos, setVideos] = useState([]);
   const [uploading, setUploading] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchVideos();
@@ -16,54 +20,50 @@ const AdminVideos = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get('http://localhost:9000/api/videos');
+      const res = await axios.get(`${API_URL}/api/videos`);
       setVideos(res.data);
     } catch (err) {
-      console.error('Error fetching videos:', err);
+      console.error("Error fetching videos:", err);
     }
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!title || !videoFile) {
-      Swal.fire('Missing Fields', 'Please enter title & choose video.', 'warning');
+      Swal.fire("Missing Fields", "Please enter title & choose a video.", "warning");
       return;
     }
 
     const confirm = await Swal.fire({
-      title: 'Upload Video?',
-      icon: 'question',
+      title: "Upload Video?",
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: 'Yes, Upload'
+      confirmButtonText: "Yes, Upload",
     });
 
     if (!confirm.isConfirmed) return;
 
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('video', videoFile);
+    formData.append("title", title);
+    formData.append("video", videoFile);
 
     setUploading(true);
+
     try {
-      await axios.post(
-        'http://localhost:9000/api/videos/upload-video',
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
+      await axios.post(`${API_URL}/api/videos/upload-video`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      Swal.fire('Success', 'Video uploaded successfully!', 'success');
+      Swal.fire("Success", "Video uploaded successfully!", "success");
 
-      // **RESET fields**
-      setTitle('');
+      setTitle("");
       setVideoFile(null);
-      document.getElementById("videoInput").value = "";
+      if (fileInputRef.current) fileInputRef.current.value = "";
 
-      // **Fetch updated list again**
       fetchVideos();
-
     } catch (err) {
-      console.error('Error uploading video:', err);
-      Swal.fire('Error', 'Upload failed.', 'error');
+      console.error("Upload error:", err);
+      Swal.fire("Error", "Upload failed", "error");
     } finally {
       setUploading(false);
     }
@@ -71,30 +71,27 @@ const AdminVideos = () => {
 
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
-      title: 'Delete Video?',
-      icon: 'warning',
+      title: "Delete Video?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Delete'
+      confirmButtonText: "Delete",
     });
 
     if (!confirm.isConfirmed) return;
 
     try {
-      await axios.delete(`http://localhost:9000/api/videos/delete-video/${id}`);
-      Swal.fire('Deleted!', 'Video removed successfully!', 'success');
-
-      // **Refresh list**
+      await axios.delete(`${API_URL}/api/videos/delete-video/${id}`);
+      Swal.fire("Deleted!", "Video removed.", "success");
       fetchVideos();
-
     } catch (err) {
-      console.error('Error deleting video:', err);
-      Swal.fire('Error', 'Deletion failed.', 'error');
+      console.error("Delete failed:", err);
+      Swal.fire("Error", "Failed to delete", "error");
     }
   };
 
   return (
     <div className="container admin-upload-image py-5">
-      <h2 className="text-center mb-4">Upload Video</h2>
+      <h2 className="text-center mb-4 fw-bold">Upload Video</h2>
 
       <form onSubmit={handleUpload}>
         <div className="form-group mb-3">
@@ -103,6 +100,7 @@ const AdminVideos = () => {
             className="form-control"
             type="text"
             value={title}
+            placeholder="Enter video title"
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
@@ -110,7 +108,7 @@ const AdminVideos = () => {
         <div className="form-group mb-3">
           <label>Select Video:</label>
           <input
-            id="videoInput"
+            ref={fileInputRef}
             className="form-control"
             type="file"
             accept="video/*"
@@ -119,16 +117,23 @@ const AdminVideos = () => {
         </div>
 
         <Button type="submit" variant="primary" disabled={uploading}>
-          {uploading ? <Spinner animation="border" size="sm" /> : 'Upload'}
+          {uploading ? (
+            <>
+              <Spinner animation="border" size="sm" /> Uploading...
+            </>
+          ) : (
+            "Upload"
+          )}
         </Button>
       </form>
 
-      <h3 className="text-center mt-5">Uploaded Videos</h3>
+      <h3 className="text-center mt-5 fw-bold">Uploaded Videos</h3>
+
       <div className="row mt-4">
         {videos.map((video) => (
           <div key={video._id} className="col-sm-6 col-md-4 mb-4">
             <div className="gallery-card p-2 border rounded shadow-sm">
-              <video controls width="100%" style={{ height: '200px', objectFit: 'cover' }}>
+              <video controls width="100%" style={{ height: "200px", objectFit: "cover" }}>
                 <source src={video.secure_url} type="video/mp4" />
               </video>
 

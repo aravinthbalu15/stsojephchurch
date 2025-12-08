@@ -8,7 +8,7 @@ const AnbiyamCoordination = () => {
   const [members, setMembers] = useState([]);
 
   const fetchMembers = async () => {
-    const res = await axios.get("http://localhost:9000/api/acmembers");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/acmembers`);
     setMembers(res.data);
   };
 

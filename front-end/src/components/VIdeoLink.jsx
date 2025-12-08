@@ -19,7 +19,7 @@ const VideoLink = () => {
   // Fetch videos
   const fetchVideos = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/videolink");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/videolink`);
       setVideos(res.data);
     } catch (err) {
       console.log("Error loading videos", err);

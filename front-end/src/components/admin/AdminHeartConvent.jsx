@@ -4,18 +4,20 @@ import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AdminHeartConvent.css';
 
+const BASE_URL = "https://your-backend-domain.onrender.com";  // ⭐ UPDATE THIS
+
 const AdminHeartConvent = () => {
   const [images, setImages] = useState([]);
   const [formData, setFormData] = useState({ name: '', description: '', image: null });
   const [editingId, setEditingId] = useState(null);
 
-  const [uploading, setUploading] = useState(false); // ✅ NEW
+  const [uploading, setUploading] = useState(false);
 
   const fileInputRef = useRef(null);
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get('http://localhost:9000/api/heartconvent');
+      const res = await axios.get(`${BASE_URL}/api/heartconvent`);
       setImages(res.data);
     } catch (err) {
       console.log(err);
@@ -34,7 +36,7 @@ const AdminHeartConvent = () => {
       return;
     }
 
-    setUploading(true); // ✅ Button disabled + spinner starts
+    setUploading(true);
 
     try {
       const data = new FormData();
@@ -43,30 +45,23 @@ const AdminHeartConvent = () => {
       if (formData.image) data.append('image', formData.image);
 
       if (editingId) {
-        await axios.put(`http://localhost:9000/api/heartconvent/${editingId}`, {
-          name: formData.name,
-          description: formData.description,
-        });
+        await axios.put(`${BASE_URL}/api/heartconvent/${editingId}`, data);
         Swal.fire('Success', 'Image updated successfully', 'success');
       } else {
-        await axios.post('http://localhost:9000/api/heartconvent', data);
+        await axios.post(`${BASE_URL}/api/heartconvent`, data);
         Swal.fire('Success', 'Image uploaded successfully', 'success');
       }
 
-      // Reset form
       setFormData({ name: '', description: '', image: null });
       setEditingId(null);
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
 
       fetchImages();
     } catch (err) {
       Swal.fire('Error', 'Something went wrong!', 'error');
     }
 
-    setUploading(false); // ✅ Spinner stops
+    setUploading(false);
   };
 
   const handleDelete = async (id) => {
@@ -80,7 +75,7 @@ const AdminHeartConvent = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/heartconvent/${id}`);
+        await axios.delete(`${BASE_URL}/api/heartconvent/${id}`);
         Swal.fire('Deleted!', 'Image deleted successfully.', 'success');
         fetchImages();
       } catch (err) {
@@ -92,20 +87,14 @@ const AdminHeartConvent = () => {
   const handleEdit = (image) => {
     setFormData({ name: image.name, description: image.description, image: null });
     setEditingId(image._id);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-
+    if (fileInputRef.current) fileInputRef.current.value = "";
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div className="container heart my-5">
-
       <h2 className="text-center mt-5 mb-4">Manage Heart Convent Images</h2>
 
-      {/* FORM */}
       <form onSubmit={handleSubmit} className="row g-3 mb-4">
 
         <div className="col-md-4">
@@ -143,11 +132,7 @@ const AdminHeartConvent = () => {
         )}
 
         <div className="col-12 text-center">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={uploading}  // ✅ Disable button
-          >
+          <button className="btn btn-primary" type="submit" disabled={uploading}>
             {uploading ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2"></span>
@@ -158,14 +143,12 @@ const AdminHeartConvent = () => {
             )}
           </button>
         </div>
-
       </form>
 
-      {/* IMAGE GRID */}
       <div className="row">
         {images.map((img) => (
           <div key={img._id} className="col-md-4 mb-4 text-center heart-card">
-            
+
             <img
               src={img.imageUrl}
               alt={img.name}

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Button, Form, Card, ListGroup, Alert } from "react-bootstrap";
-import "./AdminOldPriest.css"; // add this CSS file
+import "./AdminOldPriest.css";
+
+const BASE_URL = `${import.meta.env.VITE_API_URL}`;   // ⭐ GLOBAL BASE API URL
 
 const AdminOldPriest = () => {
   const [priests, setPriests] = useState([]);
@@ -15,12 +17,12 @@ const AdminOldPriest = () => {
   });
   const [selectedPriest, setSelectedPriest] = useState(null);
   const [error, setError] = useState("");
-  const [uploading, setUploading] = useState(false); // ← ADDED
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const fetchPriests = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/oldpriests");
+      const response = await axios.get(`${BASE_URL}/api/oldpriests`);
       setPriests(response.data);
     } catch (err) {
       console.error(err);
@@ -61,11 +63,11 @@ const AdminOldPriest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUploading(true); // ← ADDED
+    setUploading(true);
 
     if (!newPriest.name || !newPriest.description || !newPriest.dob_start || !newPriest.dob_end) {
       Swal.fire("Error", "Please fill in all required fields.", "error");
-      setUploading(false); // ← ADDED
+      setUploading(false);
       return;
     }
 
@@ -77,7 +79,7 @@ const AdminOldPriest = () => {
     if (newPriest.image) formData.append("image", newPriest.image);
 
     try {
-      const res = await axios.post("http://localhost:9000/api/oldpriests/old", formData);
+      const res = await axios.post(`${BASE_URL}/api/oldpriests/old`, formData);
       Swal.fire("Success!", "Priest added successfully.", "success");
 
       if (res.data) setPriests((prev) => [...prev, res.data]);
@@ -90,7 +92,7 @@ const AdminOldPriest = () => {
       setError("Error adding priest");
     }
 
-    setUploading(false); // ← ADDED
+    setUploading(false);
   };
 
   const handleDelete = (id) => {
@@ -105,7 +107,7 @@ const AdminOldPriest = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:9000/api/oldpriests/${id}`)
+          .delete(`${BASE_URL}/api/oldpriests/${id}`)
           .then(() => {
             Swal.fire("Deleted!", "Priest has been deleted.", "success");
             setPriests((prev) => prev.filter((pr) => pr._id !== id));
@@ -134,7 +136,7 @@ const AdminOldPriest = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    setUploading(true); // ← ADDED
+    setUploading(true);
 
     if (!selectedPriest) return;
 
@@ -146,10 +148,7 @@ const AdminOldPriest = () => {
     if (newPriest.image) formData.append("image", newPriest.image);
 
     try {
-      const res = await axios.put(
-        `http://localhost:9000/api/oldpriests/${selectedPriest._id}`,
-        formData
-      );
+      const res = await axios.put(`${BASE_URL}/api/oldpriests/${selectedPriest._id}`, formData);
       Swal.fire("Updated!", "Priest updated successfully.", "success");
 
       if (res.data) {
@@ -165,7 +164,7 @@ const AdminOldPriest = () => {
       setError("Error updating priest");
     }
 
-    setUploading(false); // ← ADDED
+    setUploading(false);
   };
 
   return (
@@ -262,14 +261,14 @@ const AdminOldPriest = () => {
         {priests.map((priest) => (
           <div key={priest._id} className="col-sm-6 col-md-4 mb-4 d-flex justify-content-center">
             <div className="priest-card text-center p-3">
-              <img 
-  src={priest.imageUrl}
-  alt={priest.name}
-  className="priest-img"
-  style={{ marginLeft: "33px" }}  // increase this value
-  width={150}
-  height={150}
-/>
+              <img
+                src={priest.imageUrl}
+                alt={priest.name}
+                className="priest-img"
+                style={{ marginLeft: "33px" }}
+                width={150}
+                height={150}
+              />
 
               <div className="mt-3">
                 <strong className="d-block">{priest.name}</strong>
