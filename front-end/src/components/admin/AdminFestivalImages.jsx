@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import "./AdminFestivalImages.css";
+import "./AdminFestivalimages.css";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 

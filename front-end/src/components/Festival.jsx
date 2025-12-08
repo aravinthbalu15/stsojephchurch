@@ -1,26 +1,34 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
-import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import "./AdminFestivalImages.css";
+import { Container, Row, Col, Modal, Button } from "react-bootstrap";
+import { FiZoomIn, FiZoomOut, FiX, FiMaximize2 } from "react-icons/fi";
+import "../Style/Festival.css";
+import { useTranslation } from "react-i18next";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const Festival = () => {
+  const { t } = useTranslation();
 
-const AdminFestivalImages = () => {
+  const [show, setShow] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
+  const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
   const [images, setImages] = useState([]);
-  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fileInputRef = useRef(null);
-
+  // Fetch images from backend
   const fetchImages = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/festival/images`);
-      setImages(response.data);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/festival/images`);
+      setImages(response.data || []);
     } catch (err) {
-      setMessage("Failed to fetch images.");
+      console.error("Error fetching festival images:", err);
+      setError("Failed to load festival images. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,96 +36,81 @@ const AdminFestivalImages = () => {
     fetchImages();
   }, []);
 
-  const handleImageChange = (e) => setSelectedImage(e.target.files[0]);
-
-  const resetFileInput = () => {
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  // Zoom controls
+  const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.2, 3));
+  const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.2, 1));
+  const resetZoom = () => {
+    setZoom(1);
+    setPosition({ x: 0, y: 0 });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedImage || !title) return setMessage("Please select an image and enter a title.");
+  // Drag functionality
+  const startDrag = (e) => {
+    setDragging(true);
+    setStartPos({ x: e.clientX - position.x, y: e.clientY - position.y });
+  };
 
-    setUploading(true);
-
-    const formData = new FormData();
-    formData.append("image", selectedImage);
-    formData.append("title", title);
-
-    try {
-      await axios.post(`${API_BASE_URL}/api/festival/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      Swal.fire("Success", "Festival image uploaded successfully!", "success");
-      setTitle("");
-      setSelectedImage(null);
-      resetFileInput();
-      fetchImages();
-    } catch (err) {
-      Swal.fire("Upload Failed", "Error uploading image", "error");
+  const duringDrag = (e) => {
+    if (dragging) {
+      setPosition({ x: e.clientX - startPos.x, y: e.clientY - startPos.y });
     }
-
-    setUploading(false);
   };
 
-  const confirmDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to delete this image?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(`${API_BASE_URL}/api/festival/${id}`);
-          Swal.fire("Deleted!", "The image has been deleted.", "success");
-          fetchImages();
-        } catch (err) {
-          Swal.fire("Error", "Problem deleting image", "error");
-        }
-      }
-    });
-  };
+  const stopDrag = () => setDragging(false);
+
+  if (loading) return <p className="loading-text">Loading...</p>;
+  if (error) return <p className="loading-text">{error}</p>;
 
   return (
-    <div className="container admin-festival">
-      <h3 className="mt-4 mb-3">Upload Festival Image</h3>
-      {message && <p className="text-danger">{message}</p>}
+    <Container className="festival-main container">
+      <h2 className="text-center event-title mt-5">{t("festival")}</h2>
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Title</Form.Label>
-          <Form.Control type="text" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Choose an Image</Form.Label>
-          <Form.Control type="file" accept="image/*" onChange={handleImageChange} ref={fileInputRef} />
-        </Form.Group>
-
-        <Button type="submit" variant="primary" disabled={uploading}>
-          {uploading ? "Uploading..." : "Upload"}
-        </Button>
-      </Form>
-
-      <h3 className="mt-5 mb-3">Uploaded Festival Images</h3>
-      <Row>
-        {images.map((image) => (
-          <Col key={image._id} md={4} sm={6} xs={12} className="mb-4">
-            <div className="image-card p-3 border rounded shadow-sm text-center">
-              <img src={image.url} alt={image.title} className="img-fluid rounded event-img mb-2" />
-              <h5 className="mt-2">{image.title}</h5>
-              <Button variant="danger" className="mt-2" onClick={() => confirmDelete(image._id)}>
-                Delete
-              </Button>
-            </div>
-          </Col>
-        ))}
+      <Row className="g-4 mt-4">
+        {images.length > 0 ? (
+          images.map((image, index) => (
+            <Col md={4} sm={6} xs={12} key={index}>
+              <div className="image-card"
+                onClick={() => { setSelectedImage(image.url); setShow(true); }}
+              >
+                <img src={image.url} alt={`Event ${index + 1}`} className="event-img" />
+                <div className="image-overlay">
+                  <FiMaximize2 className="overlay-icon" />
+                  <span>View Fullscreen</span>
+                </div>
+              </div>
+            </Col>
+          ))
+        ) : (
+          <p className="loading-text text-center">No images available</p>
+        )}
       </Row>
-    </div>
+
+      {/* Modal Popup */}
+      <Modal show={show} onHide={() => setShow(false)} centered size="xl">
+        <Modal.Body
+          className="modal-body-custom"
+          onMouseDown={startDrag}
+          onMouseMove={duringDrag}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
+        >
+          <div className="modal-controls">
+            <Button variant="light" onClick={handleZoomIn} className="control-btn"><FiZoomIn /></Button>
+            <Button variant="light" onClick={handleZoomOut} className="control-btn"><FiZoomOut /></Button>
+            <Button variant="light" onClick={resetZoom} className="control-btn">100%</Button>
+            <Button variant="light" onClick={() => setShow(false)} className="close-btn"><FiX /></Button>
+          </div>
+
+          <div
+            className="image-container"
+            style={{ transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})` }}
+          >
+            <img src={selectedImage} alt="Popup" className="popup-img" draggable="false" />
+          </div>
+        </Modal.Body>
+      </Modal>
+    </Container>
   );
 };
 
-export default AdminFestivalImages;
+export default Festival;
