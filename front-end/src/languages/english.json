@@ -157,7 +157,30 @@
   "Date_of_Birth": "Date of Birth",
   "Place_of_Birth": "Place of Birth",
   "Date_of_Ordination": "Date of Ordination",
-  "Ministering_At": "Ministering At"
+  "Ministering_At": "Ministering At",
+  
+  "vm": {
+    "motto_title": "Motto",
+    "motto": "\"Fullness of life community in Christ\"",
+    "vision_sub_title": "Ideal Vision:",
+    "vision_sub_desc": "Becoming a “fullness of life community” with deep God-experience and social commitment to work for the coming of the Kingdom of God on earth.",
+    
+    "vision_title": "Vision",
+    "vision_desc": "Becoming a community with deep spirituality and social commitment working for the Kingdom of God on earth.",
+    
+    "mission_title": "Mission",
+    "mission_points": [
+      "improving maximum participation in all the liturgical, group and social events and activities of the parish.",
+      "Becoming a community of disciples of Jesus with deep spirituality enjoying \"Abba\" experience.",
+      "Developing leadership among the parishioners and creating opportunities for them to involve in the planned goodworks with a spirit of voluntarism and cooperation.",
+      "Developing a culture of administration that takes decisions by discerning God's will with a spirit of democracy and shared responsibility and carries them out effectively.",
+      "Becoming a conscientized Christian community that knows the Word of God and the Teachings of the Catholic Church and works for social change.",
+      "Imitating God's Love by fulfilling the physical and psychological needs of all.",
+      "Becoming families and communities founded on the Gospel values such as faith, hope, love, justice, peace, truth, equality and forgiveness.",
+      "Becoming a powerful community of persons who enjoy the gifts of the Holy Spirit and who have developed skills akin to their aptitude.",
+     "Becoming transcendent persons and communities, who in union with God, humanity and nature, finds meaning in working for the great causes of the Kingdom of God."
+    ]
+  }
 
 
 }
