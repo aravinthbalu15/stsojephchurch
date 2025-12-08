@@ -6,25 +6,32 @@ import "../Style/Festival.css";
 import { useTranslation } from "react-i18next";
 
 const Festival = () => {
-    const { t } = useTranslation();
-  
+  const { t } = useTranslation();
+
   const [show, setShow] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [images, setImages] = useState([]);
+  const [dragging, setDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
-  // Fetch images from the backend
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch images from backend
   const fetchImages = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/festival/images`);
-      setImages(response.data);
+      setImages(response.data || []);
     } catch (err) {
-      console.error("Error fetching images", err);
+      console.error("Error fetching festival images:", err);
+      setError("Failed to load festival images. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Load images when the component mounts
   useEffect(() => {
     fetchImages();
   }, []);
@@ -37,34 +44,68 @@ const Festival = () => {
     setPosition({ x: 0, y: 0 });
   };
 
+  // Drag functionality
+  const startDrag = (e) => {
+    setDragging(true);
+    setStartPos({ x: e.clientX - position.x, y: e.clientY - position.y });
+  };
+
+  const duringDrag = (e) => {
+    if (dragging) {
+      setPosition({ x: e.clientX - startPos.x, y: e.clientY - startPos.y });
+    }
+  };
+
+  const stopDrag = () => setDragging(false);
+
+  if (loading) return <p className="loading-text">Loading...</p>;
+  if (error) return <p className="loading-text">{error}</p>;
+
   return (
     <Container className="festival-main container">
       <h2 className="text-center event-title mt-5">{t("festival")}</h2>
 
       <Row className="g-4 mt-4">
-        {images.map((image, index) => (
-          <Col md={4} sm={6} xs={12} key={index}>
-            <div className="image-card" onClick={() => { setSelectedImage(image.url); setShow(true); }}>
-              <img src={image.url} alt={`Event ${index + 1}`} className="event-img" />
-              <div className="image-overlay">
-                <FiMaximize2 className="overlay-icon" />
-                <span>View Fullscreen</span>
+        {images.length > 0 ? (
+          images.map((image, index) => (
+            <Col md={4} sm={6} xs={12} key={index}>
+              <div className="image-card"
+                onClick={() => { setSelectedImage(image.url); setShow(true); }}
+              >
+                <img src={image.url} alt={`Event ${index + 1}`} className="event-img" />
+                <div className="image-overlay">
+                  <FiMaximize2 className="overlay-icon" />
+                  <span>View Fullscreen</span>
+                </div>
               </div>
-            </div>
-          </Col>
-        ))}
+            </Col>
+          ))
+        ) : (
+          <p className="loading-text text-center">No images available</p>
+        )}
       </Row>
 
-      <Modal show={show} onHide={resetZoom} centered size="xl">
-        <Modal.Body className="modal-body-custom">
+      {/* Modal Popup */}
+      <Modal show={show} onHide={() => setShow(false)} centered size="xl">
+        <Modal.Body
+          className="modal-body-custom"
+          onMouseDown={startDrag}
+          onMouseMove={duringDrag}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
+        >
           <div className="modal-controls">
             <Button variant="light" onClick={handleZoomIn} className="control-btn"><FiZoomIn /></Button>
             <Button variant="light" onClick={handleZoomOut} className="control-btn"><FiZoomOut /></Button>
             <Button variant="light" onClick={resetZoom} className="control-btn">100%</Button>
             <Button variant="light" onClick={() => setShow(false)} className="close-btn"><FiX /></Button>
           </div>
-          <div className="image-container" style={{ transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})` }}>
-            <img src={selectedImage} alt="Popup" className="popup-img" />
+
+          <div
+            className="image-container"
+            style={{ transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})` }}
+          >
+            <img src={selectedImage} alt="Popup" className="popup-img" draggable="false" />
           </div>
         </Modal.Body>
       </Modal>
