@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AdminHeartConvent.css';
 
-const BASE_URL = "https://your-backend-domain.onrender.com";  // ⭐ UPDATE THIS
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminHeartConvent = () => {
   const [images, setImages] = useState([]);
