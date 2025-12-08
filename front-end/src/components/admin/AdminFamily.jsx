@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminFamily.css";
 
-const API_BASE_URL = "https://your-backend-url.onrender.com"; // 🔁 Replace with actual Render backend URL
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminFamily = () => {
   const [stats, setStats] = useState({ families: "", anbiyams: "" });

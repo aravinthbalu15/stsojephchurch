@@ -7,6 +7,8 @@ import { Container, Row, Col } from "react-bootstrap";
 
 const Anbiyangal = () => {
   const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
@@ -14,8 +16,7 @@ const Anbiyangal = () => {
     fetchGroups();
 
     const handleScroll = () => {
-      if (window.scrollY > 300) setShowButton(true);
-      else setShowButton(false);
+      setShowButton(window.scrollY > 300);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -28,8 +29,14 @@ const Anbiyangal = () => {
       setGroups(res.data);
     } catch (error) {
       console.error("Error loading Anbiyam:", error);
+      setError("Failed to load Anbiyam Data");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) return <p className="loading-text">Loading...</p>;
+  if (error) return <p className="loading-text">{error}</p>;
 
   return (
     <>
@@ -61,22 +68,27 @@ const Anbiyangal = () => {
                 className="d-flex flex-column align-items-start gap-4 left-side order-2 order-md-1"
                 data-aos="fade-right"
               >
-                {group.members.map((m, memberIndex) => (
-                  <div
-                    className="image-box d-flex align-items-center"
-                    key={memberIndex}
-                    data-aos="fade-right"
-                    data-aos-delay={memberIndex * 150}
-                  >
-                    <img src={m.imageUrl} alt={m.name} className="circle-img" />
-                    <div className="text-content">
-                      <h1 className="image-title">{m.role}</h1>
-                      <p className="image-desc">{m.name}</p>
-                      <p className="image-desc">{m.description}</p>
+                {group.members?.length > 0 ? (
+                  group.members.map((m, memberIndex) => (
+                    <div
+                      className="image-box d-flex align-items-center"
+                      key={memberIndex}
+                      data-aos="fade-right"
+                      data-aos-delay={memberIndex * 150}
+                    >
+                      <img src={m.imageUrl} alt={m.name} className="circle-img" />
+                      <div className="text-content">
+                        <h1 className="image-title">{m.role}</h1>
+                        <p className="image-desc">{m.name}</p>
+                        <p className="image-desc">{m.description}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="no-member-text">No members available</p>
+                )}
               </Col>
+
             </Row>
           </div>
         </Container>
