@@ -33,11 +33,15 @@ app.use(express.urlencoded({ limit: "200mb", extended: true }));
    FIX 2: Fix CORS error
 ---------------------------------------- */
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://stsojephchurch.vercel.app"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
+
 
 /* ---------------------------------------
    ROUTES
