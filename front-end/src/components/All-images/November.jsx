@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import '../../Style/Gallery.css';
+import React, { useEffect, useState } from "react";
+import { Modal, Spinner, Alert } from "react-bootstrap";
+import axios from "axios";
+import "../../Style/Gallery.css";
 
 const NovemberGallery = () => {
   const [galleryItems, setGalleryItems] = useState([]);
@@ -13,13 +13,15 @@ const NovemberGallery = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/images/November');
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/images/November`
+        );
         setGalleryItems(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch November gallery images');
+        setError("Failed to fetch November gallery images");
         setLoading(false);
-        console.error('Fetch error:', err);
+        console.error("Fetch error:", err);
       }
     };
 
@@ -40,9 +42,13 @@ const NovemberGallery = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       ) : error ? (
-        <Alert variant="danger" className="text-center">{error}</Alert>
+        <Alert variant="danger" className="text-center">
+          {error}
+        </Alert>
       ) : galleryItems.length === 0 ? (
-        <Alert variant="info" className="text-center">No images found for November</Alert>
+        <Alert variant="info" className="text-center">
+          No images found for November
+        </Alert>
       ) : (
         <div className="row g-4 justify-content-center">
           {galleryItems.map((item) => (
@@ -50,15 +56,16 @@ const NovemberGallery = () => {
               <div
                 className="gallery-card position-relative"
                 onClick={() => handleImageClick(item)}
-                style={{ height: '200px' }}
+                style={{ height: "200px" }}
               >
                 <img
                   src={item.url}
                   alt={item.title}
                   className="img-fluid rounded-3"
                   loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
+
                 <div className="gallery-overlay rounded-3">
                   <h5 className="overlay-title">{item.title}</h5>
                   <p className="overlay-text">{item.description}</p>
@@ -80,7 +87,7 @@ const NovemberGallery = () => {
                 src={selectedItem.url}
                 alt={selectedItem.title}
                 className="img-fluid rounded-2"
-                style={{ maxHeight: '70vh', objectFit: 'contain' }}
+                style={{ maxHeight: "70vh", objectFit: "contain" }}
               />
               <p className="mt-3">{selectedItem.description}</p>
             </Modal.Body>

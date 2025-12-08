@@ -13,7 +13,9 @@ const August = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/images/August');
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/images/August`
+        );
         setGalleryItems(response.data);
         setLoading(false);
       } catch (err) {
@@ -54,7 +56,7 @@ const August = () => {
               >
                 {item.url ? (
                   <img
-                    src={item.url} // Using the URL for images
+                    src={item.url}
                     alt={item.title}
                     className="img-fluid rounded-3"
                     loading="lazy"
@@ -63,6 +65,7 @@ const August = () => {
                 ) : (
                   <div className="text-center">Image not available</div>
                 )}
+
                 <div className="gallery-overlay rounded-3">
                   <h5 className="overlay-title">{item.title}</h5>
                   <p className="overlay-text">{item.description}</p>
@@ -82,7 +85,7 @@ const August = () => {
             <Modal.Body className="text-center">
               {selectedItem.url ? (
                 <img
-                  src={selectedItem.url} // Using the URL for images in the modal
+                  src={selectedItem.url}
                   alt={selectedItem.title}
                   className="img-fluid rounded-2"
                   style={{ maxHeight: '70vh', objectFit: 'contain' }}

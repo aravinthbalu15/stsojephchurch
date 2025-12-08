@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import '../../Style/Gallery.css';
+import React, { useEffect, useState } from "react";
+import { Modal, Spinner, Alert } from "react-bootstrap";
+import axios from "axios";
+import "../../Style/Gallery.css";
 
 const OctoberGallery = () => {
   const [galleryItems, setGalleryItems] = useState([]);
@@ -13,13 +13,15 @@ const OctoberGallery = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/images/October');
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/images/October`
+        );
         setGalleryItems(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch gallery images');
+        setError("Failed to fetch October gallery images");
         setLoading(false);
-        console.error('Fetch error:', err);
+        console.error("Fetch error:", err);
       }
     };
 
@@ -50,14 +52,14 @@ const OctoberGallery = () => {
               <div
                 className="gallery-card position-relative"
                 onClick={() => handleImageClick(item)}
-                style={{ height: '200px' }}
+                style={{ height: "200px" }}
               >
                 <img
                   src={item.url}
                   alt={item.title}
                   className="img-fluid rounded-3"
                   loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
                 <div className="gallery-overlay rounded-3">
                   <h5 className="overlay-title">{item.title}</h5>
@@ -80,7 +82,7 @@ const OctoberGallery = () => {
                 src={selectedItem.url}
                 alt={selectedItem.title}
                 className="img-fluid rounded-2"
-                style={{ maxHeight: '70vh', objectFit: 'contain' }}
+                style={{ maxHeight: "70vh", objectFit: "contain" }}
               />
               <p className="mt-3">{selectedItem.description}</p>
             </Modal.Body>

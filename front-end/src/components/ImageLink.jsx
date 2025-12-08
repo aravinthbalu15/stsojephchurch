@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Container, Button } from "react-bootstrap";
 import axios from "axios";
 import "../Style/ImageLink.css";
-import { useTranslation } from "react-i18next"; // 🆕 Added
+import { useTranslation } from "react-i18next";
 
 const ImageLink = () => {
-    const { t } = useTranslation(); // 🆕 Added
+  const { t } = useTranslation();
   const [images, setImages] = useState([]);
 
   useEffect(() => {
@@ -15,22 +15,23 @@ const ImageLink = () => {
   }, []);
 
   return (
-    <Container className="image-section mt-5">
-      <h2 className="section-title ">{t("Our_Gallery")}</h2>
+    <Container className="image-section">
+      <h2 className="section-title">{t("Our_Gallery")}</h2>
 
-      <div className="gallery-wrapper">
-        <div className="image-container">
-          <div className="image-track">
-            {images.concat(images).map((image, index) => (
-              <div key={index} className="image-item">
-                <img src={image.imageUrl} alt={image.title} className="gallery-image" />
-              </div>
-            ))}
-          </div>
+      <div className="image-container">
+        <div className="image-track">
+          {(images.concat(images).concat(images)).map((image, index) => (
+            <div key={index} className="image-item">
+              <img src={image.imageUrl} alt={image.title} className="gallery-image" />
+            </div>
+          ))}
         </div>
       </div>
 
-      <Button className="view-more-btn" onClick={() => (window.location.href = "/images-category")}>
+      <Button
+        className="read-more-btn"
+        onClick={() => (window.location.href = "/images-category")}
+      >
         {t("view_more")}
       </Button>
     </Container>

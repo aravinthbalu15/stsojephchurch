@@ -112,6 +112,56 @@
     "church_add_desc":"வழிபாடு, அமைதி மற்றும் அன்பின் இருப்பிடம். நம்பிக்கையிலும், சகோதரத்துவத்திலும் எங்களுடன் இணையுங்கள்.",
     "church_address":"கம்பிளார், கன்னியாகுமரி,தமிழ்நாடு 629157.",
     "view_more": "மேலும் பார்க்க",
-    "show_less": "குறைவாக காண்பி"
+    "show_less": "குறைவாக காண்பி",
+
+  "Our_people_at_Gods_Service": "இறைவனின் சேவையிலுள்ள எங்கள் மக்கள்",
+
+  "person1_name": "ரெவ. சகோதரி ஆர்மெல்லா S R A",
+  "person1_dob": "03.07.1994",
+  "person1_birthplace": "காம்பிளர்",
+  "person1_ordination": "14.04.2024",
+  "person1_ministry": "உதவி பாதிரியார், மதிராவில்",
+
+  "person2_name": "ரெவ. சகோதரர் மரியா சிம்சன்",
+  "person2_dob": "03.07.1994",
+  "person2_birthplace": "காம்பிளர்",
+  "person2_ordination": "14.04.2024",
+  "person2_ministry": "உதவி பாதிரியார், மதிராவில்",
+
+  "person3_name": "ரெவ. சகோதரி கிரிஸ்டல் ஷில்லா",
+  "person3_dob": "03.07.1994",
+  "person3_birthplace": "காம்பிளர்",
+  "person3_ordination": "14.04.2024",
+  "person3_ministry": "உதவி பாதிரியார், மதிராவில்",
+
+  "person4_name": "ரெவ. சகோதரி எழில்",
+  "person4_dob": "03.07.1994",
+  "person4_birthplace": "காம்பிளர்",
+  "person4_ordination": "14.04.2024",
+  "person4_ministry": "உதவி பாதிரியார், மதிராவில்",
+
+  "person5_name": "ரெவ. சகோதரி ஜெனிஷா",
+  "person5_dob": "03.07.1994",
+  "person5_birthplace": "வேலூர்",
+  "person5_ordination": "21-06-2021",
+  "person5_ministry": "சேக்ரட் ஹார்ட் புதுவாழ்வு மடம்",
+
+  "person6_name": "ரெவ. பிதா அனிஷ்",
+  "person6_dob": "03.07.1994",
+  "person6_birthplace": "வேலூர்",
+  "person6_ordination": "21-06-2021",
+  "person6_ministry": "சேக்ரட் ஹார்ட் புதுவாழ்வு மடம்",
+
+  "Name": "பெயர்",
+  "Date_of_Birth": "பிறந்த தேதி",
+  "Place_of_Birth": "பிறந்த இடம்",
+  "Date_of_Ordination": "அர்ச்சக பட்டம் பெற்ற தேதி",
+  "Ministering_At": "சேவை செய்யும் இடம்"
+
+
+
+
 
 }
+
+

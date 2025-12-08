@@ -1,132 +1,81 @@
-.festival-main  {
-    /* max-width: 1400px; */
-    /* padding: 2rem; */
-    padding-top: 150px;
-    padding-bottom: 250px;
-    
-  }
-  
-  .event-title {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    padding-top: 30px;
-   
-  }
-  
-  .image-wrapper {
-    position: relative;
-    overflow: hidden;
-    border-radius: 15px;
-    transition: transform 0.3s;
-  }
-  
-  .image-wrapper:hover {
-    transform: translateY(-5px);
-  }
-  
-  .image-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-weight: bold;
-    font-size: 1.2rem;
-  }
-  
-  .image-wrapper:hover .image-overlay {
-    opacity: 1;
-  }
-  
-  .modal-controls {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 10px;
-    z-index: 1050;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    border-radius: 50px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .control-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-  }
-  
-  .control-btn:hover {
-    background: #e0e0e0;
-    transform: scale(1.1);
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-  
-  .image-container {
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    max-width: 90vw;
-    max-height: 90vh;
-    cursor: grab;
-  }
-  
-  .image-container:active {
-    cursor: grabbing;
-  }
-  
-  .popup-img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  }
-  
-  .event-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-    transition: transform 0.3s;
-  }
-  
-  .event-img:hover {
-    transform: scale(1.1); /* Adding zoom effect on hover */
-  }
-  
-  @media (max-width: 768px) {
-    .event-title {
-      font-size: 2rem;
-    }
-  
-    .modal-controls {
-      top: 10px;
-      right: 10px;
-      padding: 8px;
-    }
-  .festival-container{
-    margin-top: -50px;
-  }
-    .control-btn {
-      width: 35px;
-      height: 35px;
-    }
-  }
-  
+.festival-main {
+  padding-top: 150px;
+  padding-bottom: 80px;
+}
+
+.event-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #003060;
+  margin-bottom: 40px;
+}
+
+/******** Masonry Grid ********/
+.masonry-grid {
+  display: flex;
+  margin-left: -15px;
+  width: auto;
+}
+.masonry-column {
+  padding-left: 15px;
+  background-clip: padding-box;
+}
+
+.masonry-item {
+  margin-bottom: 15px;
+  cursor: pointer;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.masonry-item:hover {
+  transform: scale(1.03);
+}
+
+.masonry-img {
+  width: 100%;
+  display: block;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+/******** Modal Styling ********/
+.modal-body-custom {
+  background: #000;
+  padding: 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.zoom-image {
+  max-width: 90vw;
+  max-height: 88vh;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.modal-btns {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.zoom-btn {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .event-title { font-size: 2rem; }
+  .zoom-btn { width: 38px; height: 38px; }
+}

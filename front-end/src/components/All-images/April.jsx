@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import '../../Style/Gallery.css';
+import React, { useEffect, useState } from "react";
+import { Modal, Spinner, Alert } from "react-bootstrap";
+import axios from "axios";
+import "../../Style/Gallery.css";
 
 const April = () => {
   const [galleryItems, setGalleryItems] = useState([]);
@@ -13,13 +13,15 @@ const April = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/images/April');
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/images/April`
+        );
         setGalleryItems(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch gallery images');
+        setError("Failed to fetch gallery images");
         setLoading(false);
-        console.error('Fetch error:', err);
+        console.error("Fetch error:", err);
       }
     };
 
@@ -50,19 +52,20 @@ const April = () => {
               <div
                 className="gallery-card position-relative"
                 onClick={() => handleImageClick(item)}
-                style={{ height: '200px' }}
+                style={{ height: "200px" }}
               >
                 {item.url ? (
                   <img
-                    src={item.url} // Using the URL for images instead of base64 data
+                    src={item.url}
                     alt={item.title}
                     className="img-fluid rounded-3"
                     loading="lazy"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 ) : (
                   <div className="text-center">Image not available</div>
                 )}
+
                 <div className="gallery-overlay rounded-3">
                   <h5 className="overlay-title">{item.title}</h5>
                   <p className="overlay-text">{item.description}</p>
@@ -82,10 +85,10 @@ const April = () => {
             <Modal.Body className="text-center">
               {selectedItem.url ? (
                 <img
-                  src={selectedItem.url} // Using the URL for images
+                  src={selectedItem.url}
                   alt={selectedItem.title}
                   className="img-fluid rounded-2"
-                  style={{ maxHeight: '70vh', objectFit: 'contain' }}
+                  style={{ maxHeight: "70vh", objectFit: "contain" }}
                 />
               ) : (
                 <div className="text-center">Image not available</div>

@@ -3,10 +3,10 @@
   text-align: center;
   margin: 50px auto;
   padding: 20px;
-  max-width: 1400px; /* Prevent it from becoming too wide */
+  max-width: 1400px;
 }
 
-/* Video Wrapper - Centers everything */
+/* Wrapper */
 .video-wrapper {
   position: relative;
   display: flex;
@@ -17,50 +17,51 @@
   width: 100%;
 }
 
-/* Video Scroll Container */
-.video-container {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* Marquee infinite container */
+.marquee {
   width: 85%;
-  max-width: 1200px;
-  padding: 10px;
+  overflow: hidden;
+  position: relative;
   margin: auto;
 }
 
-.video-container::-webkit-scrollbar {
-  display: none;
+.marquee-track {
+  display: flex;
+  gap: 15px;
+  animation: scroll-marquee 25s linear infinite;
 }
 
-/* Video Items (Updated Size) */
+@keyframes scroll-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Video Item */
 .video-item {
   flex: 0 0 auto;
-  width: 400px !important;  /* Updated */
-  height: 220px !important; /* Updated */
+  width: 400px;
+  height: 220px;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
-/* Video element size (Updated) */
 .video-item video {
-  width: 400px !important;   /* Updated */
-  height: 220px !important;  /* Updated */
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
 }
 
-/* Hover Effect */
 .video-item:hover {
   transform: scale(1.05);
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Navigation Arrows */
+/* Arrows */
 .nav-icon {
   position: absolute;
   top: 50%;
@@ -69,11 +70,11 @@
   color: #333;
   background: white;
   border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  transition: all 0.3s ease;
   padding: 10px;
-  z-index: 100;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 200;
 }
 
 .nav-icon.left {
@@ -85,9 +86,8 @@
 }
 
 .nav-icon:hover {
-  color: white;
   background: red;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  color: white;
 }
 
 /* Read More Button */
@@ -101,91 +101,58 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
+  transition: 0.3s;
 }
 
 .read-more-btn:hover {
-  background: linear-gradient(135deg, darkred, black);
   transform: translateY(-3px);
 }
 
-/* Tablets (Max 1024px) */
+/* Responsive: Tablets */
 @media (max-width: 1024px) {
-  .video-container {
-    width: 95%;
-  }
-
   .video-item {
-    width: 150px !important;
-    height: 100px !important;
+    width: 250px;
+    height: 150px;
   }
 
   .nav-icon {
     font-size: 1.8rem;
     padding: 8px;
   }
+}
 
-  .nav-icon.left {
-    left: 10px;
+/* Mobile Devices */
+@media (max-width: 768px) {
+  .video-item {
+    width: 200px;
+    height: 120px;
   }
 
-  .nav-icon.right {
-    right: 10px;
+  .marquee-track {
+    animation: scroll-marquee 40s linear infinite; /* slower on mobile */
+  }
+
+  .nav-icon {
+    display: none;
   }
 }
 
-/* Mobile Devices (Max 768px) */
-@media (max-width: 768px) {
-  .video-container {
+/* Small Phones */
+@media (max-width: 480px) {
+  .video-item {
+    width: 160px;
+    height: 100px;
+  }
+
+  .marquee {
     width: 100%;
+  }
+
+  .marquee-track {
     gap: 10px;
   }
 
-  .video-item {
-    width: 140px !important;
-    height: 90px !important;
-  }
-
-  .nav-icon {
-    font-size: 1.5rem;
-    padding: 6px;
-  }
-
-  .nav-icon.left {
-    left: 5px;
-  }
-
-  .nav-icon.right {
-    right: 5px;
-  }
-
-  .read-more-btn {
-    font-size: 0.9rem;
-    padding: 10px 20px;
-  }
-}
-
-/* Small Mobile Devices (Max 480px) */
-@media (max-width: 480px) {
-  .video-container {
-    flex-wrap: nowrap;
-    width: 100%;
-    overflow-x: scroll;
-    gap: 5px;
-  }
-
-  .video-item {
-    width: 120px !important;
-    height: 80px !important;
-  }
-
-  .nav-icon {
-    display: none; /* Hide arrows on small screens */
-  }
-
   .read-more-btn {
     width: 100%;
-    padding: 10px;
   }
 }

@@ -113,7 +113,51 @@
   "church_add_desc":"A place of worship, peace and love. Join us in faith and fellowship.",
   "church_address":"Kamplar, Kanyakumari, Tamil Nadu 629157",
   "view_more": "View More",
-  "show_less": "Show Less"
+  "show_less": "Show Less",
+
+  "Our_people_at_Gods_Service": "Our People at God's Service",
+
+  "person1_name": "Rev. Sr. Armella S R A",
+  "person1_dob": "03.07.1994",
+  "person1_birthplace": "Kamplar",
+  "person1_ordination": "14.04.2024",
+  "person1_ministry": "Co-Pastor, Mathiravilai",
+
+  "person2_name": "Rev. Br. Maria Simson",
+  "person2_dob": "03.07.1994",
+  "person2_birthplace": "Kamplar",
+  "person2_ordination": "14.04.2024",
+  "person2_ministry": "Co-Pastor, Mathiravilai",
+
+  "person3_name": "Rev. Sr. Crystal Shylla",
+  "person3_dob": "03.07.1994",
+  "person3_birthplace": "Kamplar",
+  "person3_ordination": "14.04.2024",
+  "person3_ministry": "Co-Pastor, Mathiravilai",
+
+  "person4_name": "Rev. Sr. Ezhil",
+  "person4_dob": "03.07.1994",
+  "person4_birthplace": "Kamplar",
+  "person4_ordination": "14.04.2024",
+  "person4_ministry": "Co-Pastor, Mathiravilai",
+
+  "person5_name": "Rev. Sr. Jenisha",
+  "person5_dob": "03.07.1994",
+  "person5_birthplace": "Vellore",
+  "person5_ordination": "21-06-2021",
+  "person5_ministry": "Sacred Heart Novitiate",
+
+  "person6_name": "Rev. Fr. Anish",
+  "person6_dob": "03.07.1994",
+  "person6_birthplace": "Vellore",
+  "person6_ordination": "21-06-2021",
+  "person6_ministry": "Sacred Heart Novitiate",
+
+  "Name": "Name",
+  "Date_of_Birth": "Date of Birth",
+  "Place_of_Birth": "Place of Birth",
+  "Date_of_Ordination": "Date of Ordination",
+  "Ministering_At": "Ministering At"
 
 
 }
