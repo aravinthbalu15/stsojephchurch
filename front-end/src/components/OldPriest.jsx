@@ -2,10 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../Style/OldPriest.css";
 import { useTranslation } from "react-i18next";
+
 const OldPriest = () => {
   const { t } = useTranslation();
   const [priests, setPriests] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
 
   useEffect(() => {
     const fetchPriests = async () => {
@@ -36,7 +46,9 @@ const OldPriest = () => {
             <div key={member._id} className="member-row">
               <img src={member.imageUrl} alt={member.name} className="member-image" />
               <h3 className="member-name">{member.name}</h3>
-              <p className="member-info">{member.dob_start?.slice(0, 10)} to {member.dob_end?.slice(0, 10)}</p>
+              <p className="member-info">
+                {formatDate(member.dob_start)} to {formatDate(member.dob_end)}
+              </p>
             </div>
           ))}
         </div>
