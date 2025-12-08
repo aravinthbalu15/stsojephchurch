@@ -3,7 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import './AdminEventUpload.css';
 
-const API_BASE_URL = "https://your-backend-url.onrender.com";  // 🔁 Replace here only once
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminEventUpload = () => {
   const [events, setEvents] = useState([]);
