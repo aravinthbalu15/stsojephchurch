@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import "./AdminFestivalImages.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminFestivalImages = () => {
   const [selectedImage, setSelectedImage] = useState(null);
