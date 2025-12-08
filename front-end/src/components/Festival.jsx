@@ -1,72 +1,123 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import Masonry from "react-masonry-css";
-import "../Style/Festival.css";
-import { Modal, Button } from "react-bootstrap";
-import { FiZoomIn, FiZoomOut, FiX } from "react-icons/fi";
-import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
+import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import "./AdminFestivalImages.css";
 
-const Festival = () => {
-  const { t } = useTranslation();
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+const AdminFestivalImages = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [zoom, setZoom] = useState(1);
+  const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/festival/images`)
-      .then((res) => setImages(res.data))
-      .catch(() => console.log("Error loading festival images"));
-  }, []);
+  const fileInputRef = useRef(null);
 
-  const openImage = (url) => {
-    setSelectedImage(url);
-    setShowModal(true);
+  const fetchImages = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/festival/images`);
+      setImages(response.data);
+    } catch (err) {
+      setMessage("Failed to fetch images.");
+    }
   };
 
-  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.2, 3));
-  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.2, 1));
-  const resetZoom = () => setZoom(1);
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
-  const breakpoints = {
-    default: 3,
-    992: 2,
-    576: 1,
+  const handleImageChange = (e) => setSelectedImage(e.target.files[0]);
+
+  const resetFileInput = () => {
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedImage || !title) return setMessage("Please select an image and enter a title.");
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+    formData.append("title", title);
+
+    try {
+      await axios.post(`${API_BASE_URL}/api/festival/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      Swal.fire("Success", "Festival image uploaded successfully!", "success");
+      setTitle("");
+      setSelectedImage(null);
+      resetFileInput();
+      fetchImages();
+    } catch (err) {
+      Swal.fire("Upload Failed", "Error uploading image", "error");
+    }
+
+    setUploading(false);
+  };
+
+  const confirmDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this image?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${API_BASE_URL}/api/festival/${id}`);
+          Swal.fire("Deleted!", "The image has been deleted.", "success");
+          fetchImages();
+        } catch (err) {
+          Swal.fire("Error", "Problem deleting image", "error");
+        }
+      }
+    });
   };
 
   return (
-    <div className="festival-main container">
-      <h2 className="event-title text-center mt-5">{t("festival")}</h2>
+    <div className="container admin-festival">
+      <h3 className="mt-4 mb-3">Upload Festival Image</h3>
+      {message && <p className="text-danger">{message}</p>}
 
-      <Masonry breakpointCols={breakpoints} className="masonry-grid" columnClassName="masonry-column">
-        {images.map((image, index) => (
-          <div key={index} className="masonry-item" onClick={() => openImage(image.url)}>
-            <img src={image.url} alt="Festival" className="masonry-img" />
-          </div>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>Title</Form.Label>
+          <Form.Control type="text" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Choose an Image</Form.Label>
+          <Form.Control type="file" accept="image/*" onChange={handleImageChange} ref={fileInputRef} />
+        </Form.Group>
+
+        <Button type="submit" variant="primary" disabled={uploading}>
+          {uploading ? "Uploading..." : "Upload"}
+        </Button>
+      </Form>
+
+      <h3 className="mt-5 mb-3">Uploaded Festival Images</h3>
+      <Row>
+        {images.map((image) => (
+          <Col key={image._id} md={4} sm={6} xs={12} className="mb-4">
+            <div className="image-card p-3 border rounded shadow-sm text-center">
+              <img src={image.url} alt={image.title} className="img-fluid rounded event-img mb-2" />
+              <h5 className="mt-2">{image.title}</h5>
+              <Button variant="danger" className="mt-2" onClick={() => confirmDelete(image._id)}>
+                Delete
+              </Button>
+            </div>
+          </Col>
         ))}
-      </Masonry>
-
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="xl">
-        <Modal.Body className="modal-body-custom">
-          <div className="modal-btns">
-            <Button variant="light" className="zoom-btn" onClick={handleZoomIn}><FiZoomIn /></Button>
-            <Button variant="light" className="zoom-btn" onClick={handleZoomOut}><FiZoomOut /></Button>
-            <Button variant="light" className="zoom-btn" onClick={resetZoom}>100%</Button>
-            <Button variant="light" className="zoom-btn" onClick={() => setShowModal(false)}><FiX /></Button>
-          </div>
-
-          <img
-            src={selectedImage}
-            alt="zoom"
-            className="zoom-image"
-            style={{ transform: `scale(${zoom})` }}
-          />
-        </Modal.Body>
-      </Modal>
+      </Row>
     </div>
   );
 };
 
-export default Festival;
+export default AdminFestivalImages;
