@@ -14,8 +14,8 @@
 
   "administration": "Administration",
   "parish_council": "Our Parish Pastoral Council",
-  "anbiyam_coordination": "Coordination of anbiyams",
-  "anbiyam": "Anbiyams",
+  "anbiyam_coordination": "Coordination of Basic Christian Communities",
+  "anbiyam": " Basic Christian Communities",
 
   "participatory_structures": "Participatary Structures",
 
@@ -25,8 +25,8 @@
   "catholic_service": "Catholic Service Association",
 
   "formation_groups": "Formation Organizations",
-  "balarsabha": "Balarsabha",
-  "children_movement": "Children Movement",
+  "balarsabha": "Childhood Movement",
+  "children_movement": "Little way Association",
   "iycs": "Young Christian Student Movement",
   "youth_boys": "Youth Movement (Male)",
   "youth_girls": "Youth Movement (Female)",
@@ -34,7 +34,7 @@
   "bible_committee": "Bible Committee",
 
   "service_organizations": "Service Organizations",
-  "women_selfhelp": "Women's Self Help",
+  "women_selfhelp": "Women's Village Development Association",
   "kolping": "Kolping Movement",
   "kaiakal": "Kaiakal Self Confidence Movement",
   "foundation_growth": "Foundation Growth Association",
@@ -76,7 +76,7 @@
   "Our_Videos": "Our Videos",
   "our_parish_community":"Our Parish Community",
   "families":"families",
-  "anbiyams":"anbiyams",
+  "anbiyams":" Basic Christian Communities",
   "participatory_structures_title":"Participatory Structures",
   "substation_title": "Our Lady of Loreto Church, Tholayavattam",
   "auditorium_title": "St. Joseph's Auditorium",

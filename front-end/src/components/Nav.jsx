@@ -13,24 +13,79 @@ const Nav = () => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
-  // background change on scroll
-  useEffect(() => {
-    if (location.pathname === "/") {
-      const handleScroll = () => setScrolling(window.scrollY > 50);
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    } else {
-      setScrolling(true);
-    }
-  }, [location.pathname]);
+// background change on scroll
+useEffect(() => {
+  if (navbarOpen) return; // Stop scrolling effect while menu open
+
+  if (location.pathname === "/") {
+    const handleScroll = () => setScrolling(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  } else {
+    setScrolling(true);
+  }
+}, [location.pathname, navbarOpen]);
 
   const toggleNavbar = () => setNavbarOpen((prev) => !prev);
 
+  const MAIN_DROPDOWNS = ["home", "admin", "pt-sr", "gallery"];
+  const SUB_DROPDOWNS = ["p1", "p2", "p3", "p4"];
+  const LANG_DROPDOWNS = ["lang-top", "mobile-lang"];
+
   const toggleDropdown = (key) => {
-    setOpenDropdowns((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    setOpenDropdowns((prev) => {
+      const isOpen = !!prev[key];
+
+      // Top-level main dropdowns (Home, Administration, Participatory, Gallery)
+      if (MAIN_DROPDOWNS.includes(key)) {
+        if (isOpen) {
+          const { [key]: _, ...rest } = prev;
+          return rest;
+        }
+        const newState = { ...prev };
+        MAIN_DROPDOWNS.forEach((k) => {
+          delete newState[k];
+        });
+        SUB_DROPDOWNS.forEach((k) => {
+          delete newState[k];
+        });
+        return { ...newState, [key]: true };
+      }
+
+      // Language dropdowns (desktop + mobile) – only one at a time
+      if (LANG_DROPDOWNS.includes(key)) {
+        const newState = { ...prev };
+        LANG_DROPDOWNS.forEach((k) => {
+          if (k !== key) delete newState[k];
+        });
+        if (isOpen) {
+          delete newState[key];
+        } else {
+          newState[key] = true;
+        }
+        return newState;
+      }
+
+      // Sub dropdowns under Participatory Structures
+      if (SUB_DROPDOWNS.includes(key)) {
+        const newState = { ...prev, "pt-sr": true }; // keep main open
+        SUB_DROPDOWNS.forEach((k) => {
+          if (k !== key) delete newState[k];
+        });
+        if (isOpen) {
+          delete newState[key];
+        } else {
+          newState[key] = true;
+        }
+        return newState;
+      }
+
+      // Fallback
+      return {
+        ...prev,
+        [key]: !isOpen,
+      };
+    });
   };
 
   const closeMenu = () => {
@@ -46,9 +101,8 @@ const Nav = () => {
       if (
         !e.target.closest(".dropdown") &&
         !e.target.closest(".dropdown-sub") &&
-        !e.target.closest(".nav-lang")&&
-        !e.target.closest(".mobile-lang-section")  // ⭐ added for mobile dropdown
-
+        !e.target.closest(".nav-lang") &&
+        !e.target.closest(".mobile-lang-section")
       ) {
         closeAllDropdowns();
       }
@@ -62,20 +116,19 @@ const Nav = () => {
     location.pathname === path ? "active-link" : "";
 
   const switchLanguage = (lang) => {
-  i18n.changeLanguage(lang);
-  document.documentElement.setAttribute("lang", lang);
+    i18n.changeLanguage(lang);
+    document.documentElement.setAttribute("lang", lang);
 
-  // Close only mobile language dropdown
-  if (window.innerWidth < 992) {
-    setOpenDropdowns((prev) => ({
-      ...prev,
-      "mobile-lang": false,
-    }));
-  } else {
-    closeAllDropdowns(); // desktop default
-  }
-};
-
+    // Close only mobile language dropdown for small screens
+    if (window.innerWidth < 992) {
+      setOpenDropdowns((prev) => ({
+        ...prev,
+        "mobile-lang": false,
+      }));
+    } else {
+      closeAllDropdowns(); // desktop default
+    }
+  };
 
   const renderDropdown = (label, key, items) => (
     <li
@@ -126,40 +179,42 @@ const Nav = () => {
 
           {/* Phone + Language (desktop) + Toggler */}
           <div className="nav-right-group">
-
             {/* Language dropdown (desktop top row) */}
             <div className="nav-lang d-none d-lg-inline-block">
-  <button
-    className="nav-lang-btn"
-    onClick={() => toggleDropdown("lang-top")}
-  >
-    {i18n.language === "en" ? "English" : "தமிழ்"} ▾
-  </button>
+              <button
+                className="nav-lang-btn"
+                onClick={() => toggleDropdown("lang-top")}
+              >
+                {i18n.language === "en" ? "English" : "தமிழ்"} ▾
+              </button>
 
-  <ul
-    className={`dropdown-menu3 nav-lang-menu ${
-      openDropdowns["lang-top"] ? "show" : ""
-    }`}
-  >
-    <li>
-      <button
-        className={`dropdown-item4 ${i18n.language === "en" ? "active-lang" : ""}`}
-        onClick={() => switchLanguage("en")}
-      >
-        English
-      </button>
-    </li>
-    <li>
-      <button
-        className={`dropdown-item4 ${i18n.language === "ta" ? "active-lang" : ""}`}
-        onClick={() => switchLanguage("ta")}
-      >
-        தமிழ்
-      </button>
-    </li>
-  </ul>
-</div>
-
+              <ul
+                className={`dropdown-menu3 nav-lang-menu ${
+                  openDropdowns["lang-top"] ? "show" : ""
+                }`}
+              >
+                <li>
+                  <button
+                    className={`dropdown-item4 ${
+                      i18n.language === "en" ? "active-lang" : ""
+                    }`}
+                    onClick={() => switchLanguage("en")}
+                  >
+                    English
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className={`dropdown-item4 ${
+                      i18n.language === "ta" ? "active-lang" : ""
+                    }`}
+                    onClick={() => switchLanguage("ta")}
+                  >
+                    தமிழ்
+                  </button>
+                </li>
+              </ul>
+            </div>
 
             {/* Hamburger (visible < 992px) */}
             <button className="navbar1-toggler d-lg-none" onClick={toggleNavbar}>
@@ -171,41 +226,44 @@ const Nav = () => {
         {/* ================= BOTTOM ROW: MAIN MENU ================= */}
         <div className={`nav-bottom-row ${navbarOpen ? "show" : ""}`}>
           <ul className="navbar-nav2">
-    {/* 🌍 MOBILE LANGUAGE SELECT BUTTON */}
-<li className="nav-item d-lg-none mobile-lang-section">
-  <button
-    className="mobile-lang-btn"
-    onClick={() => toggleDropdown("mobile-lang")}
-  >
-    {i18n.language === "en" ? "English" : "தமிழ்"} ▾
-  </button>
+            {/* 🌍 MOBILE LANGUAGE SELECT BUTTON */}
+            <li className="nav-item d-lg-none mobile-lang-section">
+              <button
+                className="mobile-lang-btn"
+                onClick={() => toggleDropdown("mobile-lang")}
+              >
+                {i18n.language === "en" ? "English" : "தமிழ்"} ▾
+              </button>
 
-  <ul
-    className={`mobile-lang-dropdown ${
-      openDropdowns["mobile-lang"] ? "show" : ""
-    }`}
-  >
-    <li>
-      <button
-        className={`lang-option-btn ${i18n.language === "en" ? "active-lang" : ""}`}
-        onClick={() => switchLanguage("en")}
-      >
-        English
-      </button>
-    </li>
-    <li>
-      <button
-        className={`lang-option-btn ${i18n.language === "ta" ? "active-lang-mobile" : ""}`}
-        onClick={() => switchLanguage("ta")}
-      >
-        தமிழ்
-      </button>
-    </li>
-  </ul>
-</li>
+              <ul
+                className={`mobile-lang-dropdown ${
+                  openDropdowns["mobile-lang"] ? "show" : ""
+                }`}
+              >
+                <li>
+                  <button
+                    className={`lang-option-btn ${
+                      i18n.language === "en" ? "active-lang" : ""
+                    }`}
+                    onClick={() => switchLanguage("en")}
+                  >
+                    English
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className={`lang-option-btn ${
+                      i18n.language === "ta" ? "active-lang-mobile" : ""
+                    }`}
+                    onClick={() => switchLanguage("ta")}
+                  >
+                    தமிழ்
+                  </button>
+                </li>
+              </ul>
+            </li>
 
-
-            {/* ===== 1. HOME DROPDOWN (5 items) ===== */}
+            {/* ===== 1. HOME DROPDOWN ===== */}
             {renderDropdown(t("home"), "home", [
               <li key="home1">
                 <Link
@@ -260,9 +318,7 @@ const Nav = () => {
               </li>,
               <li key="home6">
                 <Link
-                  className={`dropdown-item4 ${getActiveClass(
-                    "/auditorium"
-                  )}`}
+                  className={`dropdown-item4 ${getActiveClass("/auditorium")}`}
                   to="/auditorium"
                   onClick={closeMenu}
                 >
@@ -271,9 +327,7 @@ const Nav = () => {
               </li>,
               <li key="home7">
                 <Link
-                  className={`dropdown-item4 ${getActiveClass(
-                    "/old-priest"
-                  )}`}
+                  className={`dropdown-item4 ${getActiveClass("/old-priest")}`}
                   to="/old-priest"
                   onClick={closeMenu}
                 >
@@ -282,21 +336,17 @@ const Nav = () => {
               </li>,
               <li key="home8">
                 <Link
-                  className={`dropdown-item4 ${getActiveClass(
-                    "/service"
-                  )}`}
+                  className={`dropdown-item4 ${getActiveClass("/service")}`}
                   to="/service"
                   onClick={closeMenu}
                 >
                   {t("service_people")}
                 </Link>
               </li>,
-              <li key="home8">
+              <li key="home9">
                 <Link
-                  className={`dropdown-item4 ${getActiveClass(
-                    "/substation"
-                  )}`}
-                  to="/substation" substation
+                  className={`dropdown-item4 ${getActiveClass("/substation")}`}
+                  to="/substation"
                   onClick={closeMenu}
                 >
                   {t("substation")}
@@ -304,7 +354,7 @@ const Nav = () => {
               </li>,
             ])}
 
-            {/* ===== 2. ADMINISTRATION DROPDOWN (3 items) ===== */}
+            {/* ===== 2. ADMINISTRATION DROPDOWN ===== */}
             {renderDropdown(t("administration"), "admin", [
               <li key="admin1">
                 <Link
@@ -557,8 +607,6 @@ const Nav = () => {
                 </Link>
               </li>,
             ])}
-
-           
           </ul>
         </div>
       </div>

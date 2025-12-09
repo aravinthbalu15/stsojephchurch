@@ -269,6 +269,14 @@
 
 /* ================= RESPONSIVE (TABLET & MOBILE) ================= */
 @media (max-width: 992px) {
+
+  /* Enable scrolling for mobile nav dropdown */
+.nav-bottom-row.show {
+  max-height: 80vh;        /* visible height */
+  overflow-y: auto;        /* scroll inside */
+  padding-right: 6px;      /* avoid scrollbar overlap */
+}
+
   .nav-inner {
     max-width: 100%;
   }
@@ -370,6 +378,14 @@
 }
 
 @media (max-width: 576px) {
+
+  /* Enable scrolling for mobile nav dropdown */
+.nav-bottom-row.show {
+  max-height: 80vh;        /* visible height */
+  overflow-y: auto;        /* scroll inside */
+  padding-right: 6px;      /* avoid scrollbar overlap */
+}
+
   .navbar1 {
     padding: 8px 14px;
   }
