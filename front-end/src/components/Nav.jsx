@@ -481,6 +481,15 @@ useEffect(() => {
                     {t("bible_committee")}
                   </Link>
                 </li>,
+                  <li key="p3-5">
+                  <Link
+                    to="/அடித்தள முழுவளர்ச்சி சங்கம்"
+                    className="dropdown-item4"
+                    onClick={closeMenu}
+                  >
+                    {t("Christian Workers Movement")}
+                  </Link>
+                </li>,
               ]),
 
               renderSubDropdown(t("service_organizations"), "p3", [
@@ -520,15 +529,7 @@ useEffect(() => {
                     {t("foundation_growth")}
                   </Link>
                 </li>,
-                <li key="p3-5">
-                  <Link
-                    to="/அடித்தள முழுவளர்ச்சி சங்கம்"
-                    className="dropdown-item4"
-                    onClick={closeMenu}
-                  >
-                    {t("Christian Workers Movement")}
-                  </Link>
-                </li>,
+              
               ]),
 
               renderSubDropdown(t("worship_organizations"), "p4", [
