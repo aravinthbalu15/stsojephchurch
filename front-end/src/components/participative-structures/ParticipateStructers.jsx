@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next"; // 🆕 Added
 const ParticipateStructers = () => {
   const { t } = useTranslation(); // 🆕 Added
   const stats = [
-    { value: "5", label: "திருத்தூதுக் கழகங்கள்", path: "/one" },
-    { value: "8", label: "உருவாக்க அமைப்புகள்", path: "/two" },
-    { value: "5", label: "சேவை அமைப்புகள்", path: "/three" },
-    { value: "4", label: "வழிபாட்டு அமைப்புகள்", path: "/four" },
-    { value: "3", label: "நிறைவு அமைப்புகள்", path: "/five" }
+    { value: "3", label: t("apostolic_societies"), path: "/one" },
+    { value: "8", label: t("formation_groups"), path: "/two" },
+    { value: "4", label: t("service_organizations"), path: "/three" },
+    { value: "3", label: t("worship_organizations"), path: "/four" },
+    // { value: "3", label: "நிறைவு அமைப்புகள்", path: "/five" }
   ];
 
   return ( 
