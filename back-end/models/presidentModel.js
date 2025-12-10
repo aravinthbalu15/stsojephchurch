@@ -1,27 +1,35 @@
 import mongoose from "mongoose";
 
+// Reusable bilingual field structure
+const bilingual = {
+  en: { type: String, default: "" },
+  ta: { type: String, default: "" },
+};
+
 const presidentSchema = new mongoose.Schema(
   {
     head: {
-      name: { type: String, required: true },
-      description: { type: String },
-      imageUrl: { type: String },
-      cloudinaryId: { type: String },
+      name: bilingual,
+      description1: bilingual,
+      description2: bilingual,
+      description3: bilingual,
+      image: { type: String },
     },
+
     bishop: {
-      name: { type: String, required: true },
-      description: { type: String },
-      description1: { type: String },
-      imageUrl: { type: String },
-      cloudinaryId: { type: String },
+      name: bilingual,
+      description1: bilingual,
+      description2: bilingual,
+      description3: bilingual,
+      image: { type: String },
     },
+
     parishPriest: {
-      name: { type: String, required: true },
-      description1: { type: String },
-      description2: { type: String },
-      description3: { type: String },
-      imageUrl: { type: String },
-      cloudinaryId: { type: String },
+      name: bilingual,
+      description1: bilingual,
+      description2: bilingual,
+      description3: bilingual,
+      image: { type: String },
     },
   },
   { timestamps: true }

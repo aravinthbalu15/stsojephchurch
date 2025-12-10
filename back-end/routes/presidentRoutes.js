@@ -1,37 +1,20 @@
-import mongoose from "mongoose";
+import express from "express";
+import {
+  createPresident,
+  getPresident,
+  updatePresident,
+  deletePresident,
+  deleteSection
+} from "../controllers/presidentController.js";
 
-const langField = {
-  en: { type: String, default: "" },
-  ta: { type: String, default: "" },
-};
+const router = express.Router();
 
-const presidentSchema = new mongoose.Schema(
-  {
-    head: {
-      name: langField,
-      description: langField,
-      imageUrl: String,
-      cloudinaryId: String,
-    },
+router.post("/", createPresident);
+router.get("/", getPresident);
+router.put("/", updatePresident);
+router.delete("/", deletePresident);
 
-    bishop: {
-      name: langField,
-      description: langField,
-      description1: langField,
-      imageUrl: String,
-      cloudinaryId: String,
-    },
+// Delete specific section
+router.delete("/section/:section", deleteSection);
 
-    parishPriest: {
-      name: langField,
-      description1: langField,
-      description2: langField,
-      description3: langField,
-      imageUrl: String,
-      cloudinaryId: String,
-    },
-  },
-  { timestamps: true }
-);
-
-export default mongoose.model("President", presidentSchema);
+export default router;
