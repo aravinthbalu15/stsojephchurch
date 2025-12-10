@@ -21,9 +21,13 @@ const President = () => {
 
   if (!data) return <PresidentSkeleton />;
 
+  // Language selection (EN/TA)
   const lang = i18n.language === "ta" ? "ta" : "en";
+
+  // Fetch correct text based on language
   const getText = (obj) => obj?.[lang] || obj?.en || "";
 
+  // Prepare items for display
   const items = [
     { role: "Head", ...data.head },
     { role: "Bishop", ...data.bishop },
@@ -44,7 +48,7 @@ const President = () => {
               {/* IMAGE */}
               <img
                 loading="lazy"
-                src={item.imageUrl}
+                src={item.image}   // ✔ FIXED
                 alt={getText(item.name)}
                 className="president-img"
               />

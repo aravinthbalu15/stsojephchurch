@@ -1,201 +1,231 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
-import "./AdminPresident.css";
+import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/president`;
-
-const emptySection = () => ({
-  name_en: "",
-  name_ta: "",
-  desc_en: "",
-  desc_ta: "",
-  desc1_en: "",
-  desc1_ta: "",
-  desc2_en: "",
-  desc2_ta: "",
-  desc3_en: "",
-  desc3_ta: "",
-  imageUrl: "",
-  image: "",
-});
+const API = import.meta.env.VITE_API_URL + "/api/president";
 
 const AdminPresident = () => {
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  const [data, setData] = useState({
-    head: emptySection(),
-    bishop: emptySection(),
-    parishPriest: emptySection(),
-  });
+  const sections = ["head", "bishop", "parishPriest"];
 
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-    });
-
-  const loadData = async () => {
-    try {
-      const res = await axios.get(API_URL);
-      const p = res.data || {};
-
-      const safe = (obj = {}) => ({
-        name_en: obj?.name?.en || "",
-        name_ta: obj?.name?.ta || "",
-        desc_en: obj?.description?.en || "",
-        desc_ta: obj?.description?.ta || "",
-        desc1_en: obj?.description1?.en || "",
-        desc1_ta: obj?.description1?.ta || "",
-        desc2_en: obj?.description2?.en || "",
-        desc2_ta: obj?.description2?.ta || "",
-        desc3_en: obj?.description3?.en || "",
-        desc3_ta: obj?.description3?.ta || "",
-        imageUrl: obj?.imageUrl || "",
-        image: "",
-      });
-
-      setData({
-        head: safe(p.head),
-        bishop: safe(p.bishop),
-        parishPriest: safe(p.parishPriest),
-      });
-    } catch (error) {
-      Swal.fire("Error", "Unable to load data", "error");
-    }
+  // ============================
+  // FETCH DATA
+  // ============================
+  const fetchData = async () => {
+    const res = await axios.get(API);
+    setData(res.data);
   };
 
   useEffect(() => {
-    loadData();
+    fetchData();
   }, []);
 
-  const handleInput = (section, field, value) => {
+  // ============================
+  // HANDLE TEXT CHANGE (EN/TA)
+  // ============================
+  const handleChange = (section, field, lang, value) => {
     setData((prev) => ({
       ...prev,
-      [section]: { ...prev[section], [field]: value },
+      [section]: {
+        ...prev[section],
+        [field]: {
+          ...prev[section][field],
+          [lang]: value,
+        },
+      },
     }));
   };
 
-  const handleImage = async (section, file) => {
-    if (!file) return;
-    const base64 = await fileToBase64(file);
-
-    setData((prev) => ({
-      ...prev,
-      [section]: { ...prev[section], imageUrl: base64, image: base64 },
-    }));
-  };
-
-  const saveData = async () => {
-    setLoading(true);
-
-    const createBody = (s) => ({
-      name: { en: data[s].name_en, ta: data[s].name_ta },
-      description: { en: data[s].desc_en, ta: data[s].desc_ta },
-      description1: { en: data[s].desc1_en, ta: data[s].desc1_ta },
-      description2: { en: data[s].desc2_en, ta: data[s].desc2_ta },
-      description3: { en: data[s].desc3_en, ta: data[s].desc3_ta },
-      image: data[s].image || null,
-    });
-
-    const body = {
-      head: createBody("head"),
-      bishop: createBody("bishop"),
-      parishPriest: createBody("parishPriest"),
+  // ============================
+  // HANDLE IMAGE UPLOAD (BASE64)
+  // ============================
+  const handleImage = (section, file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setData((prev) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          image: reader.result, // base64
+        },
+      }));
     };
-
-    try {
-      await axios.put(API_URL, body);
-      Swal.fire("Success", "Updated Successfully", "success");
-      loadData();
-    } catch (err) {
-      Swal.fire("Error", "Update failed", "error");
-    }
-
-    setLoading(false);
+    reader.readAsDataURL(file);
   };
 
+  // ============================
+  // SAVE CHANGES
+  // ============================
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      await axios.put(API, data);
+      fetchData();
+      alert("Updated Successfully!");
+    } catch (error) {
+      console.log(error);
+      alert("Update failed");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ============================
+  // DELETE SECTION
+  // ============================
+  const deleteSection = async (section) => {
+    if (!confirm("Delete this section?")) return;
+
+    await axios.delete(`${API}/section/${section}`);
+    fetchData();
+  };
+
+  if (!data) return <p className="text-center mt-5">Loading...</p>;
+
+  // ============================
+  // UI RENDER
+  // ============================
   return (
-    <div className="container admin-presi">
-      <h2 className="admin-title text-center mb-4">Admin — President Section</h2>
+    <Container className="py-4">
+      <h2 className="text-center mb-4">President Management</h2>
 
-      {["head", "bishop", "parishPriest"].map((section) => (
-        <div key={section} className="card shadow-lg p-4 mb-4">
-          <h4 className="fw-bold text-capitalize">{section}</h4>
+      {sections.map((sec) => (
+        <Card className="mb-4 shadow-sm" key={sec}>
+          <Card.Header className="d-flex justify-content-between align-items-center">
+            <strong className="text-capitalize">{sec.replace(/([A-Z])/g, " $1")}</strong>
+            <Button variant="danger" size="sm" onClick={() => deleteSection(sec)}>
+              Delete Section
+            </Button>
+          </Card.Header>
 
-          {/* NAME EN / TA */}
-          <input
-            className="form-control mb-2"
-            placeholder="Name (English)"
-            value={data[section].name_en}
-            onChange={(e) => handleInput(section, "name_en", e.target.value)}
-          />
-          <input
-            className="form-control mb-2"
-            placeholder="Name (Tamil)"
-            value={data[section].name_ta}
-            onChange={(e) => handleInput(section, "name_ta", e.target.value)}
-          />
+          <Card.Body>
+            <Row>
+              {/* IMAGE */}
+              <Col md={4} className="text-center">
+                <img
+                  src={data[sec].image || "/placeholder.jpg"}
+                  alt="Preview"
+                  className="img-fluid rounded mb-2"
+                  style={{ maxHeight: "200px", objectFit: "cover" }}
+                />
 
-          {/* Description (head uses only desc, bishop & priest use desc1, desc2, desc3) */}
-          <textarea
-            className="form-control mb-2"
-            placeholder="Description (EN)"
-            value={data[section].desc_en}
-            onChange={(e) => handleInput(section, "desc_en", e.target.value)}
-          />
-          <textarea
-            className="form-control mb-2"
-            placeholder="Description (TA)"
-            value={data[section].desc_ta}
-            onChange={(e) => handleInput(section, "desc_ta", e.target.value)}
-          />
+                <Form.Group>
+                  <Form.Label>Upload Image</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImage(sec, e.target.files[0])}
+                  />
+                </Form.Group>
+              </Col>
 
-          {[1, 2, 3].map((num) => (
-            <React.Fragment key={num}>
-              <textarea
-                className="form-control mb-2"
-                placeholder={`Description${num} (EN)`}
-                value={data[section][`desc${num}_en`]}
-                onChange={(e) =>
-                  handleInput(section, `desc${num}_en`, e.target.value)
-                }
-              />
-              <textarea
-                className="form-control mb-2"
-                placeholder={`Description${num} (TA)`}
-                value={data[section][`desc${num}_ta`]}
-                onChange={(e) =>
-                  handleInput(section, `desc${num}_ta`, e.target.value)
-                }
-              />
-            </React.Fragment>
-          ))}
+              {/* TEXT INPUTS */}
+              <Col md={8}>
+                {/* NAME */}
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Name (English)</Form.Label>
+                      <Form.Control
+                        value={data[sec].name.en}
+                        onChange={(e) => handleChange(sec, "name", "en", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
 
-          {/* IMAGE UPLOAD */}
-          <input
-            type="file"
-            className="form-control mb-2"
-            accept="image/*"
-            onChange={(e) => handleImage(section, e.target.files[0])}
-          />
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Name (Tamil)</Form.Label>
+                      <Form.Control
+                        value={data[sec].name.ta}
+                        onChange={(e) => handleChange(sec, "name", "ta", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-          {data[section].imageUrl && (
-            <img src={data[section].imageUrl} className="preview-img" />
-          )}
-        </div>
+                {/* DESCRIPTION 1 */}
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description 1 (EN)</Form.Label>
+                      <Form.Control
+                        value={data[sec].description1.en}
+                        onChange={(e) => handleChange(sec, "description1", "en", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description 1 (TA)</Form.Label>
+                      <Form.Control
+                        value={data[sec].description1.ta}
+                        onChange={(e) => handleChange(sec, "description1", "ta", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                {/* DESCRIPTION 2 */}
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description 2 (EN)</Form.Label>
+                      <Form.Control
+                        value={data[sec].description2.en}
+                        onChange={(e) => handleChange(sec, "description2", "en", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description 2 (TA)</Form.Label>
+                      <Form.Control
+                        value={data[sec].description2.ta}
+                        onChange={(e) => handleChange(sec, "description2", "ta", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                {/* DESCRIPTION 3 */}
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description 3 (EN)</Form.Label>
+                      <Form.Control
+                        value={data[sec].description3.en}
+                        onChange={(e) => handleChange(sec, "description3", "en", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description 3 (TA)</Form.Label>
+                      <Form.Control
+                        value={data[sec].description3.ta}
+                        onChange={(e) => handleChange(sec, "description3", "ta", e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
       ))}
 
-      <button
-        className="btn btn-success w-100 mb-5"
-        disabled={loading}
-        onClick={saveData}
-      >
-        {loading ? "Updating..." : "Save All Changes"}
-      </button>
-    </div>
+      <div className="text-center">
+        <Button onClick={handleSave} disabled={saving}>
+          {saving ? "Saving..." : "Save All Changes"}
+        </Button>
+      </div>
+    </Container>
   );
 };
 
