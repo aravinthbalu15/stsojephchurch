@@ -1,12 +1,13 @@
-// server/models/eventModel.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const eventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  category: { type: String, required: true }, // 🆕 ADD THIS
-  image: { type: String, required: true },
-});
+const eventSchema = new mongoose.Schema(
+  {
+    description_en: { type: String, required: true },
+    description_ta: { type: String, required: true },
+    category: { type: String, required: true }, // current | upcoming
+    image: { type: String, required: true }
+  },
+  { timestamps: true }
+);
 
-const Event = mongoose.model('Event', eventSchema);
-module.exports = Event;
+module.exports = mongoose.model("Event", eventSchema);

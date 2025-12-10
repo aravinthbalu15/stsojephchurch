@@ -1,16 +1,85 @@
-// ❌ DELETE THIS BLOCK — it's not needed
-const Event = require('../models/eventModel');
-exports.uploadImage = async (req, res) => {
+const Event = require("../models/eventModel");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
+
+// Upload Event
+exports.uploadEvent = async (req, res) => {
   try {
-    const { category, title, description } = req.body;
-    const imageData = req.file.buffer.toString('base64');
-    const imageType = req.file.mimetype;
+    let uploadedImage = null;
 
-    const newImage = new Image({ category, title, description, imageData, imageType });
-    await newImage.save();
+    if (req.file) {
+      uploadedImage = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "events" },
+          (err, result) => (err ? reject(err) : resolve(result))
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+    }
 
-    res.status(201).json({ message: 'Image uploaded successfully', image: newImage });
+    const newEvent = new Event({
+      description_en: req.body.description_en,
+      description_ta: req.body.description_ta,
+      category: req.body.category,
+      image: uploadedImage.secure_url,
+    });
+
+    await newEvent.save();
+    res.status(201).json(newEvent);
   } catch (error) {
-    res.status(500).json({ message: 'Error uploading image', error: error.message });
+    res.status(500).json({ message: "Event upload failed", error });
+  }
+};
+
+// Get All Events
+exports.getEvents = async (req, res) => {
+  try {
+    const events = await Event.find().sort({ createdAt: -1 });
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: "Unable to fetch events", error });
+  }
+};
+
+// Update Event
+exports.updateEvent = async (req, res) => {
+  try {
+    let imageUrl = req.body.image;
+
+    if (req.file) {
+      const upload = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "events" },
+          (err, result) => (err ? reject(err) : resolve(result))
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+      imageUrl = upload.secure_url;
+    }
+
+    const updated = await Event.findByIdAndUpdate(
+      req.params.id,
+      {
+        description_en: req.body.description_en,
+        description_ta: req.body.description_ta,
+        category: req.body.category,
+        image: imageUrl,
+      },
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Event update failed", error });
+  }
+};
+
+// Delete Event
+exports.deleteEvent = async (req, res) => {
+  try {
+    await Event.findByIdAndDelete(req.params.id);
+    res.json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Event deletion failed", error });
   }
 };

@@ -1,0 +1,15 @@
+.adminlogin-btn {
+  padding: 10px 0 !important;
+  height: auto !important;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+/* Extra control for mobile screens */
+@media (max-width: 576px) {
+  .adminlogin-btn {
+    padding: 12px 0 !important;
+    height: 45px !important;   /* FIX: Prevent huge button */
+    font-size: 16px;
+  }
+}

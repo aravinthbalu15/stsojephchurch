@@ -1,4 +1,41 @@
-.upcoming-event{
+.adminupcoming-event{
    margin-top: 200px;
    margin-bottom: 60px;
+}
+
+
+
+/* event card tweaks */
+.event-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.event-img {
+  transition: transform 0.25s ease;
+}
+
+.event-card:hover .event-img {
+  transform: scale(1.03);
+}
+
+.event-desc {
+  min-height: 60px;
+}
+
+/* Buttons inside card */
+.event-card .btn {
+  padding: 8px 10px;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .event-img { height: 180px !important; object-fit: cover; }
+}
+
+@media (max-width: 576px) {
+  .event-img { height: 140px !important; object-fit: cover; }
+  .event-desc { min-height: 80px; font-size: 0.95rem; }
+  .upcoming-event { padding-top: 12px; padding-bottom: 20px; }
 }

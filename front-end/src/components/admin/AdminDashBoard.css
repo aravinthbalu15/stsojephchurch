@@ -1,13 +1,72 @@
-/* AdminDashBoard.css */
-.card {
-    border-radius: 1rem;
-    transition: all 0.2s ease-in-out;
+/* Reduce empty spaces for better mobile layout */
+.admin-dash-board {
+  padding-top: 140px;
+  padding-bottom: 100px;
+}
+
+.dashboard-title {
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+/* Card styling */
+.dashboard-card {
+  border-radius: 1rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+  transform: scale(1.03);
+}
+
+/* Make text readable on all screens */
+.dashboard-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Button style */
+.dashboard-btn {
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* -----------------------------------------
+   📱 Mobile Responsive Adjustments
+----------------------------------------- */
+@media (max-width: 768px) {
+  .admin-dash-board {
+    padding-top: 120px;
+    padding-bottom: 80px;
   }
-  .card:hover {
-    transform: scale(1.03);
+
+  .dashboard-title {
+    font-size: 1.6rem;
   }
-  
-  .admin-dash-board{
-    padding-top: 190px;
-    padding-bottom: 150px;
+
+  .dashboard-card-title {
+    font-size: 1rem;
   }
+
+  .dashboard-btn {
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-dash-board {
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+
+  .dashboard-title {
+    font-size: 1.4rem;
+  }
+
+  .dashboard-btn {
+    padding: 8px 0;
+  }
+}

@@ -28,7 +28,7 @@ const AdminDashBoard = () => {
   ];
 
   return (
-    <div className=" container admin-dash-board mt-5">
+    <div className="admin-dash-board container mt-4 ">
       <h2 className="text-center mb-4">📊 Admin Dashboard</h2>
       <Row className="g-4">
         {buttons.map((btn, index) => (
