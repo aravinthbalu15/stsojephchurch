@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 const President = () => {
   const [data, setData] = useState(null);
-  const { i18n } = useTranslation(); // Detect selected language: en | ta
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     axios
@@ -22,14 +22,13 @@ const President = () => {
   if (!data) return <PresidentSkeleton />;
 
   const lang = i18n.language === "ta" ? "ta" : "en";
+  const getText = (obj) => obj?.[lang] || obj?.en || "";
 
   const items = [
     { role: "Head", ...data.head },
     { role: "Bishop", ...data.bishop },
     { role: "Parish Priest", ...data.parishPriest },
   ];
-
-  const getText = (obj) => obj?.[lang] || obj?.en || ""; // Fallback logic
 
   return (
     <div className="container text-center">
@@ -56,10 +55,6 @@ const President = () => {
               </h1>
 
               {/* DESCRIPTION FIELDS */}
-              {item.description && (
-                <p className="president-desc">{getText(item.description)}</p>
-              )}
-
               {item.description1 && (
                 <p className="president-desc">{getText(item.description1)}</p>
               )}

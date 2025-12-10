@@ -52,21 +52,22 @@ export const updatePresident = async (req, res) => {
     // ---------------------------
     // BISHOP
     // ---------------------------
-    if (req.body.bishop) {
-      await uploadImage("bishop", "president/bishop");
+   if (req.body.bishop) {
+  await uploadImage("bishop", "president/bishop");
 
-      p.bishop.name.en = req.body.bishop.name.en;
-      p.bishop.name.ta = req.body.bishop.name.ta;
+  p.bishop.name.en = req.body.bishop.name.en;
+  p.bishop.name.ta = req.body.bishop.name.ta;
 
-      p.bishop.description1.en = req.body.bishop.description1.en;
-      p.bishop.description1.ta = req.body.bishop.description1.ta;
+  p.bishop.description1.en = req.body.bishop.description1.en;
+  p.bishop.description1.ta = req.body.bishop.description1.ta;
 
-      p.bishop.description2.en = req.body.bishop.description2.en;
-      p.bishop.description2.ta = req.body.bishop.description2.ta;
+  p.bishop.description2.en = req.body.bishop.description2.en;
+  p.bishop.description2.ta = req.body.bishop.description2.ta;
 
-      p.bishop.description3.en = req.body.bishop.description3.en;
-      p.bishop.description3.ta = req.body.bishop.description3.ta;
-    }
+  p.bishop.description3.en = req.body.bishop.description3.en;
+  p.bishop.description3.ta = req.body.bishop.description3.ta;
+}
+
 
     // ---------------------------
     // PARISH PRIEST
