@@ -2,7 +2,7 @@ import Event from "../models/eventModel.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
-// Upload Event
+// CREATE EVENT
 export const uploadEvent = async (req, res) => {
   try {
     let uploadedImage = null;
@@ -32,7 +32,7 @@ export const uploadEvent = async (req, res) => {
   }
 };
 
-// Get All Events
+// READ EVENTS
 export const getEvents = async (req, res) => {
   try {
     const events = await Event.find().sort({ createdAt: -1 });
@@ -42,7 +42,7 @@ export const getEvents = async (req, res) => {
   }
 };
 
-// Update Event
+// UPDATE EVENT
 export const updateEvent = async (req, res) => {
   try {
     let imageUrl = req.body.image;
@@ -53,13 +53,14 @@ export const updateEvent = async (req, res) => {
           { folder: "events" },
           (err, result) => (err ? reject(err) : resolve(result))
         );
+
         streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
       });
 
       imageUrl = upload.secure_url;
     }
 
-    const updated = await Event.findByIdAndUpdate(
+    const updatedEvent = await Event.findByIdAndUpdate(
       req.params.id,
       {
         description_en: req.body.description_en,
@@ -70,13 +71,13 @@ export const updateEvent = async (req, res) => {
       { new: true }
     );
 
-    res.json(updated);
+    res.json(updatedEvent);
   } catch (error) {
     res.status(500).json({ message: "Event update failed", error });
   }
 };
 
-// Delete Event
+// DELETE EVENT
 export const deleteEvent = async (req, res) => {
   try {
     await Event.findByIdAndDelete(req.params.id);

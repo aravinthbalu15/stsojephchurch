@@ -8,7 +8,7 @@ import {
 } from "../controllers/eventController.js";
 
 const router = express.Router();
-const upload = multer(); // memory buffer
+const upload = multer(); // memory buffer for Cloudinary
 
 router.post("/upload", upload.single("image"), uploadEvent);
 router.get("/", getEvents);

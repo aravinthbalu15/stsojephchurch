@@ -35,12 +35,14 @@ app.use(express.urlencoded({ limit: "200mb", extended: true }));
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://stsojephchurch.vercel.app",
+    "https://stsojephchurch.onrender.com"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.options("*", cors()); // 🔥 VERY IMPORTANT
+
+app.options("*", cors()); // IMPORTANT for file uploads
+
 
 
 /* ---------------------------------------
