@@ -32,16 +32,24 @@ app.use(express.urlencoded({ limit: "200mb", extended: true }));
 /* ---------------------------------------
    FIX 2: Fix CORS error
 ---------------------------------------- */
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://stsojephchurch.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
 
-app.options("*", cors()); // IMPORTANT for file uploads
+      // ⭐ Add all Vercel domains
+      "https://stsojephchurch.vercel.app",
+      "https://stsojephchurch-git-main-aravinthbalu15s-projects.vercel.app",
+      "https://stsojephchurch-2crw1t6d0-aravinthbalu15s-projects.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.options("*", cors());
 
 
 
