@@ -1,6 +1,9 @@
 import President from "../models/presidentModel.js";
 import cloudinary from "../config/cloudinary.js";
 
+// =========================
+// GET PRESIDENT
+// =========================
 export const getPresident = async (req, res) => {
   try {
     const data = await President.findOne();
@@ -10,62 +13,96 @@ export const getPresident = async (req, res) => {
   }
 };
 
+// =========================
+// UPDATE PRESIDENT
+// =========================
 export const updatePresident = async (req, res) => {
   try {
     console.log("🔥 Received Body:", JSON.stringify(req.body, null, 2));
 
+    // Fetch existing OR create new record
     let p = await President.findOne();
     if (!p) p = new President();
 
+    // ------------------------------
+    // Ensure correct nested structure
+    // ------------------------------
+    const ensureFields = (obj) => {
+      if (!obj) obj = {};
+
+      if (!obj.name) obj.name = { en: "", ta: "" };
+      if (!obj.description1) obj.description1 = { en: "", ta: "" };
+      if (!obj.description2) obj.description2 = { en: "", ta: "" };
+      if (!obj.description3) obj.description3 = { en: "", ta: "" };
+      if (!obj.imageUrl) obj.imageUrl = "";
+      if (!obj.cloudinaryId) obj.cloudinaryId = "";
+
+      return obj;
+    };
+
+    p.head = ensureFields(p.head);
+    p.bishop = ensureFields(p.bishop);
+    p.parishPriest = ensureFields(p.parishPriest);
+
+    // ------------------------------
+    // Cloudinary Upload Helper
+    // ------------------------------
     const uploadImage = async (section, folder) => {
       const image = req.body[section]?.image;
+      if (!image) return; // No new image uploaded
 
-      console.log(`📸 Upload check for: ${section}`, image ? "image found" : "no image");
+      // Remove Base64 prefix
+      const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, "");
 
-      if (!image) return;
-
-      if (p[section]?.cloudinaryId) {
-        console.log(`🗑 Deleting old image: ${p[section].cloudinaryId}`);
+      // Delete old Cloudinary image
+      if (p[section].cloudinaryId) {
         await cloudinary.uploader.destroy(p[section].cloudinaryId);
       }
 
-      console.log("⬆️ Uploading new image for:", section);
-      const upload = await cloudinary.uploader.upload(image, { folder });
+      // Upload new image
+      const upload = await cloudinary.uploader.upload(
+        `data:image/jpeg;base64,${cleanBase64}`,
+        { folder }
+      );
 
       p[section].imageUrl = upload.secure_url;
       p[section].cloudinaryId = upload.public_id;
     };
 
-    if (req.body.head) {
-      await uploadImage("head", "president/head");
+    // ------------------------------
+    // Update Section Helper
+    // ------------------------------
+    const updateSection = async (sectionName, folder) => {
+      const body = req.body[sectionName];
+      if (!body) return;
 
-      p.head.name = req.body.head.name;
-      p.head.description1 = req.body.head.description1;
-      p.head.description2 = req.body.head.description2;
-      p.head.description3 = req.body.head.description3;
-    }
+      // Upload image if provided
+      await uploadImage(sectionName, folder);
 
-    if (req.body.bishop) {
-      await uploadImage("bishop", "president/bishop");
+      // Write text values
+      p[sectionName].name.en = body.name.en;
+      p[sectionName].name.ta = body.name.ta;
 
-      p.bishop.name = req.body.bishop.name;
-      p.bishop.description1 = req.body.bishop.description1;
-      p.bishop.description2 = req.body.bishop.description2;
-      p.bishop.description3 = req.body.bishop.description3;
-    }
+      p[sectionName].description1.en = body.description1.en;
+      p[sectionName].description1.ta = body.description1.ta;
 
-    if (req.body.parishPriest) {
-      await uploadImage("parishPriest", "president/parishPriest");
+      p[sectionName].description2.en = body.description2.en;
+      p[sectionName].description2.ta = body.description2.ta;
 
-      p.parishPriest.name = req.body.parishPriest.name;
-      p.parishPriest.description1 = req.body.parishPriest.description1;
-      p.parishPriest.description2 = req.body.parishPriest.description2;
-      p.parishPriest.description3 = req.body.parishPriest.description3;
-    }
+      p[sectionName].description3.en = body.description3.en;
+      p[sectionName].description3.ta = body.description3.ta;
+    };
 
-    console.log("💾 Saving to MongoDB...");
+    // 🔥 Apply updates to all sections
+    await updateSection("head", "president/head");
+    await updateSection("bishop", "president/bishop");
+    await updateSection("parishPriest", "president/parishPriest");
+
+    // ------------------------------
+    // SAVE FINAL RESULT
+    // ------------------------------
     const saved = await p.save();
-    console.log("✅ Saved successfully");
+    console.log("✅ President data updated successfully");
 
     res.status(200).json(saved);
 
@@ -74,4 +111,3 @@ export const updatePresident = async (req, res) => {
     res.status(500).json({ message: "Update failed", error });
   }
 };
-
