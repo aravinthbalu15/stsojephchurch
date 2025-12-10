@@ -35,7 +35,7 @@ app.use(express.urlencoded({ limit: "200mb", extended: true }));
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://stsojephchurch.onrender.com"
+    "https://stsojephchurch.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
