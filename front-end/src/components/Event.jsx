@@ -1,67 +1,90 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
-import axios from "axios";
-import { useTranslation } from "react-i18next";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../Style/Event.css";
-const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const UpcomingEvents = () => {
-  const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/events`);
-        setEvents(res.data || []);
-      } catch (err) {
-        console.error("fetch events:", err.response?.data || err.message);
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/events`
+        );
+        setEvents(response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
       }
     };
+
     fetchEvents();
   }, []);
 
-  const eventsCurrent = events.filter((e) => (e.category || "").toLowerCase() === "current");
-  const eventsUpcoming = events.filter((e) => (e.category || "").toLowerCase() === "upcoming");
+  // Click → Open full event page
+  const handleEventClick = (eventId) => {
+    navigate(`/event/${eventId}`);
+  };
 
-  const sliderSettings = (count) => ({
+  // Slider settings
+  const getSliderSettings = (count) => ({
     dots: true,
     infinite: count > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: count > 1,
-    autoplaySpeed: 3500,
+    autoplaySpeed: 3000,
     arrows: count > 1,
+    swipe: count > 1,
+    draggable: count > 1,
     responsive: [
       {
         breakpoint: 768,
-        settings: { arrows: false },
+        settings: { slidesToShow: 1, arrows: false },
       },
     ],
   });
 
-  const getText = (ev) => {
-    const lang = i18n.language?.startsWith("ta") ? "ta" : "en";
-    return lang === "ta" ? ev.description_ta : ev.description_en;
+  // Categorize events
+  const currentEvents = events.filter(e => e.category === "current");
+  const upcomingEvents = events.filter(e => e.category === "upcoming");
+
+  // Select correct description based on language
+  const getDescription = (ev) => {
+    return i18n.language === "ta" ? ev.description_ta : ev.description_en;
   };
 
   return (
-    <div className="container my-4 upcoming-events-component">
-      <div className="row gy-4">
-        <div className="col-lg-6 col-md-12">
-          <div className="p-3 border rounded">
-            <h4 className="text-center mb-3">{t("current_events") || "Current Events"}</h4>
-            {eventsCurrent.length === 0 ? (
-              <p className="text-center">{t("no_current_events") || "No current events."}</p>
+    <div className="upcoming-events container py-4">
+
+      <div className="row justify-content-between">
+
+        {/* CURRENT EVENTS */}
+        <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+          <div className="event-box p-3 shadow-sm">
+            <h3 className="text-center event-titles">
+              {t("current_events")}
+            </h3>
+
+            {currentEvents.length === 0 ? (
+              <p className="text-center">{t("no_current_events")}</p>
             ) : (
-              <Slider {...sliderSettings(eventsCurrent.length)}>
-                {eventsCurrent.map((ev) => (
-                  <div key={`c-${ev._id}`} className="text-center">
-                    <img src={ev.image} alt="event" style={{ width: "100%", maxHeight: 380, objectFit: "cover" }} />
-                    <p className="mt-2">{getText(ev)}</p>
+              <Slider {...getSliderSettings(currentEvents.length)}>
+                {currentEvents.map((ev) => (
+                  <div
+                    key={ev._id}
+                    className="event-card"
+                    onClick={() => handleEventClick(ev._id)}
+                  >
+                    <img src={ev.image} alt="event" className="event-image" />
+                    <p className="event-caption">{getDescription(ev)}</p>
                   </div>
                 ))}
               </Slider>
@@ -69,23 +92,32 @@ const UpcomingEvents = () => {
           </div>
         </div>
 
-        <div className="col-lg-6 col-md-12">
-          <div className="p-3 border rounded">
-            <h4 className="text-center mb-3">{t("upcoming_events") || "Upcoming Events"}</h4>
-            {eventsUpcoming.length === 0 ? (
-              <p className="text-center">{t("no_upcoming_events") || "No upcoming events."}</p>
+        {/* UPCOMING EVENTS */}
+        <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+          <div className="event-box p-3 shadow-sm">
+            <h3 className="text-center event-titles">
+              {t("upcoming_events")}
+            </h3>
+
+            {upcomingEvents.length === 0 ? (
+              <p className="text-center">{t("no_upcoming_events")}</p>
             ) : (
-              <Slider {...sliderSettings(eventsUpcoming.length)}>
-                {eventsUpcoming.map((ev) => (
-                  <div key={`u-${ev._id}`} className="text-center">
-                    <img src={ev.image} alt="event" style={{ width: "100%", maxHeight: 380, objectFit: "cover" }} />
-                    <p className="mt-2">{getText(ev)}</p>
+              <Slider {...getSliderSettings(upcomingEvents.length)}>
+                {upcomingEvents.map((ev) => (
+                  <div
+                    key={ev._id}
+                    className="event-card"
+                    onClick={() => handleEventClick(ev._id)}
+                  >
+                    <img src={ev.image} alt="event" className="event-image" />
+                    <p className="event-caption">{getDescription(ev)}</p>
                   </div>
                 ))}
               </Slider>
             )}
           </div>
         </div>
+
       </div>
     </div>
   );
