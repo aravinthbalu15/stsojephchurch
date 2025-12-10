@@ -1,9 +1,37 @@
-import express from "express";
-import { getPresident, updatePresident } from "../controllers/presidentController.js";
+import mongoose from "mongoose";
 
-const router = express.Router();
+const langField = {
+  en: { type: String, default: "" },
+  ta: { type: String, default: "" },
+};
 
-router.get("/", getPresident);
-router.put("/", updatePresident);
+const presidentSchema = new mongoose.Schema(
+  {
+    head: {
+      name: langField,
+      description: langField,
+      imageUrl: String,
+      cloudinaryId: String,
+    },
 
-export default router;
+    bishop: {
+      name: langField,
+      description: langField,
+      description1: langField,
+      imageUrl: String,
+      cloudinaryId: String,
+    },
+
+    parishPriest: {
+      name: langField,
+      description1: langField,
+      description2: langField,
+      description3: langField,
+      imageUrl: String,
+      cloudinaryId: String,
+    },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("President", presidentSchema);

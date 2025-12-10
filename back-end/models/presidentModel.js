@@ -1,37 +1,27 @@
 import mongoose from "mongoose";
 
-const langField = {
-  en: { type: String, default: "" },
-  ta: { type: String, default: "" },
-};
-
 const presidentSchema = new mongoose.Schema(
   {
     head: {
-      name: langField,
-      description1: langField,
-      description2: langField,
-      description3: langField,
-      imageUrl: String,
-      cloudinaryId: String,
+      name: { type: String, required: true },
+      description: { type: String },
+      imageUrl: { type: String },
+      cloudinaryId: { type: String },
     },
-
     bishop: {
-      name: langField,
-      description1: langField,
-      description2: langField,
-      description3: langField,
-      imageUrl: String,
-      cloudinaryId: String,
+      name: { type: String, required: true },
+      description: { type: String },
+      description1: { type: String },
+      imageUrl: { type: String },
+      cloudinaryId: { type: String },
     },
-
     parishPriest: {
-      name: langField,
-      description1: langField,
-      description2: langField,
-      description3: langField,
-      imageUrl: String,
-      cloudinaryId: String,
+      name: { type: String, required: true },
+      description1: { type: String },
+      description2: { type: String },
+      description3: { type: String },
+      imageUrl: { type: String },
+      cloudinaryId: { type: String },
     },
   },
   { timestamps: true }
