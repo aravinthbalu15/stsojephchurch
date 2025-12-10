@@ -1,9 +1,9 @@
-const Event = require("../models/eventModel");
-const cloudinary = require("../config/cloudinary");
-const streamifier = require("streamifier");
+import Event from "../models/eventModel.js";
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
 
 // Upload Event
-exports.uploadEvent = async (req, res) => {
+export const uploadEvent = async (req, res) => {
   try {
     let uploadedImage = null;
 
@@ -21,28 +21,30 @@ exports.uploadEvent = async (req, res) => {
       description_en: req.body.description_en,
       description_ta: req.body.description_ta,
       category: req.body.category,
-      image: uploadedImage.secure_url,
+      image: uploadedImage ? uploadedImage.secure_url : "",
     });
 
     await newEvent.save();
     res.status(201).json(newEvent);
   } catch (error) {
+    console.error("UPLOAD ERROR:", error);
     res.status(500).json({ message: "Event upload failed", error });
   }
 };
 
 // Get All Events
-exports.getEvents = async (req, res) => {
+export const getEvents = async (req, res) => {
   try {
     const events = await Event.find().sort({ createdAt: -1 });
     res.json(events);
   } catch (error) {
+    console.error("FETCH ERROR:", error);
     res.status(500).json({ message: "Unable to fetch events", error });
   }
 };
 
 // Update Event
-exports.updateEvent = async (req, res) => {
+export const updateEvent = async (req, res) => {
   try {
     let imageUrl = req.body.image;
 
@@ -70,16 +72,18 @@ exports.updateEvent = async (req, res) => {
 
     res.json(updated);
   } catch (error) {
+    console.error("UPDATE ERROR:", error);
     res.status(500).json({ message: "Event update failed", error });
   }
 };
 
 // Delete Event
-exports.deleteEvent = async (req, res) => {
+export const deleteEvent = async (req, res) => {
   try {
     await Event.findByIdAndDelete(req.params.id);
     res.json({ message: "Event deleted successfully" });
   } catch (error) {
+    console.error("DELETE ERROR:", error);
     res.status(500).json({ message: "Event deletion failed", error });
   }
 };
