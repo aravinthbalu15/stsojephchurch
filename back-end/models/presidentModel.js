@@ -9,16 +9,18 @@ const presidentSchema = new mongoose.Schema(
   {
     head: {
       name: langField,
-      description: langField,
+      description1: langField,
+      description2: langField,
+      description3: langField,
       imageUrl: String,
       cloudinaryId: String,
     },
 
     bishop: {
       name: langField,
-      description: langField,
       description1: langField,
       description2: langField,
+      description3: langField,
       imageUrl: String,
       cloudinaryId: String,
     },

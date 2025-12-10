@@ -8,25 +8,28 @@ import { useTranslation } from "react-i18next";
 
 const President = () => {
   const [data, setData] = useState(null);
-  const { i18n } = useTranslation();   // ⭐ Detect selected language (en | ta)
+  const { i18n } = useTranslation(); // Detect selected language: en | ta
 
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/president`)
-      .then((res) => setData(res.data));
+      .then((res) => setData(res.data))
+      .catch((err) => console.error("Fetch error:", err));
 
     AOS.init();
   }, []);
 
   if (!data) return <PresidentSkeleton />;
 
-  const lang = i18n.language === "ta" ? "ta" : "en"; // ⭐ Choose EN or TA dynamically
+  const lang = i18n.language === "ta" ? "ta" : "en";
 
   const items = [
     { role: "Head", ...data.head },
     { role: "Bishop", ...data.bishop },
     { role: "Parish Priest", ...data.parishPriest },
   ];
+
+  const getText = (obj) => obj?.[lang] || obj?.en || ""; // Fallback logic
 
   return (
     <div className="container text-center">
@@ -43,31 +46,32 @@ const President = () => {
               <img
                 loading="lazy"
                 src={item.imageUrl}
-                alt={item.name?.[lang]}
+                alt={getText(item.name)}
                 className="president-img"
               />
 
               {/* NAME */}
               <h1 className="president-name">
-                {item.name?.[lang] || item.name?.en}
+                {getText(item.name)}
               </h1>
 
-              {/* MULTIPLE DESCRIPTIONS (EN/TA) */}
-              {item.description?.[lang] && (
-                <p className="president-desc">{item.description[lang]}</p>
+              {/* DESCRIPTION FIELDS */}
+              {item.description && (
+                <p className="president-desc">{getText(item.description)}</p>
               )}
 
-              {item.description1?.[lang] && (
-                <p className="president-desc">{item.description1[lang]}</p>
+              {item.description1 && (
+                <p className="president-desc">{getText(item.description1)}</p>
               )}
 
-              {item.description2?.[lang] && (
-                <p className="president-desc">{item.description2[lang]}</p>
+              {item.description2 && (
+                <p className="president-desc">{getText(item.description2)}</p>
               )}
 
-              {item.description3?.[lang] && (
-                <p className="president-desc">{item.description3[lang]}</p>
+              {item.description3 && (
+                <p className="president-desc">{getText(item.description3)}</p>
               )}
+
             </div>
           </div>
         ))}
