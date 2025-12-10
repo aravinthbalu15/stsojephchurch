@@ -1,9 +1,9 @@
-import Event from "../models/eventModel.js";
-import cloudinary from "../config/cloudinary.js";
-import streamifier from "streamifier";
+const Event = require("../models/eventModel");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
 
-// CREATE EVENT
-export const uploadEvent = async (req, res) => {
+// Upload Event
+exports.uploadEvent = async (req, res) => {
   try {
     let uploadedImage = null;
 
@@ -13,7 +13,6 @@ export const uploadEvent = async (req, res) => {
           { folder: "events" },
           (err, result) => (err ? reject(err) : resolve(result))
         );
-
         streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
       });
     }
@@ -22,7 +21,7 @@ export const uploadEvent = async (req, res) => {
       description_en: req.body.description_en,
       description_ta: req.body.description_ta,
       category: req.body.category,
-      image: uploadedImage?.secure_url,
+      image: uploadedImage.secure_url,
     });
 
     await newEvent.save();
@@ -32,8 +31,8 @@ export const uploadEvent = async (req, res) => {
   }
 };
 
-// READ EVENTS
-export const getEvents = async (req, res) => {
+// Get All Events
+exports.getEvents = async (req, res) => {
   try {
     const events = await Event.find().sort({ createdAt: -1 });
     res.json(events);
@@ -42,8 +41,8 @@ export const getEvents = async (req, res) => {
   }
 };
 
-// UPDATE EVENT
-export const updateEvent = async (req, res) => {
+// Update Event
+exports.updateEvent = async (req, res) => {
   try {
     let imageUrl = req.body.image;
 
@@ -53,14 +52,12 @@ export const updateEvent = async (req, res) => {
           { folder: "events" },
           (err, result) => (err ? reject(err) : resolve(result))
         );
-
         streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
       });
-
       imageUrl = upload.secure_url;
     }
 
-    const updatedEvent = await Event.findByIdAndUpdate(
+    const updated = await Event.findByIdAndUpdate(
       req.params.id,
       {
         description_en: req.body.description_en,
@@ -71,14 +68,14 @@ export const updateEvent = async (req, res) => {
       { new: true }
     );
 
-    res.json(updatedEvent);
+    res.json(updated);
   } catch (error) {
     res.status(500).json({ message: "Event update failed", error });
   }
 };
 
-// DELETE EVENT
-export const deleteEvent = async (req, res) => {
+// Delete Event
+exports.deleteEvent = async (req, res) => {
   try {
     await Event.findByIdAndDelete(req.params.id);
     res.json({ message: "Event deleted successfully" });

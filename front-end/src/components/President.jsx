@@ -4,17 +4,23 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "../Style/President.css";
 import PresidentSkeleton from "./PresidentSkeleton";
-
+import { useTranslation } from "react-i18next";
 
 const President = () => {
   const [data, setData] = useState(null);
+  const { i18n } = useTranslation();   // ⭐ Detect selected language (en | ta)
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/api/president`).then((res) => setData(res.data));
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/president`)
+      .then((res) => setData(res.data));
+
     AOS.init();
   }, []);
 
   if (!data) return <PresidentSkeleton />;
+
+  const lang = i18n.language === "ta" ? "ta" : "en"; // ⭐ Choose EN or TA dynamically
 
   const items = [
     { role: "Head", ...data.head },
@@ -32,15 +38,36 @@ const President = () => {
             data-aos={idx % 2 ? "fade-left" : "fade-right"}
           >
             <div className="president-card">
-              <img loading="lazy" src={item.imageUrl} alt={item.name} className="president-img" />
 
-              {/* <h4 className="role-title mt-2">{item.role}</h4> */}
-              <h1 className="president-name">{item.name}</h1>
+              {/* IMAGE */}
+              <img
+                loading="lazy"
+                src={item.imageUrl}
+                alt={item.name?.[lang]}
+                className="president-img"
+              />
 
-              {item.description && <p className="president-name">{item.description}</p>}
-              {item.description1 && <p className="president-name">{item.description1}</p>}
-              {item.description2 && <p className="president-name">{item.description2}</p>}
-              {item.description3 && <p className="president-name">{item.description3}</p>}
+              {/* NAME */}
+              <h1 className="president-name">
+                {item.name?.[lang] || item.name?.en}
+              </h1>
+
+              {/* MULTIPLE DESCRIPTIONS (EN/TA) */}
+              {item.description?.[lang] && (
+                <p className="president-desc">{item.description[lang]}</p>
+              )}
+
+              {item.description1?.[lang] && (
+                <p className="president-desc">{item.description1[lang]}</p>
+              )}
+
+              {item.description2?.[lang] && (
+                <p className="president-desc">{item.description2[lang]}</p>
+              )}
+
+              {item.description3?.[lang] && (
+                <p className="president-desc">{item.description3[lang]}</p>
+              )}
             </div>
           </div>
         ))}

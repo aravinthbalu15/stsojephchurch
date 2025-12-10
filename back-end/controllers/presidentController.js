@@ -3,83 +3,85 @@ import cloudinary from "../config/cloudinary.js";
 
 export const getPresident = async (req, res) => {
   try {
-    const president = await President.findOne();
-    res.status(200).json(president);
+    const data = await President.findOne();
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching data", error });
+    res.status(500).json({ message: "Error fetching president data", error });
   }
 };
 
 export const updatePresident = async (req, res) => {
   try {
-    let president = await President.findOne();
-    if (!president) {
-      president = new President();
-    }
+    let p = await President.findOne();
+    if (!p) p = new President();
 
-    // HEAD UPDATE
+    // Helper for Cloudinary
+    const uploadImage = async (section, folder) => {
+      if (!req.body[section].image) return;
+
+      if (p[section].cloudinaryId) {
+        await cloudinary.uploader.destroy(p[section].cloudinaryId);
+      }
+
+      const upload = await cloudinary.uploader.upload(req.body[section].image, { folder });
+
+      p[section].imageUrl = upload.secure_url;
+      p[section].cloudinaryId = upload.public_id;
+    };
+
+    // ---------------------------
+    // HEAD
+    // ---------------------------
     if (req.body.head) {
-      if (req.body.head.image) {
-        if (president.head.cloudinaryId) {
-          await cloudinary.uploader.destroy(president.head.cloudinaryId);
-        }
+      await uploadImage("head", "president/head");
 
-        const upload = await cloudinary.uploader.upload(req.body.head.image, {
-          folder: "president/head",
-        });
+      p.head.name.en = req.body.head.name.en;
+      p.head.name.ta = req.body.head.name.ta;
 
-        president.head.imageUrl = upload.secure_url;
-        president.head.cloudinaryId = upload.public_id;
-      }
-
-      president.head.name = req.body.head.name;
-      president.head.description = req.body.head.description;
+      p.head.description.en = req.body.head.description.en;
+      p.head.description.ta = req.body.head.description.ta;
     }
 
-    // BISHOP UPDATE
+    // ---------------------------
+    // BISHOP
+    // ---------------------------
     if (req.body.bishop) {
-      if (req.body.bishop.image) {
-        if (president.bishop.cloudinaryId) {
-          await cloudinary.uploader.destroy(president.bishop.cloudinaryId);
-        }
+      await uploadImage("bishop", "president/bishop");
 
-        const upload = await cloudinary.uploader.upload(req.body.bishop.image, {
-          folder: "president/bishop",
-        });
+      p.bishop.name.en = req.body.bishop.name.en;
+      p.bishop.name.ta = req.body.bishop.name.ta;
 
-        president.bishop.imageUrl = upload.secure_url;
-        president.bishop.cloudinaryId = upload.public_id;
-      }
+      p.bishop.description.en = req.body.bishop.description.en;
+      p.bishop.description.ta = req.body.bishop.description.ta;
 
-      president.bishop.name = req.body.bishop.name;
-      president.bishop.description = req.body.bishop.description;
-      president.bishop.description1 = req.body.bishop.description1;
-      president.bishop.description2 = req.body.bishop.description2;
+      p.bishop.description1.en = req.body.bishop.description1.en;
+      p.bishop.description1.ta = req.body.bishop.description1.ta;
+
+      p.bishop.description2.en = req.body.bishop.description2.en;
+      p.bishop.description2.ta = req.body.bishop.description2.ta;
     }
 
-    // PARISH PRIEST UPDATE
+    // ---------------------------
+    // PARISH PRIEST
+    // ---------------------------
     if (req.body.parishPriest) {
-      if (req.body.parishPriest.image) {
-        if (president.parishPriest.cloudinaryId) {
-          await cloudinary.uploader.destroy(president.parishPriest.cloudinaryId);
-        }
+      await uploadImage("parishPriest", "president/parishPriest");
 
-        const upload = await cloudinary.uploader.upload(req.body.parishPriest.image, {
-          folder: "president/parishPriest",
-        });
+      p.parishPriest.name.en = req.body.parishPriest.name.en;
+      p.parishPriest.name.ta = req.body.parishPriest.name.ta;
 
-        president.parishPriest.imageUrl = upload.secure_url;
-        president.parishPriest.cloudinaryId = upload.public_id;
-      }
+      p.parishPriest.description1.en = req.body.parishPriest.description1.en;
+      p.parishPriest.description1.ta = req.body.parishPriest.description1.ta;
 
-      president.parishPriest.name = req.body.parishPriest.name;
-      president.parishPriest.description1 = req.body.parishPriest.description1;
-      president.parishPriest.description2 = req.body.parishPriest.description2;
-      president.parishPriest.description3 = req.body.parishPriest.description3;
+      p.parishPriest.description2.en = req.body.parishPriest.description2.en;
+      p.parishPriest.description2.ta = req.body.parishPriest.description2.ta;
+
+      p.parishPriest.description3.en = req.body.parishPriest.description3.en;
+      p.parishPriest.description3.ta = req.body.parishPriest.description3.ta;
     }
 
-    const updated = await president.save();
-    res.status(200).json(updated);
+    const saved = await p.save();
+    res.status(200).json(saved);
 
   } catch (error) {
     console.error("Error updating:", error);

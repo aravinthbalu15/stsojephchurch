@@ -3,31 +3,47 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "./AdminPresident.css";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/president`;  // ⭐ GLOBAL URL
+const API_URL = `${import.meta.env.VITE_API_URL}/api/president`;
 
 const AdminPresident = () => {
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState({
-    head: { name: "", description: "", imageUrl: "", image: "" },
-    bishop: {
-      name: "",
-      description: "",
-      description1: "",
-      description2: "",
+    head: {
+      name_en: "",
+      name_ta: "",
+      desc_en: "",
+      desc_ta: "",
       imageUrl: "",
-      image: "",
+      image: ""
+    },
+    bishop: {
+      name_en: "",
+      name_ta: "",
+      desc_en: "",
+      desc_ta: "",
+      desc1_en: "",
+      desc1_ta: "",
+      desc2_en: "",
+      desc2_ta: "",
+      imageUrl: "",
+      image: ""
     },
     parishPriest: {
-      name: "",
-      description1: "",
-      description2: "",
-      description3: "",
+      name_en: "",
+      name_ta: "",
+      desc1_en: "",
+      desc1_ta: "",
+      desc2_en: "",
+      desc2_ta: "",
+      desc3_en: "",
+      desc3_ta: "",
       imageUrl: "",
-      image: "",
-    },
+      image: ""
+    }
   });
 
+  // Convert file to compressed base64
   const fileToBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -54,14 +70,46 @@ const AdminPresident = () => {
     try {
       const res = await axios.get(API_URL);
       if (res.data) {
+        const p = res.data;
+
         setData({
-          head: { ...res.data.head, image: "" },
-          bishop: { ...res.data.bishop, image: "" },
-          parishPriest: { ...res.data.parishPriest, image: "" },
+          head: {
+            name_en: p.head.name?.en || "",
+            name_ta: p.head.name?.ta || "",
+            desc_en: p.head.description?.en || "",
+            desc_ta: p.head.description?.ta || "",
+            imageUrl: p.head.imageUrl || "",
+            image: ""
+          },
+
+          bishop: {
+            name_en: p.bishop.name?.en || "",
+            name_ta: p.bishop.name?.ta || "",
+            desc_en: p.bishop.description?.en || "",
+            desc_ta: p.bishop.description?.ta || "",
+            desc1_en: p.bishop.description1?.en || "",
+            desc1_ta: p.bishop.description1?.ta || "",
+            desc2_en: p.bishop.description2?.en || "",
+            desc2_ta: p.bishop.description2?.ta || "",
+            imageUrl: p.bishop.imageUrl || "",
+            image: ""
+          },
+
+          parishPriest: {
+            name_en: p.parishPriest.name?.en || "",
+            name_ta: p.parishPriest.name?.ta || "",
+            desc1_en: p.parishPriest.description1?.en || "",
+            desc1_ta: p.parishPriest.description1?.ta || "",
+            desc2_en: p.parishPriest.description2?.en || "",
+            desc2_ta: p.parishPriest.description2?.ta || "",
+            desc3_en: p.parishPriest.description3?.en || "",
+            desc3_ta: p.parishPriest.description3?.ta || "",
+            imageUrl: p.parishPriest.imageUrl || "",
+            image: ""
+          }
         });
       }
     } catch (err) {
-      console.error(err);
       Swal.fire("Error", "Failed to load data", "error");
     }
   };
@@ -73,7 +121,7 @@ const AdminPresident = () => {
   const handleInput = (section, field, value) => {
     setData((prev) => ({
       ...prev,
-      [section]: { ...prev[section], [field]: value },
+      [section]: { ...prev[section], [field]: value }
     }));
   };
 
@@ -84,7 +132,7 @@ const AdminPresident = () => {
 
     setData((prev) => ({
       ...prev,
-      [section]: { ...prev[section], image: compressed, imageUrl: compressed },
+      [section]: { ...prev[section], imageUrl: compressed, image: compressed }
     }));
   };
 
@@ -93,24 +141,26 @@ const AdminPresident = () => {
 
     const requestBody = {
       head: {
-        name: data.head.name,
-        description: data.head.description,
-        image: data.head.image || null,
+        name: { en: data.head.name_en, ta: data.head.name_ta },
+        description: { en: data.head.desc_en, ta: data.head.desc_ta },
+        image: data.head.image || null
       },
+
       bishop: {
-        name: data.bishop.name,
-        description: data.bishop.description,
-        description1: data.bishop.description1,
-        description2: data.bishop.description2,
-        image: data.bishop.image || null,
+        name: { en: data.bishop.name_en, ta: data.bishop.name_ta },
+        description: { en: data.bishop.desc_en, ta: data.bishop.desc_ta },
+        description1: { en: data.bishop.desc1_en, ta: data.bishop.desc1_ta },
+        description2: { en: data.bishop.desc2_en, ta: data.bishop.desc2_ta },
+        image: data.bishop.image || null
       },
+
       parishPriest: {
-        name: data.parishPriest.name,
-        description1: data.parishPriest.description1,
-        description2: data.parishPriest.description2,
-        description3: data.parishPriest.description3,
-        image: data.parishPriest.image || null,
-      },
+        name: { en: data.parishPriest.name_en, ta: data.parishPriest.name_ta },
+        description1: { en: data.parishPriest.desc1_en, ta: data.parishPriest.desc1_ta },
+        description2: { en: data.parishPriest.desc2_en, ta: data.parishPriest.desc2_ta },
+        description3: { en: data.parishPriest.desc3_en, ta: data.parishPriest.desc3_ta },
+        image: data.parishPriest.image || null
+      }
     };
 
     try {
@@ -118,113 +168,69 @@ const AdminPresident = () => {
       Swal.fire("Success!", "Updated Successfully", "success");
       loadData();
     } catch (err) {
-      console.error(err);
       Swal.fire("Error!", "Update failed", "error");
     }
 
     setLoading(false);
   };
 
+  // -------------------- UI ----------------------
   return (
     <div className="container admin-presi">
-      <h2 className="admin-title text-center mb-4">Admin - Manage President Section</h2>
+      <h2 className="admin-title text-center mb-4">Admin — President Section (EN + TA)</h2>
 
       {/* HEAD */}
       <div className="card shadow-lg p-4 mb-4">
         <h4 className="fw-bold">Head</h4>
-        <input
-          className="form-control mb-3"
-          value={data.head.name}
-          placeholder="Enter Name"
-          onChange={(e) => handleInput("head", "name", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.head.description}
-          placeholder="Enter Description"
-          onChange={(e) => handleInput("head", "description", e.target.value)}
-        />
-        <input
-          type="file"
-          className="form-control mb-3"
-          accept="image/*"
-          onChange={(e) => handleImage("head", e.target.files[0])}
-        />
+
+        <input className="form-control mb-2" value={data.head.name_en} placeholder="Name (English)" onChange={(e) => handleInput("head", "name_en", e.target.value)} />
+        <input className="form-control mb-2" value={data.head.name_ta} placeholder="Name (Tamil)" onChange={(e) => handleInput("head", "name_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.head.desc_en} placeholder="Description (English)" onChange={(e) => handleInput("head", "desc_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.head.desc_ta} placeholder="Description (Tamil)" onChange={(e) => handleInput("head", "desc_ta", e.target.value)} />
+
+        <input type="file" className="form-control mb-2" accept="image/*" onChange={(e) => handleImage("head", e.target.files[0])} />
         {data.head.imageUrl && <img src={data.head.imageUrl} className="preview-img" />}
       </div>
 
       {/* BISHOP */}
       <div className="card shadow-lg p-4 mb-4">
         <h4 className="fw-bold">Bishop</h4>
-        <input
-          className="form-control mb-3"
-          value={data.bishop.name}
-          placeholder="Enter Name"
-          onChange={(e) => handleInput("bishop", "name", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.bishop.description}
-          placeholder="Enter Description 1"
-          onChange={(e) => handleInput("bishop", "description", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.bishop.description1}
-          placeholder="Enter Description 2"
-          onChange={(e) => handleInput("bishop", "description1", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.bishop.description2}
-          placeholder="Enter Description 3"
-          onChange={(e) => handleInput("bishop", "description2", e.target.value)}
-        />
-        <input
-          type="file"
-          className="form-control mb-3"
-          accept="image/*"
-          onChange={(e) => handleImage("bishop", e.target.files[0])}
-        />
+
+        <input className="form-control mb-2" value={data.bishop.name_en} placeholder="Name (English)" onChange={(e) => handleInput("bishop", "name_en", e.target.value)} />
+        <input className="form-control mb-2" value={data.bishop.name_ta} placeholder="Name (Tamil)" onChange={(e) => handleInput("bishop", "name_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.bishop.desc_en} placeholder="Description (EN)" onChange={(e) => handleInput("bishop", "desc_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.bishop.desc_ta} placeholder="Description (TA)" onChange={(e) => handleInput("bishop", "desc_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.bishop.desc1_en} placeholder="Description1 (EN)" onChange={(e) => handleInput("bishop", "desc1_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.bishop.desc1_ta} placeholder="Description1 (TA)" onChange={(e) => handleInput("bishop", "desc1_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.bishop.desc2_en} placeholder="Description2 (EN)" onChange={(e) => handleInput("bishop", "desc2_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.bishop.desc2_ta} placeholder="Description2 (TA)" onChange={(e) => handleInput("bishop", "desc2_ta", e.target.value)} />
+
+        <input type="file" className="form-control mb-2" accept="image/*" onChange={(e) => handleImage("bishop", e.target.files[0])} />
         {data.bishop.imageUrl && <img src={data.bishop.imageUrl} className="preview-img" />}
       </div>
 
       {/* PARISH PRIEST */}
       <div className="card shadow-lg p-4 mb-4">
         <h4 className="fw-bold">Parish Priest</h4>
-        <input
-          className="form-control mb-3"
-          value={data.parishPriest.name}
-          placeholder="Enter Name"
-          onChange={(e) => handleInput("parishPriest", "name", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.parishPriest.description1}
-          placeholder="Enter Description 1"
-          onChange={(e) => handleInput("parishPriest", "description1", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.parishPriest.description2}
-          placeholder="Enter Description 2"
-          onChange={(e) => handleInput("parishPriest", "description2", e.target.value)}
-        />
-        <textarea
-          className="form-control mb-3"
-          value={data.parishPriest.description3}
-          placeholder="Enter Description 3"
-          onChange={(e) => handleInput("parishPriest", "description3", e.target.value)}
-        />
-        <input
-          type="file"
-          className="form-control mb-3"
-          accept="image/*"
-          onChange={(e) => handleImage("parishPriest", e.target.files[0])}
-        />
-        {data.parishPriest.imageUrl && (
-          <img src={data.parishPriest.imageUrl} className="preview-img" />
-        )}
+
+        <input className="form-control mb-2" value={data.parishPriest.name_en} placeholder="Name (EN)" onChange={(e) => handleInput("parishPriest", "name_en", e.target.value)} />
+        <input className="form-control mb-2" value={data.parishPriest.name_ta} placeholder="Name (TA)" onChange={(e) => handleInput("parishPriest", "name_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.parishPriest.desc1_en} placeholder="Description1 (EN)" onChange={(e) => handleInput("parishPriest", "desc1_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.parishPriest.desc1_ta} placeholder="Description1 (TA)" onChange={(e) => handleInput("parishPriest", "desc1_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.parishPriest.desc2_en} placeholder="Description2 (EN)" onChange={(e) => handleInput("parishPriest", "desc2_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.parishPriest.desc2_ta} placeholder="Description2 (TA)" onChange={(e) => handleInput("parishPriest", "desc2_ta", e.target.value)} />
+
+        <textarea className="form-control mb-2" value={data.parishPriest.desc3_en} placeholder="Description3 (EN)" onChange={(e) => handleInput("parishPriest", "desc3_en", e.target.value)} />
+        <textarea className="form-control mb-2" value={data.parishPriest.desc3_ta} placeholder="Description3 (TA)" onChange={(e) => handleInput("parishPriest", "desc3_ta", e.target.value)} />
+
+        <input type="file" className="form-control mb-2" accept="image/*" onChange={(e) => handleImage("parishPriest", e.target.files[0])} />
+        {data.parishPriest.imageUrl && <img src={data.parishPriest.imageUrl} className="preview-img" />}
       </div>
 
       <button className="btn btn-success w-100 mb-5" disabled={loading} onClick={saveData}>
