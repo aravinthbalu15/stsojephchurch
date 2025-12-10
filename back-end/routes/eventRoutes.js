@@ -1,18 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const multer = require("multer");
-const upload = multer(); // memory buffer
-
-const {
+import express from "express";
+import multer from "multer";
+import {
   uploadEvent,
   getEvents,
   updateEvent,
-  deleteEvent,
-} = require("../controllers/eventController");
+  deleteEvent
+} from "../controllers/eventController.js";
+
+const router = express.Router();
+const upload = multer(); // memory buffer
 
 router.post("/upload", upload.single("image"), uploadEvent);
 router.get("/", getEvents);
 router.put("/:id", upload.single("image"), updateEvent);
 router.delete("/:id", deleteEvent);
 
-module.exports = router;
+export default router;

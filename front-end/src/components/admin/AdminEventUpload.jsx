@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import "./AdminEventUpload.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminEventUpload = () => {
   const { t } = useTranslation();
