@@ -1,0 +1,22 @@
+/* ======================================================
+   🌐 GLOBAL DESIGN SYSTEM (Fonts, Colors, Spacing)
+   Applies to ALL components automatically
+====================================================== */
+
+/* ---------- GOOGLE FONT IMPORT ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght=400;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
+
+/* ---------- ROOT VARIABLES ---------- */
+:root {
+  /* Fonts */
+  --font-english-primary: 'Noto Sans', sans-serif;
+--font-english-heading: 'Poppins', sans-serif;
+--font-english-serif: 'Merriweather', serif;
+--font-english-display: 'Montserrat', sans-serif;
+--font-english-light: 'Nunito', sans-serif;
+
+  --font-tamil: 'Catamaran', 'Noto Sans Tamil', sans-serif;
+
+  --padding: 2px;
+}

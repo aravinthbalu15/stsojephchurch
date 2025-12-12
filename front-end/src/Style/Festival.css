@@ -1,81 +1,127 @@
-.festival-main {
-  padding-top: 150px;
-  padding-bottom: 80px;
+/* ===========================
+   PAGE WRAPPER
+=========================== */
+.festival-wrapper {
+  padding-top: 140px;
+  padding-bottom: 60px;
 }
 
-.event-title {
-  font-size: 2.5rem;
+.section-title {
+  font-size: 2.2rem;
   font-weight: 700;
-  color: #003060;
-  margin-bottom: 40px;
+  color: var(--primary-dark, #003060);
 }
 
-/******** Masonry Grid ********/
-.masonry-grid {
-  display: flex;
-  margin-left: -15px;
-  width: auto;
-}
-.masonry-column {
-  padding-left: 15px;
-  background-clip: padding-box;
-}
-
-.masonry-item {
-  margin-bottom: 15px;
-  cursor: pointer;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease;
-}
-
-.masonry-item:hover {
-  transform: scale(1.03);
-}
-
-.masonry-img {
-  width: 100%;
-  display: block;
-  border-radius: 15px;
-  object-fit: cover;
-}
-
-/******** Modal Styling ********/
-.modal-body-custom {
-  background: #000;
-  padding: 0;
+/* ===========================
+   IMAGE CARD GRID
+=========================== */
+.festival-card {
   position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.zoom-image {
-  max-width: 90vw;
-  max-height: 88vh;
+  cursor: pointer;
+  overflow: hidden;
   border-radius: 12px;
   transition: transform 0.3s ease;
 }
 
-.modal-btns {
+.festival-card:hover {
+  transform: scale(1.03);
+}
+
+.festival-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+/* Hover overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s ease;
+}
+
+.festival-card:hover .overlay {
+  opacity: 1;
+}
+
+.overlay-icon {
+  font-size: 2rem;
+  color: #fff;
+}
+
+/* ===========================
+   PREMIUM MODAL DESIGN
+=========================== */
+.festival-modal .modal-content {
+  background: rgba(0, 0, 0, 0.85);
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+  box-shadow: 0 0 35px rgba(0,0,0,0.5);
+}
+
+.modal-body-wrapper {
+  padding: 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.modal-image-container {
+  padding: 20px;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
+
+/* Close Button */
+.close-btn {
   position: absolute;
   top: 20px;
   right: 20px;
-  display: flex;
-  gap: 10px;
-  z-index: 1000;
-}
-
-.zoom-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  padding: 8px 12px;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  transition: 0.25s ease;
 }
 
-@media (max-width: 768px) {
-  .event-title { font-size: 2rem; }
-  .zoom-btn { width: 38px; height: 38px; }
+.close-btn:hover {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.1);
+}
+
+/* Modal animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
