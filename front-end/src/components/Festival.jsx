@@ -46,7 +46,7 @@ const Festival = () => {
             >
               <img src={img.url} className="img-fluid rounded" alt="Festival" />
 
-              <div className="overlay">
+              <div className="festival-overlay">
                 <FiMaximize2 className="overlay-icon" />
               </div>
             </div>
