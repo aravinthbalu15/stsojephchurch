@@ -164,7 +164,8 @@ useEffect(() => {
   );
 
   return (
-    <nav className={`navbar1 ${scrolling ? "scrolled" : "transparent"}`}>
+    <nav className={`navbar1 ${
+    navbarOpen ? "scrolled" : scrolling ? "scrolled" : "transparent"}`}>
       <div className="nav-inner">
         {/* ================= TOP ROW ================= */}
         <div className="nav-top-row">
