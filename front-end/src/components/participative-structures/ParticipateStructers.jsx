@@ -23,9 +23,9 @@ const ParticipateStructers = () => {
               <div className="stat-box">
                 <h2 className="stat-value">{stat.value}</h2>
                 <p className="stat-label">{stat.label}</p>
-                <Link to={stat.path} className="read-more-btn">
+                <button to={stat.path} className="read-more-btn">
                   {t("view_more")}
-                  </Link>
+                  </button>
               </div>
             </div>
           ))}

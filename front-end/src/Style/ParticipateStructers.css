@@ -59,6 +59,7 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  text-decoration: none;
   letter-spacing: 1px;
   box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
 }

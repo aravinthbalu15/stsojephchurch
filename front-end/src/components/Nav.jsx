@@ -12,6 +12,10 @@ const Nav = () => {
   const [openDropdowns, setOpenDropdowns] = useState({});
   const location = useLocation();
   const { t, i18n } = useTranslation();
+  useEffect(() => {
+  document.documentElement.setAttribute("lang", i18n.language);
+}, [i18n.language]);
+
 
 // background change on scroll
 useEffect(() => {
@@ -115,20 +119,19 @@ useEffect(() => {
   const getActiveClass = (path) =>
     location.pathname === path ? "active-link" : "";
 
-  const switchLanguage = (lang) => {
-    i18n.changeLanguage(lang);
-    document.documentElement.setAttribute("lang", lang);
+const switchLanguage = (lang) => {
+  i18n.changeLanguage(lang);
 
-    // Close only mobile language dropdown for small screens
-    if (window.innerWidth < 992) {
-      setOpenDropdowns((prev) => ({
-        ...prev,
-        "mobile-lang": false,
-      }));
-    } else {
-      closeAllDropdowns(); // desktop default
-    }
-  };
+  if (window.innerWidth < 992) {
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      "mobile-lang": false,
+    }));
+  } else {
+    closeAllDropdowns();
+  }
+};
+
 
   const renderDropdown = (label, key, items) => (
     <li
