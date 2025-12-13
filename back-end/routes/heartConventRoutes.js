@@ -1,18 +1,18 @@
-import express from 'express';
-import multer from 'multer';
+import express from "express";
+import multer from "multer";
 import {
   uploadImage,
   getImages,
+  updateImage,
   deleteImage,
-  updateImage
-} from '../controllers/heartConventController.js';
+} from "../controllers/heartConventController.js";
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: "uploads/" });
 
-router.post('/heartconvent', upload.single('image'), uploadImage);
-router.get('/heartconvent', getImages);
-router.delete('/heartconvent/:id', deleteImage);
-router.put('/heartconvent/:id', updateImage);
+router.post("/", upload.single("image"), uploadImage);
+router.get("/", getImages);
+router.put("/:id", updateImage);
+router.delete("/:id", deleteImage);
 
 export default router;

@@ -11,7 +11,7 @@ const AdminAnbiyamCoordination = () => {
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  // ✅ BACKEND MATCHING FIELDS
+  // 🔗 Backend-matching fields
   const [formData, setFormData] = useState({
     name_en: "",
     name_ta: "",
@@ -28,7 +28,7 @@ const AdminAnbiyamCoordination = () => {
       const res = await axios.get(`${API_URL}/api/acmembers`);
       setMembers(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err);
     }
   };
 
@@ -40,26 +40,29 @@ const AdminAnbiyamCoordination = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const ok = await Swal.fire({
+    const confirm = await Swal.fire({
       title: editId ? "Update member?" : "Create member?",
       icon: "question",
       showCancelButton: true,
     });
 
-    if (!ok.isConfirmed) return;
+    if (!confirm.isConfirmed) return;
 
     const data = new FormData();
     data.append("name_en", formData.name_en);
     data.append("name_ta", formData.name_ta);
     data.append("description_en", formData.description_en);
     data.append("description_ta", formData.description_ta);
-    if (formData.image) data.append("image", formData.image);
+
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
 
     try {
       setLoading(true);
 
       if (editId) {
-        // ✏️ UPDATE (NO RESET)
+        // ✏️ UPDATE (NO FORM RESET)
         await axios.put(`${API_URL}/api/acmembers/${editId}`, data);
         Swal.fire("Updated!", "Member updated successfully", "success");
       } else {
@@ -67,7 +70,7 @@ const AdminAnbiyamCoordination = () => {
         await axios.post(`${API_URL}/api/acmembers`, data);
         Swal.fire("Created!", "Member added successfully", "success");
 
-        // ✅ CLEAR FORM ONLY AFTER CREATE
+        // ✅ Reset only after CREATE
         setFormData({
           name_en: "",
           name_ta: "",
@@ -84,10 +87,10 @@ const AdminAnbiyamCoordination = () => {
       setEditId(null);
       fetchMembers();
     } catch (err) {
-      console.error(err);
+      console.error("Submit error:", err);
       Swal.fire(
         "Error",
-        err.response?.data?.message || "Upload failed",
+        err.response?.data?.message || "Operation failed",
         "error"
       );
     } finally {
@@ -98,6 +101,7 @@ const AdminAnbiyamCoordination = () => {
   /* ================= EDIT ================= */
   const handleEdit = (member) => {
     setEditId(member._id);
+
     setFormData({
       name_en: member.name.en,
       name_ta: member.name.ta,
@@ -115,20 +119,20 @@ const AdminAnbiyamCoordination = () => {
 
   /* ================= DELETE ================= */
   const handleDelete = async (id) => {
-    const ok = await Swal.fire({
+    const confirm = await Swal.fire({
       title: "Delete this member?",
       icon: "warning",
       showCancelButton: true,
     });
 
-    if (!ok.isConfirmed) return;
+    if (!confirm.isConfirmed) return;
 
     try {
       await axios.delete(`${API_URL}/api/acmembers/${id}`);
-      Swal.fire("Deleted!", "Member removed", "success");
+      Swal.fire("Deleted!", "Member removed successfully", "success");
       fetchMembers();
     } catch (err) {
-      console.error(err);
+      console.error("Delete error:", err);
       Swal.fire("Error", "Delete failed", "error");
     }
   };
@@ -164,10 +168,7 @@ const AdminAnbiyamCoordination = () => {
           placeholder="Description (English)"
           value={formData.description_en}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              description_en: e.target.value,
-            })
+            setFormData({ ...formData, description_en: e.target.value })
           }
           required
         />
@@ -177,22 +178,23 @@ const AdminAnbiyamCoordination = () => {
           placeholder="விவரம் (Tamil)"
           value={formData.description_ta}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              description_ta: e.target.value,
-            })
+            setFormData({ ...formData, description_ta: e.target.value })
           }
           required
         />
 
-        <input
-          type="file"
-          className="form-control mb-3"
-          ref={fileInputRef}
-          onChange={(e) =>
-            setFormData({ ...formData, image: e.target.files[0] })
-          }
-        />
+        {/* ✅ Image upload only during CREATE */}
+        {!editId && (
+          <input
+            type="file"
+            className="form-control mb-3"
+            ref={fileInputRef}
+            onChange={(e) =>
+              setFormData({ ...formData, image: e.target.files[0] })
+            }
+            required
+          />
+        )}
 
         <button className="btn btn-primary" disabled={loading}>
           {loading ? "Saving..." : editId ? "Update" : "Upload"}
@@ -205,7 +207,7 @@ const AdminAnbiyamCoordination = () => {
       <div className="row">
         {members.map((m) => (
           <div key={m._id} className="col-md-3 col-sm-6 mb-4">
-            <div className="card shadow-sm text-center">
+            <div className="card shadow-sm text-center h-100">
               <img
                 src={m.imageUrl}
                 className="card-img-top"

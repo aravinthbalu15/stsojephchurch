@@ -1,10 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const heartConventImageSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String },
-  imageUrl: { type: String, required: true },
-  cloudinaryId: { type: String, required: true },
-}, { timestamps: true });
+const heartConventSchema = new mongoose.Schema(
+  {
+    name: {
+      en: { type: String, required: true },
+      ta: { type: String, required: true },
+    },
+    description: {
+      en: { type: String, required: true },
+      ta: { type: String, required: true },
+    },
+    imageUrl: { type: String, required: true },
+    cloudinaryId: { type: String, required: true },
 
-export default mongoose.model("HeartConventImage", heartConventImageSchema);
+    // ✅ ORDER (first upload → first show)
+    order: { type: Number, required: true },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("HeartConventImage", heartConventSchema);

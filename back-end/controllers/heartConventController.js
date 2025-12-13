@@ -1,64 +1,85 @@
-import HeartConventImage from '../models/HeartConventImage.js';
-import cloudinary from '../config/cloudinary.js';
-import fs from 'fs';
+import HeartConventImage from "../models/HeartConventImage.js";
+import cloudinary from "../config/cloudinary.js";
 
-// Upload new image
+/* ================= CREATE ================= */
 export const uploadImage = async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
-    fs.unlinkSync(req.file.path); // remove local file
+    const {
+      name_en,
+      name_ta,
+      description_en,
+      description_ta,
+    } = req.body;
 
-    const newImage = new HeartConventImage({
-      name: req.body.name,
-      description: req.body.description,
+    if (!req.file)
+      return res.status(400).json({ message: "Image required" });
+
+    const last = await HeartConventImage.findOne().sort({ order: -1 });
+    const nextOrder = last ? last.order + 1 : 1;
+
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    const image = await HeartConventImage.create({
+      name: { en: name_en, ta: name_ta },
+      description: { en: description_en, ta: description_ta },
       imageUrl: result.secure_url,
       cloudinaryId: result.public_id,
+      order: nextOrder,
     });
 
-    await newImage.save();
-    res.status(201).json(newImage);
+    res.status(201).json(image);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Get all images
+/* ================= GET (ORDERED) ================= */
 export const getImages = async (req, res) => {
   try {
-    const images = await HeartConventImage.find().sort({ createdAt: -1 });
-    res.status(200).json(images);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const images = await HeartConventImage.find().sort({ order: 1 });
+    res.json(images);
+  } catch {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Delete image
+/* ================= UPDATE ================= */
+export const updateImage = async (req, res) => {
+  try {
+    const image = await HeartConventImage.findById(req.params.id);
+    if (!image) return res.status(404).json({ message: "Not found" });
+
+    const {
+      name_en,
+      name_ta,
+      description_en,
+      description_ta,
+    } = req.body;
+
+    image.name.en = name_en;
+    image.name.ta = name_ta;
+    image.description.en = description_en;
+    image.description.ta = description_ta;
+
+    await image.save();
+    res.json(image);
+  } catch {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ================= DELETE ================= */
 export const deleteImage = async (req, res) => {
   try {
     const image = await HeartConventImage.findById(req.params.id);
-    if (!image) return res.status(404).json({ message: 'Image not found' });
+    if (!image) return res.status(404).json({ message: "Not found" });
 
     await cloudinary.uploader.destroy(image.cloudinaryId);
     await image.deleteOne();
 
-    res.status(200).json({ message: 'Deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Update image metadata only (not replacing image)
-export const updateImage = async (req, res) => {
-  try {
-    const updated = await HeartConventImage.findByIdAndUpdate(req.params.id, {
-      name: req.body.name,
-      description: req.body.description
-    }, { new: true });
-
-    if (!updated) return res.status(404).json({ message: 'Image not found' });
-
-    res.status(200).json(updated);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.json({ message: "Deleted" });
+  } catch {
+    res.status(500).json({ message: "Server error" });
   }
 };
