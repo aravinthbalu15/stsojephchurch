@@ -1,9 +1,8 @@
-// controllers/oldPriestController.js
 import OldPriest from "../models/OldPriest.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
-/* 📌 Upload helper */
+/* Upload helper */
 const uploadFromBuffer = (buffer) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -21,34 +20,40 @@ export const addOldPriest = async (req, res) => {
       name_ta,
       description_en,
       description_ta,
-      dob_start,
-      dob_end,
+      period,
     } = req.body;
 
-    if (!req.file) {
+    // ✅ VALIDATION (NO 500)
+    if (!name_en || !name_ta || !description_en || !description_ta || !period) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: "Image required" });
     }
 
-    const count = await OldPriest.countDocuments();
+    // ✅ SAFE ORDER LOGIC
+    const last = await OldPriest.findOne().sort({ order: -1 });
+    const nextOrder = last ? last.order + 1 : 1;
+
     const result = await uploadFromBuffer(req.file.buffer);
 
     const priest = await OldPriest.create({
       name: { en: name_en, ta: name_ta },
       description: { en: description_en, ta: description_ta },
-      dob_start,
-      dob_end,
+      period, // ✅ MANUAL DATE FORMAT
       imageUrl: result.secure_url,
-      order: count + 1,
+      order: nextOrder,
     });
 
     res.status(201).json(priest);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("ADD OLD PRIEST ERROR:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-/* 📥 GET ALL (ORDERED) */
+/* 📥 GET */
 export const getAllOldPriests = async (req, res) => {
   try {
     const priests = await OldPriest.find().sort({ order: 1 });
@@ -76,13 +81,12 @@ export const editOldPriest = async (req, res) => {
       name_ta,
       description_en,
       description_ta,
-      dob_start,
-      dob_end,
+      period,
     } = req.body;
 
     let imageUrl;
 
-    if (req.file) {
+    if (req.file?.buffer) {
       const result = await uploadFromBuffer(req.file.buffer);
       imageUrl = result.secure_url;
     }
@@ -92,15 +96,15 @@ export const editOldPriest = async (req, res) => {
       {
         name: { en: name_en, ta: name_ta },
         description: { en: description_en, ta: description_ta },
-        dob_start,
-        dob_end,
+        period,
         ...(imageUrl && { imageUrl }),
       },
       { new: true }
     );
 
     res.json(priest);
-  } catch {
+  } catch (err) {
+    console.error("EDIT ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

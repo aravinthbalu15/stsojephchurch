@@ -8,17 +8,8 @@ const OldPriest = () => {
   const [priests, setPriests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🌍 Current language (default EN)
+  // 🌍 Current language
   const lang = i18n.language === "ta" ? "ta" : "en";
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
 
   useEffect(() => {
     const fetchPriests = async () => {
@@ -59,9 +50,9 @@ const OldPriest = () => {
                 {member.name?.[lang]}
               </h3>
 
+              {/* ✅ MANUAL DATE FORMAT */}
               <p className="member-info">
-                {formatDate(member.dob_start)} –{" "}
-                {formatDate(member.dob_end)}
+                {member.period}
               </p>
             </div>
           ))}

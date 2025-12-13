@@ -13,8 +13,7 @@ const AdminOldPriest = () => {
     name_ta: "",
     description_en: "",
     description_ta: "",
-    dob_start: "",
-    dob_end: "",
+    period: "",
     image: null,
   });
   const [selectedPriest, setSelectedPriest] = useState(null);
@@ -27,7 +26,7 @@ const AdminOldPriest = () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/api/oldpriests`);
       setPriests(data);
-    } catch (err) {
+    } catch {
       setError("Error fetching priests");
     }
   };
@@ -50,8 +49,7 @@ const AdminOldPriest = () => {
       name_ta: "",
       description_en: "",
       description_ta: "",
-      dob_start: "",
-      dob_end: "",
+      period: "",
       image: null,
     });
     setSelectedPriest(null);
@@ -63,7 +61,6 @@ const AdminOldPriest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
-    setError("");
 
     try {
       const formData = new FormData();
@@ -80,7 +77,6 @@ const AdminOldPriest = () => {
       setPriests((p) => [...p, data]);
       resetForm();
     } catch (err) {
-      console.error(err);
       Swal.fire(
         "Error",
         err.response?.data?.message || "Upload failed",
@@ -99,11 +95,9 @@ const AdminOldPriest = () => {
       name_ta: priest.name.ta,
       description_en: priest.description.en,
       description_ta: priest.description.ta,
-      dob_start: priest.dob_start?.split("T")[0],
-      dob_end: priest.dob_end?.split("T")[0],
+      period: priest.period,
       image: null,
     });
-    setError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -112,7 +106,6 @@ const AdminOldPriest = () => {
     if (!selectedPriest) return;
 
     setUploading(true);
-    setError("");
 
     try {
       const formData = new FormData();
@@ -131,7 +124,6 @@ const AdminOldPriest = () => {
       );
       resetForm();
     } catch (err) {
-      console.error(err);
       Swal.fire(
         "Error",
         err.response?.data?.message || "Update failed",
@@ -146,24 +138,15 @@ const AdminOldPriest = () => {
   const handleDelete = async (id) => {
     const ok = await Swal.fire({
       title: "Are you sure?",
-      text: "This cannot be undone",
       icon: "warning",
       showCancelButton: true,
     });
 
     if (!ok.isConfirmed) return;
 
-    try {
-      await axios.delete(`${BASE_URL}/api/oldpriests/${id}`);
-      setPriests((p) => p.filter((i) => i._id !== id));
-      Swal.fire("Deleted", "Priest removed", "success");
-    } catch (err) {
-      Swal.fire(
-        "Error",
-        err.response?.data?.message || "Delete failed",
-        "error"
-      );
-    }
+    await axios.delete(`${BASE_URL}/api/oldpriests/${id}`);
+    setPriests((p) => p.filter((i) => i._id !== id));
+    Swal.fire("Deleted", "Priest removed", "success");
   };
 
   return (
@@ -171,7 +154,6 @@ const AdminOldPriest = () => {
       <h2>Old Priests</h2>
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* FORM */}
       <Card className="p-3 mb-4">
         <h5>{selectedPriest ? "Edit Priest" : "Add Priest"}</h5>
 
@@ -213,18 +195,10 @@ const AdminOldPriest = () => {
             required
           />
           <Form.Control
-            type="date"
             className="mb-2"
-            name="dob_start"
-            value={newPriest.dob_start}
-            onChange={handleChange}
-            required
-          />
-          <Form.Control
-            type="date"
-            className="mb-2"
-            name="dob_end"
-            value={newPriest.dob_end}
+            name="period"
+            placeholder="Period (e.g. 1998 – 2005)"
+            value={newPriest.period}
             onChange={handleChange}
             required
           />
@@ -240,11 +214,7 @@ const AdminOldPriest = () => {
           </Button>
 
           {selectedPriest && (
-            <Button
-              variant="secondary"
-              className="ms-2"
-              onClick={resetForm}
-            >
+            <Button variant="secondary" className="ms-2" onClick={resetForm}>
               Cancel
             </Button>
           )}
@@ -258,15 +228,10 @@ const AdminOldPriest = () => {
             <Card className="p-3 text-center">
               <img src={p.imageUrl} width={150} height={150} alt="" />
               <strong>{p.name.en}</strong>
+              <p>{p.period}</p>
               <p>{p.description.en}</p>
-              <Button size="sm" onClick={() => handleEdit(p)}>
-                Edit
-              </Button>{" "}
-              <Button
-                size="sm"
-                variant="danger"
-                onClick={() => handleDelete(p._id)}
-              >
+              <Button size="sm" onClick={() => handleEdit(p)}>Edit</Button>{" "}
+              <Button size="sm" variant="danger" onClick={() => handleDelete(p._id)}>
                 Delete
               </Button>
             </Card>
