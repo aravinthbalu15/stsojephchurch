@@ -4,10 +4,14 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AdminAnbiyamCoordination.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AdminAnbiyamCoordination = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editId, setEditId] = useState(null);
 
+  // ✅ MUST MATCH BACKEND FIELDS
   const [formData, setFormData] = useState({
     name_en: "",
     name_ta: "",
@@ -16,50 +20,48 @@ const AdminAnbiyamCoordination = () => {
     image: null,
   });
 
-  const [editId, setEditId] = useState(null);
-
+  /* ================= FETCH ================= */
   const fetchMembers = async () => {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/acmembers`
-    );
-    setMembers(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/api/acmembers`);
+      setMembers(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
     fetchMembers();
   }, []);
 
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const confirm = await Swal.fire({
+    const ok = await Swal.fire({
       title: editId ? "Update member?" : "Create member?",
       icon: "question",
       showCancelButton: true,
     });
 
-    if (!confirm.isConfirmed) return;
+    if (!ok.isConfirmed) return;
 
     const data = new FormData();
-    Object.entries(formData).forEach(
-      ([k, v]) => v && data.append(k, v)
-    );
+    data.append("name_en", formData.name_en);
+    data.append("name_ta", formData.name_ta);
+    data.append("description_en", formData.description_en);
+    data.append("description_ta", formData.description_ta);
+    if (formData.image) data.append("image", formData.image);
 
     try {
       setLoading(true);
 
       if (editId) {
-        await axios.put(
-          `${import.meta.env.VITE_API_URL}/api/acmembers/${editId}`,
-          data
-        );
-        Swal.fire("Updated!", "Member updated", "success");
+        await axios.put(`${API_URL}/api/acmembers/${editId}`, data);
+        Swal.fire("Updated!", "Member updated successfully", "success");
       } else {
-        await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/acmembers`,
-          data
-        );
-        Swal.fire("Created!", "Member added", "success");
+        await axios.post(`${API_URL}/api/acmembers`, data);
+        Swal.fire("Created!", "Member added successfully", "success");
       }
 
       setFormData({
@@ -73,64 +75,109 @@ const AdminAnbiyamCoordination = () => {
 
       fetchMembers();
     } catch (err) {
-      Swal.fire("Error", "Something went wrong", "error");
+      console.error(err);
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Upload failed",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEdit = (m) => {
-    setEditId(m._id);
+  /* ================= EDIT ================= */
+  const handleEdit = (member) => {
+    setEditId(member._id);
     setFormData({
-      name_en: m.name.en,
-      name_ta: m.name.ta,
-      description_en: m.description.en,
-      description_ta: m.description.ta,
+      name_en: member.name.en,
+      name_ta: member.name.ta,
+      description_en: member.description.en,
+      description_ta: member.description.ta,
       image: null,
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Delete?",
+    const ok = await Swal.fire({
+      title: "Delete this member?",
       icon: "warning",
       showCancelButton: true,
     });
-    if (!confirm.isConfirmed) return;
 
-    await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/acmembers/${id}`
-    );
-    fetchMembers();
+    if (!ok.isConfirmed) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/acmembers/${id}`);
+      Swal.fire("Deleted!", "Member removed", "success");
+      fetchMembers();
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Delete failed", "error");
+    }
   };
 
   return (
     <div className="container an-co mt-xxl-5 mt-0">
-      <h2 className="text-center mb-4">Manage Anbiyam Coordination</h2>
+      <h2 className="mb-4 text-center">Manage Anbiyam Coordination</h2>
 
+      {/* ================= FORM ================= */}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <input className="form-control mb-2" placeholder="Name (English)"
+        <input
+          className="form-control mb-2"
+          placeholder="Name (English)"
           value={formData.name_en}
-          onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
-          required />
+          onChange={(e) =>
+            setFormData({ ...formData, name_en: e.target.value })
+          }
+          required
+        />
 
-        <input className="form-control mb-2" placeholder="பெயர் (Tamil)"
+        <input
+          className="form-control mb-2"
+          placeholder="பெயர் (Tamil)"
           value={formData.name_ta}
-          onChange={(e) => setFormData({ ...formData, name_ta: e.target.value })}
-          required />
+          onChange={(e) =>
+            setFormData({ ...formData, name_ta: e.target.value })
+          }
+          required
+        />
 
-        <textarea className="form-control mb-2" placeholder="Description (English)"
+        <textarea
+          className="form-control mb-2"
+          placeholder="Description (English)"
           value={formData.description_en}
-          onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
-          required />
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              description_en: e.target.value,
+            })
+          }
+          required
+        />
 
-        <textarea className="form-control mb-2" placeholder="விவரம் (Tamil)"
+        <textarea
+          className="form-control mb-2"
+          placeholder="விவரம் (Tamil)"
           value={formData.description_ta}
-          onChange={(e) => setFormData({ ...formData, description_ta: e.target.value })}
-          required />
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              description_ta: e.target.value,
+            })
+          }
+          required
+        />
 
-        <input type="file" className="form-control mb-3"
-          onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })} />
+        <input
+          type="file"
+          className="form-control mb-3"
+          onChange={(e) =>
+            setFormData({ ...formData, image: e.target.files[0] })
+          }
+        />
 
         <button className="btn btn-primary" disabled={loading}>
           {loading ? "Saving..." : editId ? "Update" : "Upload"}
@@ -139,16 +186,32 @@ const AdminAnbiyamCoordination = () => {
 
       <hr />
 
+      {/* ================= LIST ================= */}
       <div className="row">
         {members.map((m) => (
-          <div className="col-md-3 col-sm-6 mb-4" key={m._id}>
-            <div className="card text-center">
-              <img src={m.imageUrl} className="card-img-top" />
+          <div key={m._id} className="col-md-3 col-sm-6 mb-4">
+            <div className="card shadow-sm text-center">
+              <img
+                src={m.imageUrl}
+                className="card-img-top"
+                alt={m.name.en}
+              />
               <div className="card-body">
                 <h5>{m.name.en}</h5>
-                <p>{m.description.en}</p>
-                <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(m)}>Edit</button>
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(m._id)}>Delete</button>
+                <p className="small">{m.description.en}</p>
+
+                <button
+                  className="btn btn-warning btn-sm me-2"
+                  onClick={() => handleEdit(m)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(m._id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
