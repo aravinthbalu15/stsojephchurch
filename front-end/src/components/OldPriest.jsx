@@ -4,9 +4,12 @@ import "../Style/OldPriest.css";
 import { useTranslation } from "react-i18next";
 
 const OldPriest = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [priests, setPriests] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // 🌍 Current language (default EN)
+  const lang = i18n.language === "ta" ? "ta" : "en";
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -20,10 +23,12 @@ const OldPriest = () => {
   useEffect(() => {
     const fetchPriests = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/oldpriests`);
-        setPriests(res.data);
-      } catch (error) {
-        console.error("Error fetching priests:", error);
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/oldpriests`
+        );
+        setPriests(data);
+      } catch (err) {
+        console.error("Error fetching priests:", err);
       } finally {
         setLoading(false);
       }
@@ -44,17 +49,27 @@ const OldPriest = () => {
         <div className="members-list mt-5">
           {priests.map((member) => (
             <div key={member._id} className="member-row">
-              <img src={member.imageUrl} alt={member.name} className="member-image" />
-              <h3 className="member-name">{member.name}</h3>
+              <img
+                src={member.imageUrl}
+                alt={member.name?.[lang]}
+                className="member-image"
+              />
+
+              <h3 className="member-name">
+                {member.name?.[lang]}
+              </h3>
+
               <p className="member-info">
-                {formatDate(member.dob_start)} to {formatDate(member.dob_end)}
+                {formatDate(member.dob_start)} –{" "}
+                {formatDate(member.dob_end)}
               </p>
             </div>
           ))}
         </div>
       )}
 
-      <br /><br />
+      <br />
+      <br />
     </div>
   );
 };

@@ -1,108 +1,106 @@
+// controllers/oldPriestController.js
 import OldPriest from "../models/OldPriest.js";
-import cloudinary from "../config/cloudinary.js";  // Assuming cloudinary is configured properly
-
+import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
-// Add a new priest
-const addOldPriest = async (req, res) => {
+/* 📌 Upload helper */
+const uploadFromBuffer = (buffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "oldpriests" },
+      (error, result) => (result ? resolve(result) : reject(error))
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+
+/* ➕ ADD */
+export const addOldPriest = async (req, res) => {
   try {
-    const { name, description, dob_start, dob_end } = req.body;
+    const {
+      name_en,
+      name_ta,
+      description_en,
+      description_ta,
+      dob_start,
+      dob_end,
+    } = req.body;
 
     if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
+      return res.status(400).json({ message: "Image required" });
     }
 
-    // Upload image buffer to Cloudinary using upload_stream
-    const uploadFromBuffer = () => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "oldpriests",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (result) resolve(result);
-            else reject(error);
-          }
-        );
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-    };
+    const count = await OldPriest.countDocuments();
+    const result = await uploadFromBuffer(req.file.buffer);
 
-    const result = await uploadFromBuffer();
-
-    // Save data to MongoDB
-    const newPriest = new OldPriest({
-      name,
-      description,
+    const priest = await OldPriest.create({
+      name: { en: name_en, ta: name_ta },
+      description: { en: description_en, ta: description_ta },
       dob_start,
       dob_end,
       imageUrl: result.secure_url,
+      order: count + 1,
     });
 
-    await newPriest.save();
-    res.status(201).json(newPriest);
-  } catch (error) {
-    console.error("Add priest error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(201).json(priest);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-
-// Other controller methods for get, delete, edit would remain the same
-
-
-// Get all priests
-const getAllOldPriests = async (req, res) => {
+/* 📥 GET ALL (ORDERED) */
+export const getAllOldPriests = async (req, res) => {
   try {
-    const priests = await OldPriest.find();
+    const priests = await OldPriest.find().sort({ order: 1 });
     res.json(priests);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+  } catch {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Delete a priest
-const deleteOldPriest = async (req, res) => {
+/* ❌ DELETE */
+export const deleteOldPriest = async (req, res) => {
   try {
-    const priest = await OldPriest.findByIdAndDelete(req.params.id);
-    if (!priest) return res.status(404).json({ message: "Priest not found" });
-    res.status(200).json({ message: "Priest deleted" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    await OldPriest.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted" });
+  } catch {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Edit an existing priest
-const editOldPriest = async (req, res) => {
+/* ✏️ UPDATE */
+export const editOldPriest = async (req, res) => {
   try {
-    const { name, description, dob_start, dob_end } = req.body;
+    const {
+      name_en,
+      name_ta,
+      description_en,
+      description_ta,
+      dob_start,
+      dob_end,
+    } = req.body;
 
-    // Check if a new image is uploaded
-    let imageUrl = req.body.imageUrl;
+    let imageUrl;
+
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.buffer, {
-        folder: "oldpriests",
-        resource_type: "auto",
-      });
+      const result = await uploadFromBuffer(req.file.buffer);
       imageUrl = result.secure_url;
     }
 
     const priest = await OldPriest.findByIdAndUpdate(
       req.params.id,
-      { name, description, dob_start, dob_end, imageUrl },
+      {
+        name: { en: name_en, ta: name_ta },
+        description: { en: description_en, ta: description_ta },
+        dob_start,
+        dob_end,
+        ...(imageUrl && { imageUrl }),
+      },
       { new: true }
     );
 
-    if (!priest) return res.status(404).json({ message: "Priest not found" });
-
-    res.status(200).json(priest);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.json(priest);
+  } catch {
+    res.status(500).json({ message: "Server error" });
   }
 };
-
-export { addOldPriest, getAllOldPriests, deleteOldPriest, editOldPriest };
