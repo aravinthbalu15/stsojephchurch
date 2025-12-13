@@ -9,7 +9,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 const AdminParish = () => {
   /* ================= STATE ================= */
   const [members, setMembers] = useState([]);
-  const [filterCategory, setFilterCategory] = useState("all");
   const [uploading, setUploading] = useState(false);
 
   // ADD FORM
@@ -117,9 +116,7 @@ const AdminParish = () => {
     data.append("description_en", editMember.description.en);
     data.append("description_ta", editMember.description.ta);
 
-    if (editMember.image) {
-      data.append("image", editMember.image);
-    }
+    if (editMember.image) data.append("image", editMember.image);
 
     await axios.put(`${API_URL}/api/parish/${editMember._id}`, data);
 
@@ -128,31 +125,36 @@ const AdminParish = () => {
     fetchMembers();
   };
 
-  /* ================= FILTER ================= */
-  const filtered =
-    filterCategory === "all"
-      ? members
-      : members.filter((m) => m.category === filterCategory);
+  /* ================= SPLIT DATA ================= */
+  const head = members.filter((m) => m.category === "head");
+  const subhead = members.filter((m) => m.category === "subhead");
+  const memberList = members.filter((m) => m.category === "member");
+
+  /* ================= CARD ================= */
+  const renderCard = (m, color) => (
+    <div key={m._id} className="col-md-3 mb-4">
+      <Card className="shadow-sm h-100">
+        <Card.Img src={m.imageUrl} />
+        <Card.Body>
+          <h5>{m.name.en}</h5>
+          <p className="small">{m.description.en}</p>
+          <Badge bg={color}>{m.category.toUpperCase()}</Badge>
+
+          <div className="d-flex justify-content-between mt-2">
+            <Button size="sm" onClick={() => openEditModal(m)}>Edit</Button>
+            <Button size="sm" variant="danger" onClick={() => handleDelete(m._id)}>Delete</Button>
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
+  );
 
   /* ================= UI ================= */
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">Parish Management</h2>
 
-      {/* FILTER */}
-      <div className="d-flex justify-content-center gap-3 mb-4">
-        {["all", "head", "subhead", "member"].map((c) => (
-          <Button
-            key={c}
-            variant={filterCategory === c ? "primary" : "outline-primary"}
-            onClick={() => setFilterCategory(c)}
-          >
-            {c.toUpperCase()}
-          </Button>
-        ))}
-      </div>
-
-      {/* ADD FORM */}
+      {/* ================= ADD FORM ================= */}
       <div className="p-4 shadow-sm mb-5">
         <h4>Add Parish Member</h4>
 
@@ -176,28 +178,19 @@ const AdminParish = () => {
         </Form>
       </div>
 
-      {/* LIST */}
-      <div className="row">
-        {filtered.map((m) => (
-          <div key={m._id} className="col-md-3 mb-4">
-            <Card className="shadow-sm">
-              <Card.Img src={m.imageUrl} />
-              <Card.Body>
-                <h5>{m.name.en}</h5>
-                <p className="small">{m.description.en}</p>
-                <Badge>{m.category.toUpperCase()}</Badge>
+      {/* ================= HEAD ================= */}
+      <h4 className="text-primary mb-3">HEAD</h4>
+      <div className="row">{head.map((m) => renderCard(m, "primary"))}</div>
 
-                <div className="d-flex justify-content-between mt-2">
-                  <Button size="sm" onClick={() => openEditModal(m)}>Edit</Button>
-                  <Button size="sm" variant="danger" onClick={() => handleDelete(m._id)}>Delete</Button>
-                </div>
-              </Card.Body>
-            </Card>
-          </div>
-        ))}
-      </div>
+      {/* ================= SUBHEAD ================= */}
+      <h4 className="text-success mt-5 mb-3">SUBHEAD</h4>
+      <div className="row">{subhead.map((m) => renderCard(m, "success"))}</div>
 
-      {/* EDIT MODAL */}
+      {/* ================= MEMBER ================= */}
+      <h4 className="text-secondary mt-5 mb-3">MEMBERS</h4>
+      <div className="row">{memberList.map((m) => renderCard(m, "secondary"))}</div>
+
+      {/* ================= EDIT MODAL ================= */}
       <Modal show={editModal} onHide={() => setEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Member</Modal.Title>
@@ -206,12 +199,8 @@ const AdminParish = () => {
         <Modal.Body>
           {editMember && (
             <>
-              <Form.Select
-                className="mb-2"
-                value={editMember.category}
-                onChange={(e) =>
-                  setEditMember({ ...editMember, category: e.target.value })
-                }
+              <Form.Select className="mb-2" value={editMember.category}
+                onChange={(e) => setEditMember({ ...editMember, category: e.target.value })}
               >
                 <option value="head">Head</option>
                 <option value="subhead">Subhead</option>
@@ -220,19 +209,13 @@ const AdminParish = () => {
 
               <Form.Control className="mb-2" value={editMember.name.en}
                 onChange={(e) =>
-                  setEditMember({
-                    ...editMember,
-                    name: { ...editMember.name, en: e.target.value },
-                  })
+                  setEditMember({ ...editMember, name: { ...editMember.name, en: e.target.value } })
                 }
               />
 
               <Form.Control className="mb-2" value={editMember.name.ta}
                 onChange={(e) =>
-                  setEditMember({
-                    ...editMember,
-                    name: { ...editMember.name, ta: e.target.value },
-                  })
+                  setEditMember({ ...editMember, name: { ...editMember.name, ta: e.target.value } })
                 }
               />
 
@@ -254,12 +237,8 @@ const AdminParish = () => {
                 }
               />
 
-              <Form.Control
-                type="file"
-                ref={editFileRef}
-                onChange={(e) =>
-                  setEditMember({ ...editMember, image: e.target.files[0] })
-                }
+              <Form.Control type="file" ref={editFileRef}
+                onChange={(e) => setEditMember({ ...editMember, image: e.target.files[0] })}
               />
             </>
           )}
