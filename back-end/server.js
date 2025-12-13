@@ -62,7 +62,7 @@ app.use('/api/images', imageRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use("/api/festival", festivalRoutes);
 app.use("/api/events", eventRoutes);
-app.use('/api', heartConventRoutes);
+app.use('/api/heartconvent', heartConventRoutes);
 app.use('/api/oldpriests', oldPriestRoutes);
 app.use('/api/acmembers', acRouter);
 app.use('/api/parish', parishRouter);
