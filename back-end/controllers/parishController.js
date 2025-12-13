@@ -1,86 +1,129 @@
-import Parish from '../models/parishModel.js';
-import cloudinary from '../config/cloudinary.js';
-import fs from 'fs';
+import Parish from "../models/parishModel.js";
+import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
+/* ================= CREATE ================= */
 export const createParishMember = async (req, res) => {
   try {
-    const { category, name, description } = req.body;
-    const imagePath = req.file.path;
-
-    const uploaded = await cloudinary.uploader.upload(imagePath, {
-      folder: "parish_members"
-    });
-
-    const newMember = new Parish({
+    const {
       category,
-      name,
-      description,
-      imageUrl: uploaded.secure_url,
-      originalName: name,
-    });
+      name_en,
+      name_ta,
+      description_en,
+      description_ta,
+    } = req.body;
 
-    await newMember.save();
-    fs.unlinkSync(imagePath); // clean up local file
-    res.status(201).json(newMember);
-  } catch (error) {
-    console.error("Error creating parish member:", error);
-    res.status(500).json({ message: 'Failed to create parish member' });
-  }
-};
-
-export const getParishMembers = async (req, res) => {
-  try {
-    const parishMembers = await Parish.find({});
-    res.status(200).json(parishMembers);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch parish members' });
-  }
-};
-
-export const updateParishMember = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { category, name, description } = req.body;
-
-    const updateFields = {
-      category,
-      name,
-      description,
-    };
-
-    if (req.file) {
-      const imagePath = req.file.path;
-      const uploaded = await cloudinary.uploader.upload(imagePath, {
-        folder: "parish_members"
-      });
-      updateFields.imageUrl = uploaded.secure_url;
-      fs.unlinkSync(imagePath);
+    if (
+      !category ||
+      !name_en ||
+      !name_ta ||
+      !description_en ||
+      !description_ta ||
+      !req.file
+    ) {
+      return res.status(400).json({ message: "All fields required" });
     }
 
-    const updatedMember = await Parish.findByIdAndUpdate(
-      id,
-      updateFields,
-      { new: true }
-    );
+    // ✅ ORDER PER CATEGORY
+    const last = await Parish.findOne({ category }).sort({ order: -1 });
+    const nextOrder = last ? last.order + 1 : 1;
 
-    if (!updatedMember) return res.status(404).json({ message: 'Member not found' });
+    const uploaded = await cloudinary.uploader.upload(req.file.path, {
+      folder: "parish_members",
+    });
 
-    res.status(200).json(updatedMember);
-  } catch (error) {
-    console.error("Update error:", error);
-    res.status(500).json({ message: 'Update failed' });
+    const member = await Parish.create({
+      category,
+      name: { en: name_en, ta: name_ta },
+      description: { en: description_en, ta: description_ta },
+      imageUrl: uploaded.secure_url,
+      cloudinaryId: uploaded.public_id,
+      order: nextOrder,
+    });
+
+    fs.unlinkSync(req.file.path);
+    res.status(201).json(member);
+  } catch (err) {
+    console.error("CREATE ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
+/* ================= GET (ORDERED) ================= */
+export const getParishMembers = async (req, res) => {
+  try {
+    const members = await Parish.find().sort({
+      category: 1,
+      order: 1,
+    });
+    res.json(members);
+  } catch {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ================= UPDATE ================= */
+export const updateParishMember = async (req, res) => {
+  try {
+    const member = await Parish.findById(req.params.id);
+    if (!member) return res.status(404).json({ message: "Not found" });
+
+    const {
+      category,
+      name_en,
+      name_ta,
+      description_en,
+      description_ta,
+    } = req.body;
+
+    // ⚠️ Category change → recalc order
+    if (category && category !== member.category) {
+      const last = await Parish.findOne({ category }).sort({ order: -1 });
+      member.order = last ? last.order + 1 : 1;
+      member.category = category;
+    }
+
+    member.name.en = name_en;
+    member.name.ta = name_ta;
+    member.description.en = description_en;
+    member.description.ta = description_ta;
+
+    if (req.file) {
+      await cloudinary.uploader.destroy(member.cloudinaryId);
+      const uploaded = await cloudinary.uploader.upload(req.file.path);
+      member.imageUrl = uploaded.secure_url;
+      member.cloudinaryId = uploaded.public_id;
+      fs.unlinkSync(req.file.path);
+    }
+
+    await member.save();
+    res.json(member);
+  } catch (err) {
+    console.error("UPDATE ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ================= DELETE + ORDER FIX ================= */
 export const deleteParishMember = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Parish.findByIdAndDelete(id);
+    const member = await Parish.findById(req.params.id);
+    if (!member) return res.status(404).json({ message: "Not found" });
 
-    if (!deleted) return res.status(404).json({ message: 'Not found' });
+    const { category, order } = member;
 
-    res.status(200).json({ message: 'Deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Delete failed' });
+    await cloudinary.uploader.destroy(member.cloudinaryId);
+    await member.deleteOne();
+
+    // 🔥 FIX ORDER GAP PER CATEGORY
+    await Parish.updateMany(
+      { category, order: { $gt: order } },
+      { $inc: { order: -1 } }
+    );
+
+    res.json({ message: "Deleted & order fixed" });
+  } catch (err) {
+    console.error("DELETE ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

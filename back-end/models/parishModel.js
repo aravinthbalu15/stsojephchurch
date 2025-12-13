@@ -1,16 +1,30 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const parishSchema = new mongoose.Schema({
-  category: {
-    type: String,
-    enum: ['head', 'subhead', 'member'],
-    required: true,
+const parishSchema = new mongoose.Schema(
+  {
+    category: {
+      type: String,
+      enum: ["head", "subhead", "member"],
+      required: true,
+    },
+
+    name: {
+      en: { type: String, required: true },
+      ta: { type: String, required: true },
+    },
+
+    description: {
+      en: { type: String, required: true },
+      ta: { type: String, required: true },
+    },
+
+    imageUrl: { type: String, required: true },
+    cloudinaryId: { type: String, required: true },
+
+    // ✅ ORDER PER CATEGORY
+    order: { type: Number, required: true },
   },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  imageUrl: { type: String, required: true },
-  originalName: { type: String, required: true },
-});
+  { timestamps: true }
+);
 
-const Parish = mongoose.model('Parish', parishSchema);
-export default Parish;
+export default mongoose.model("Parish", parishSchema);
