@@ -27,7 +27,7 @@ const AdminOldPriest = () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/api/oldpriests`);
       setPriests(data);
-    } catch {
+    } catch (err) {
       setError("Error fetching priests");
     }
   };
@@ -55,6 +55,7 @@ const AdminOldPriest = () => {
       image: null,
     });
     setSelectedPriest(null);
+    setError("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -62,6 +63,7 @@ const AdminOldPriest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
+    setError("");
 
     try {
       const formData = new FormData();
@@ -74,11 +76,16 @@ const AdminOldPriest = () => {
         formData
       );
 
-      Swal.fire("Success", "Priest added", "success");
+      Swal.fire("Success", "Priest added successfully", "success");
       setPriests((p) => [...p, data]);
       resetForm();
-    } catch {
-      Swal.fire("Error", "Upload failed", "error");
+    } catch (err) {
+      console.error(err);
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Upload failed",
+        "error"
+      );
     }
 
     setUploading(false);
@@ -96,12 +103,16 @@ const AdminOldPriest = () => {
       dob_end: priest.dob_end?.split("T")[0],
       image: null,
     });
+    setError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedPriest) return;
+
     setUploading(true);
+    setError("");
 
     try {
       const formData = new FormData();
@@ -114,13 +125,18 @@ const AdminOldPriest = () => {
         formData
       );
 
-      Swal.fire("Updated", "Priest updated", "success");
+      Swal.fire("Updated", "Priest updated successfully", "success");
       setPriests((p) =>
         p.map((i) => (i._id === selectedPriest._id ? data : i))
       );
       resetForm();
-    } catch {
-      Swal.fire("Error", "Update failed", "error");
+    } catch (err) {
+      console.error(err);
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Update failed",
+        "error"
+      );
     }
 
     setUploading(false);
@@ -129,16 +145,25 @@ const AdminOldPriest = () => {
   /* ❌ DELETE */
   const handleDelete = async (id) => {
     const ok = await Swal.fire({
-      title: "Delete?",
+      title: "Are you sure?",
+      text: "This cannot be undone",
       icon: "warning",
       showCancelButton: true,
     });
 
     if (!ok.isConfirmed) return;
 
-    await axios.delete(`${BASE_URL}/api/oldpriests/${id}`);
-    setPriests((p) => p.filter((i) => i._id !== id));
-    Swal.fire("Deleted", "Removed successfully", "success");
+    try {
+      await axios.delete(`${BASE_URL}/api/oldpriests/${id}`);
+      setPriests((p) => p.filter((i) => i._id !== id));
+      Swal.fire("Deleted", "Priest removed", "success");
+    } catch (err) {
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Delete failed",
+        "error"
+      );
+    }
   };
 
   return (
@@ -149,6 +174,7 @@ const AdminOldPriest = () => {
       {/* FORM */}
       <Card className="p-3 mb-4">
         <h5>{selectedPriest ? "Edit Priest" : "Add Priest"}</h5>
+
         <Form onSubmit={selectedPriest ? handleEditSubmit : handleSubmit}>
           <Form.Control
             className="mb-2"
@@ -212,6 +238,7 @@ const AdminOldPriest = () => {
           <Button type="submit" disabled={uploading}>
             {uploading ? "Saving..." : selectedPriest ? "Update" : "Add"}
           </Button>
+
           {selectedPriest && (
             <Button
               variant="secondary"
