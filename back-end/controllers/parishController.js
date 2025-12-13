@@ -28,6 +28,7 @@ export const createParishMember = async (req, res) => {
     const last = await Parish.findOne({ category }).sort({ order: -1 });
     const nextOrder = last ? last.order + 1 : 1;
 
+    // ✅ CLOUDINARY UPLOAD
     const uploaded = await cloudinary.uploader.upload(req.file.path, {
       folder: "parish_members",
     });
@@ -41,7 +42,15 @@ export const createParishMember = async (req, res) => {
       order: nextOrder,
     });
 
-    fs.unlinkSync(req.file.path);
+    // ✅ SAFE FILE CLEANUP (NO CRASH)
+    if (req.file?.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        console.warn("Temp file already removed");
+      }
+    }
+
     res.status(201).json(member);
   } catch (err) {
     console.error("CREATE ERROR:", err);
@@ -57,7 +66,8 @@ export const getParishMembers = async (req, res) => {
       order: 1,
     });
     res.json(members);
-  } catch {
+  } catch (err) {
+    console.error("GET ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -66,7 +76,9 @@ export const getParishMembers = async (req, res) => {
 export const updateParishMember = async (req, res) => {
   try {
     const member = await Parish.findById(req.params.id);
-    if (!member) return res.status(404).json({ message: "Not found" });
+    if (!member) {
+      return res.status(404).json({ message: "Not found" });
+    }
 
     const {
       category,
@@ -76,24 +88,35 @@ export const updateParishMember = async (req, res) => {
       description_ta,
     } = req.body;
 
-    // ⚠️ Category change → recalc order
+    // ⚠️ CATEGORY CHANGE → RECALCULATE ORDER
     if (category && category !== member.category) {
       const last = await Parish.findOne({ category }).sort({ order: -1 });
       member.order = last ? last.order + 1 : 1;
       member.category = category;
     }
 
+    // ✅ UPDATE TEXT
     member.name.en = name_en;
     member.name.ta = name_ta;
     member.description.en = description_en;
     member.description.ta = description_ta;
 
+    // ✅ IMAGE UPDATE (OPTIONAL)
     if (req.file) {
-      await cloudinary.uploader.destroy(member.cloudinaryId);
+      if (member.cloudinaryId) {
+        await cloudinary.uploader.destroy(member.cloudinaryId);
+      }
+
       const uploaded = await cloudinary.uploader.upload(req.file.path);
       member.imageUrl = uploaded.secure_url;
       member.cloudinaryId = uploaded.public_id;
-      fs.unlinkSync(req.file.path);
+
+      // SAFE CLEANUP
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        console.warn("Temp file already removed");
+      }
     }
 
     await member.save();
@@ -108,11 +131,17 @@ export const updateParishMember = async (req, res) => {
 export const deleteParishMember = async (req, res) => {
   try {
     const member = await Parish.findById(req.params.id);
-    if (!member) return res.status(404).json({ message: "Not found" });
+    if (!member) {
+      return res.status(404).json({ message: "Not found" });
+    }
 
-    const { category, order } = member;
+    const { category, order, cloudinaryId } = member;
 
-    await cloudinary.uploader.destroy(member.cloudinaryId);
+    // ✅ SAFE CLOUDINARY DELETE
+    if (cloudinaryId) {
+      await cloudinary.uploader.destroy(cloudinaryId);
+    }
+
     await member.deleteOne();
 
     // 🔥 FIX ORDER GAP PER CATEGORY
