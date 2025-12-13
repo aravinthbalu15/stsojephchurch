@@ -1,24 +1,31 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const acSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  imageUrl: {
-    type: String,
-    required: true,
-  },
-  cloudinaryId: {
-    type: String,
-    required: true,
-  },
-}, { timestamps: true });
+const acSchema = new mongoose.Schema(
+  {
+    name: {
+      en: { type: String, required: true },
+      ta: { type: String, required: true },
+    },
+    description: {
+      en: { type: String, required: true },
+      ta: { type: String, required: true },
+    },
+    imageUrl: {
+      type: String,
+      required: true,
+    },
+    cloudinaryId: {
+      type: String,
+      required: true,
+    },
 
-const ACMember = mongoose.model('ACMember', acSchema);
+    // ✅ ORDER FIELD
+    order: {
+      type: Number,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-export default ACMember;
+export default mongoose.model("ACMember", acSchema);

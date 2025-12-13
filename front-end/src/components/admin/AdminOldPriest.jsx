@@ -150,8 +150,8 @@ const AdminOldPriest = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Old Priests</h2>
+<div className="container  mt-5 ">    
+  <h2>Old Priests</h2>
       {error && <Alert variant="danger">{error}</Alert>}
 
       <Card className="p-3 mb-4">
@@ -225,16 +225,25 @@ const AdminOldPriest = () => {
       <div className="row">
         {priests.map((p) => (
           <div key={p._id} className="col-md-4 mb-3">
-            <Card className="p-3 text-center">
-              <img src={p.imageUrl} width={150} height={150} alt="" />
-              <strong>{p.name.en}</strong>
-              <p>{p.period}</p>
-              <p>{p.description.en}</p>
-              <Button size="sm" onClick={() => handleEdit(p)}>Edit</Button>{" "}
-              <Button size="sm" variant="danger" onClick={() => handleDelete(p._id)}>
-                Delete
-              </Button>
-            </Card>
+            <Card className="priest-card">
+  <img src={p.imageUrl} alt="" className="priest-img" />
+
+  <div className="priest-name">{p.name.en}</div>
+  <div className="priest-period">{p.period}</div>
+  <div className="priest-desc">{p.description.en}</div>
+
+  <div className="priest-actions">
+    <Button size="sm" onClick={() => handleEdit(p)}>Edit</Button>
+    <Button
+      size="sm"
+      variant="danger"
+      onClick={() => handleDelete(p._id)}
+    >
+      Delete
+    </Button>
+  </div>
+</Card>
+
           </div>
         ))}
       </div>
