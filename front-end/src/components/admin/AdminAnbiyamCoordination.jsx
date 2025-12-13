@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,7 +11,7 @@ const AdminAnbiyamCoordination = () => {
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  // ✅ MUST MATCH BACKEND FIELDS
+  // ✅ BACKEND MATCHING FIELDS
   const [formData, setFormData] = useState({
     name_en: "",
     name_ta: "",
@@ -19,6 +19,8 @@ const AdminAnbiyamCoordination = () => {
     description_ta: "",
     image: null,
   });
+
+  const fileInputRef = useRef(null);
 
   /* ================= FETCH ================= */
   const fetchMembers = async () => {
@@ -57,22 +59,29 @@ const AdminAnbiyamCoordination = () => {
       setLoading(true);
 
       if (editId) {
+        // ✏️ UPDATE (NO RESET)
         await axios.put(`${API_URL}/api/acmembers/${editId}`, data);
         Swal.fire("Updated!", "Member updated successfully", "success");
       } else {
+        // ➕ CREATE (RESET FORM)
         await axios.post(`${API_URL}/api/acmembers`, data);
         Swal.fire("Created!", "Member added successfully", "success");
+
+        // ✅ CLEAR FORM ONLY AFTER CREATE
+        setFormData({
+          name_en: "",
+          name_ta: "",
+          description_en: "",
+          description_ta: "",
+          image: null,
+        });
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
 
-      setFormData({
-        name_en: "",
-        name_ta: "",
-        description_en: "",
-        description_ta: "",
-        image: null,
-      });
       setEditId(null);
-
       fetchMembers();
     } catch (err) {
       console.error(err);
@@ -96,6 +105,11 @@ const AdminAnbiyamCoordination = () => {
       description_ta: member.description.ta,
       image: null,
     });
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -174,6 +188,7 @@ const AdminAnbiyamCoordination = () => {
         <input
           type="file"
           className="form-control mb-3"
+          ref={fileInputRef}
           onChange={(e) =>
             setFormData({ ...formData, image: e.target.files[0] })
           }
