@@ -1,175 +1,247 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { Modal, Button, Spinner } from 'react-bootstrap';
-import Swal from 'sweetalert2';
-import '../../components/admin/AdminImageUpload.css';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Modal, Button, Spinner, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
+import "../../components/admin/AdminImageUpload.css";
 
-const BASE_URL = `${import.meta.env.VITE_API_URL}`;   // ⭐ Using env BASE URL
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminImageUpload = () => {
-  const [month, setMonth] = useState('');
+  /* ================= STATE ================= */
+  const [month, setMonth] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+
+  const [titleEn, setTitleEn] = useState("");
+  const [titleTa, setTitleTa] = useState("");
+
+  const [descEn, setDescEn] = useState("");
+  const [descTa, setDescTa] = useState("");
+
   const [images, setImages] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [uploading, setUploading] = useState(false);
+
+  // Edit modal
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const fileInputRef = useRef(null);
 
+  /* ================= FETCH ================= */
   useEffect(() => {
     fetchAllImages();
   }, []);
 
   const fetchAllImages = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/images`);
-      setImages(response.data);
-    } catch (error) {
-      console.error("Fetching images failed:", error);
+      const res = await axios.get(`${BASE_URL}/api/images`);
+      setImages(res.data);
+    } catch (err) {
+      console.error("Fetch error:", err);
     }
   };
 
+  /* ================= RESET ================= */
   const resetFields = () => {
-    setMonth('');
-    setTitle('');
-    setDescription('');
+    setMonth("");
+    setTitleEn("");
+    setTitleTa("");
+    setDescEn("");
+    setDescTa("");
     setImageFile(null);
-
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  /* ================= UPLOAD ================= */
   const handleUpload = async (e) => {
     e.preventDefault();
 
-    if (!month || !title || !description || !imageFile) {
-      Swal.fire('Missing Fields', 'Please fill all fields.', 'warning');
+    if (!month || !titleEn || !titleTa || !descEn || !descTa || !imageFile) {
+      Swal.fire("Missing Fields", "Fill all EN & TA fields", "warning");
       return;
     }
 
-    const result = await Swal.fire({
-      title: 'Confirm Upload',
-      text: 'Do you want to upload this image?',
-      icon: 'question',
+    const confirm = await Swal.fire({
+      title: "Confirm Upload",
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: 'Yes, upload it!',
+      confirmButtonText: "Upload",
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirm.isConfirmed) return;
 
     const formData = new FormData();
-    formData.append('month', month);
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('image', imageFile);
-
-    setUploading(true);
+    formData.append("month", month);
+    formData.append("title", JSON.stringify({ en: titleEn, ta: titleTa }));
+    formData.append("description", JSON.stringify({ en: descEn, ta: descTa }));
+    formData.append("image", imageFile);
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/images/upload-image`, formData);
-      setImages(prev => [res.data.image, ...prev]);
-
+      setUploading(true);
+      const res = await axios.post(
+        `${BASE_URL}/api/images/upload-image`,
+        formData
+      );
+      setImages((prev) => [res.data, ...prev]);
       resetFields();
-      Swal.fire('Success', 'Image uploaded successfully!', 'success');
-    } catch (error) {
-      console.error("Upload error:", error);
-      Swal.fire('Error', 'Upload failed. Please try again.', 'error');
+      Swal.fire("Success", "Image uploaded", "success");
+    } catch (err) {
+      Swal.fire("Error", "Upload failed", "error");
     } finally {
       setUploading(false);
     }
   };
 
+  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to delete this image?',
-      icon: 'warning',
+      title: "Delete Image?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: "Delete",
     });
 
     if (!confirm.isConfirmed) return;
 
     try {
-      await axios.delete(`${BASE_URL}/api/images/delete-image/${id}`);
-      setImages(prev => prev.filter(img => img._id !== id));
-
-      resetFields();
-
-      Swal.fire('Deleted', 'Image has been deleted.', 'success');
-    } catch (error) {
-      console.error("Delete error:", error);
-      Swal.fire('Error', 'Failed to delete image', 'error');
+      await axios.delete(`${BASE_URL}/api/images/${id}`);
+      setImages((prev) => prev.filter((img) => img._id !== id));
+      Swal.fire("Deleted", "Image removed", "success");
+    } catch (err) {
+      Swal.fire("Error", "Delete failed", "error");
     }
   };
 
+  /* ================= EDIT ================= */
+ const openEditModal = (item) => {
+  setEditItem(item);
+
+  setTitleEn(item.title?.en || "");
+  setTitleTa(item.title?.ta || "");
+
+  setDescEn(item.description?.en || "");
+  setDescTa(item.description?.ta || "");
+
+  setShowModal(true);
+};
+
+  const handleUpdate = async () => {
+    if (!titleEn || !titleTa || !descEn || !descTa) {
+      Swal.fire("Missing Fields", "Fill all fields", "warning");
+      return;
+    }
+
+    try {
+      setSavingEdit(true);
+      await axios.put(`${BASE_URL}/api/images/${editItem._id}`, {
+        title: JSON.stringify({ en: titleEn, ta: titleTa }),
+        description: JSON.stringify({ en: descEn, ta: descTa }),
+      });
+
+      fetchAllImages();
+      setShowModal(false);
+      Swal.fire("Updated", "Image updated successfully", "success");
+    } catch (err) {
+      Swal.fire("Error", "Update failed", "error");
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  /* ================= UI ================= */
   return (
     <div className="container admin-upload-image py-5">
-      <h2 className="text-center mb-4">📷 Upload Image to Monthly Gallery</h2>
+      <h2 className="text-center mb-4">
+        📷 Monthly Gallery – Admin
+      </h2>
 
-      <form onSubmit={handleUpload}>
-        <div className="form-group mb-3">
-          <label>Category (Month):</label>
-          <select
-            className="form-control"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            required
-          >
-            <option value="">Select Month</option>
-            {[
-              "January", "February", "March", "April", "May", "June",
-              "July", "August", "September", "October", "November", "December"
-            ].map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
-        </div>
+      {/* ---------- UPLOAD FORM ---------- */}
+      <Form onSubmit={handleUpload}>
+        <Form.Select
+          className="mb-3"
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+        >
+          <option value="">Select Month</option>
+          {[
+            "January","February","March","April","May","June",
+            "July","August","September","October","November","December",
+          ].map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </Form.Select>
 
-        <div className="form-group mb-3">
-          <label>Title:</label>
-          <input className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        </div>
+        <Form.Control
+          className="mb-2"
+          placeholder="Title (English)"
+          value={titleEn}
+          onChange={(e) => setTitleEn(e.target.value)}
+        />
 
-        <div className="form-group mb-3">
-          <label>Description:</label>
-          <textarea className="form-control" value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </div>
+        <Form.Control
+          className="mb-2"
+          placeholder="Title (Tamil)"
+          value={titleTa}
+          onChange={(e) => setTitleTa(e.target.value)}
+        />
 
-        <div className="form-group mb-3">
-          <label>Image:</label>
-          <input
-            ref={fileInputRef}
-            className="form-control"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImageFile(e.target.files[0])}
-            required
-          />
-        </div>
+        <Form.Control
+          as="textarea"
+          className="mb-2"
+          placeholder="Description (English)"
+          value={descEn}
+          onChange={(e) => setDescEn(e.target.value)}
+        />
 
-        <Button type="submit" variant="primary" disabled={uploading}>
-          {uploading ? <Spinner animation="border" size="sm" /> : 'Upload'}
+        <Form.Control
+          as="textarea"
+          className="mb-3"
+          placeholder="Description (Tamil)"
+          value={descTa}
+          onChange={(e) => setDescTa(e.target.value)}
+        />
+
+        <Form.Control
+          type="file"
+          ref={fileInputRef}
+          onChange={(e) => setImageFile(e.target.files[0])}
+          className="mb-3"
+        />
+
+        <Button type="submit" disabled={uploading}>
+          {uploading ? <Spinner size="sm" /> : "Upload"}
         </Button>
-      </form>
+      </Form>
 
-      <h3 className="text-center mt-5">🖼️ Uploaded Images</h3>
-      <div className="row mt-4">
+      {/* ---------- IMAGE LIST ---------- */}
+      <div className="row mt-5">
         {images.map((img) => (
-          <div key={img._id} className="col-sm-6 col-md-4 mb-4">
-            <div className="gallery-card p-3 shadow-sm border rounded">
+          <div key={img._id} className="col-md-4 mb-4">
+            <div className="gallery-card p-3 shadow rounded">
               <img
                 src={img.url}
-                alt={img.title}
                 className="img-fluid mb-2"
-                style={{ cursor: 'pointer', height: '200px', objectFit: 'cover', width: '100%' }}
-                onClick={() => { setSelectedItem(img); setShowModal(true); }}
+                style={{ height: 200, objectFit: "cover", width: "100%" }}
               />
 
-              <h6 className="text-primary fw-bold">{img.month}</h6>
-              <h5>{img.title}</h5>
-              <p className="text-muted small">{img.description}</p>
+              <h6>{img.month}</h6>
+              <h5>{img.title.en}</h5>
+              <p className="small">{img.description.en}</p>
 
-              <Button variant="danger" size="sm" onClick={() => handleDelete(img._id)}>
+              <Button
+                size="sm"
+                variant="warning"
+                className="me-2"
+                onClick={() => openEditModal(img)}
+              >
+                Edit
+              </Button>
+
+              <Button
+                size="sm"
+                variant="danger"
+                onClick={() => handleDelete(img._id)}
+              >
                 Delete
               </Button>
             </div>
@@ -177,21 +249,48 @@ const AdminImageUpload = () => {
         ))}
       </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
-        {selectedItem && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {selectedItem.title} — <span className="text-primary">{selectedItem.month}</span>
-              </Modal.Title>
-            </Modal.Header>
+      {/* ---------- EDIT MODAL ---------- */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Image</Modal.Title>
+        </Modal.Header>
 
-            <Modal.Body className="text-center">
-              <img src={selectedItem.url} className="img-fluid" style={{ maxHeight: '70vh' }} />
-              <p className="mt-3">{selectedItem.description}</p>
-            </Modal.Body>
-          </>
-        )}
+        <Modal.Body>
+          <Form.Control
+            className="mb-2"
+            value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)}
+            placeholder="Title (English)"
+          />
+          <Form.Control
+            className="mb-2"
+            value={titleTa}
+            onChange={(e) => setTitleTa(e.target.value)}
+            placeholder="Title (Tamil)"
+          />
+          <Form.Control
+            as="textarea"
+            className="mb-2"
+            value={descEn}
+            onChange={(e) => setDescEn(e.target.value)}
+            placeholder="Description (English)"
+          />
+          <Form.Control
+            as="textarea"
+            value={descTa}
+            onChange={(e) => setDescTa(e.target.value)}
+            placeholder="Description (Tamil)"
+          />
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="success" onClick={handleUpdate}>
+            {savingEdit ? <Spinner size="sm" /> : "Update"}
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

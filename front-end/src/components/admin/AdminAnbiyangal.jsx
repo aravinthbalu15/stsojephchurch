@@ -177,26 +177,26 @@ const AdminAnbiyam = () => {
     }
   };
 
-  /* ---------- DELETE ---------- */
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Delete?",
-      text: "This action cannot be undone",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, Delete",
-    });
+  // /* ---------- DELETE ---------- */
+  // const handleDelete = async (id) => {
+  //   const confirm = await Swal.fire({
+  //     title: "Delete?",
+  //     text: "This action cannot be undone",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes, Delete",
+  //   });
 
-    if (!confirm.isConfirmed) return;
+  //   if (!confirm.isConfirmed) return;
 
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      Swal.fire("Deleted", "Anbiyam removed", "success");
-      fetchGroups();
-    } catch (err) {
-      Swal.fire("Error", "Failed to delete", "error");
-    }
-  };
+  //   try {
+  //     await axios.delete(`${API_URL}/${id}`);
+  //     Swal.fire("Deleted", "Anbiyam removed", "success");
+  //     fetchGroups();
+  //   } catch (err) {
+  //     Swal.fire("Error", "Failed to delete", "error");
+  //   }
+  // };
 
   /* ---------- UI ---------- */
   return (
@@ -217,14 +217,15 @@ const AdminAnbiyam = () => {
         <div className="card p-3 shadow mb-4" key={g._id || index}>
           <div className="d-flex justify-content-between mb-2">
             <h5>அன்பியம் – {g.groupNumber}</h5>
-            {g._id && (
+            {/* {g._id && (
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => handleDelete(g._id)}
               >
                 Delete
               </button>
-            )}
+            )
+            } */}
           </div>
 
           {/* GROUP TITLE */}

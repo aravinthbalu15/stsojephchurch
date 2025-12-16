@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import '../../Style/Gallery.css';
+import React, { useEffect, useState } from "react";
+import { Modal, Spinner, Alert } from "react-bootstrap";
+import axios from "axios";
+import "../../Style/Gallery.css";
+import { useTranslation } from "react-i18next";
 
 const February = () => {
+  const { t, i18n } = useTranslation();
+
+  // language selector
+  const lang = i18n.language === "ta" ? "ta" : "en";
+
   const [galleryItems, setGalleryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -35,20 +41,29 @@ const February = () => {
 
   return (
     <div className="gallery-container container py-5 mt-5">
-      <h2 className="text-center mb-4 gallery-title">February Gallery</h2>
+      <h2 className="text-center mb-4 gallery-title">
+        {t("february_gallery")}
+      </h2>
 
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
         </div>
       ) : error ? (
-        <Alert variant="danger" className="text-center">{error}</Alert>
+        <Alert variant="danger" className="text-center">
+          {error}
+        </Alert>
       ) : galleryItems.length === 0 ? (
-        <Alert variant="info" className="text-center">No images found for February</Alert>
+        <Alert variant="info" className="text-center">
+          {t("no_images_found")}
+        </Alert>
       ) : (
         <div className="row g-4 justify-content-center">
           {galleryItems.map((item) => (
-            <div key={item._id} className="col-6 col-sm-4 col-md-4 col-lg-3">
+            <div
+              key={item._id}
+              className="col-6 col-sm-4 col-md-4 col-lg-3"
+            >
               <div
                 className="gallery-card position-relative"
                 onClick={() => handleImageClick(item)}
@@ -56,14 +71,23 @@ const February = () => {
               >
                 <img
                   src={item.url}
-                  alt={item.title}
+                  alt={item.title?.[lang]}
                   className="img-fluid rounded-3"
                   loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
+
                 <div className="gallery-overlay rounded-3">
-                  <h5 className="overlay-title">{item.title}</h5>
-                  <p className="overlay-text">{item.description}</p>
+                  <h5 className="overlay-title">
+                    {item.title?.[lang]}
+                  </h5>
+                  <p className="overlay-text">
+                    {item.description?.[lang]}
+                  </p>
                 </div>
               </div>
             </div>
@@ -71,20 +95,34 @@ const February = () => {
         </div>
       )}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
+      {/* MODAL */}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        size="lg"
+      >
         {selectedItem && (
           <>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedItem.title}</Modal.Title>
+              <Modal.Title>
+                {selectedItem.title?.[lang]}
+              </Modal.Title>
             </Modal.Header>
+
             <Modal.Body className="text-center">
               <img
                 src={selectedItem.url}
-                alt={selectedItem.title}
+                alt={selectedItem.title?.[lang]}
                 className="img-fluid rounded-2"
-                style={{ maxHeight: "70vh", objectFit: "contain" }}
+                style={{
+                  maxHeight: "70vh",
+                  objectFit: "contain",
+                }}
               />
-              <p className="mt-3">{selectedItem.description}</p>
+              <p className="mt-3">
+                {selectedItem.description?.[lang]}
+              </p>
             </Modal.Body>
           </>
         )}
