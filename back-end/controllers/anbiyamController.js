@@ -1,13 +1,11 @@
 import Anbiyam from "../models/AnbiyamModel.js";
 import cloudinary from "../config/cloudinary.js";
 
-/* =========================================================
-   HELPER : Upload image only if base64
-   ========================================================= */
+/** Helper: upload base64 only if needed */
 const uploadIfBase64 = async (imageString, folder = "anbiyam") => {
   if (!imageString) return { url: null, public_id: null };
 
-  // Already an URL → don't upload again
+  // If it's already an URL, don't upload
   if (typeof imageString === "string" && !imageString.startsWith("data:")) {
     return { url: imageString, public_id: null };
   }
@@ -16,9 +14,7 @@ const uploadIfBase64 = async (imageString, folder = "anbiyam") => {
   return { url: result.secure_url, public_id: result.public_id };
 };
 
-/* =========================================================
-   GET : All Anbiyams
-   ========================================================= */
+/** GET all anbiyams */
 export const getAllAnbiyams = async (req, res) => {
   try {
     const data = await Anbiyam.find().sort({ groupNumber: 1 });
@@ -29,31 +25,29 @@ export const getAllAnbiyams = async (req, res) => {
   }
 };
 
-/* =========================================================
-   POST : Create Anbiyam
-   ========================================================= */
+/** POST create new Anbiyam */
 export const createAnbiyam = async (req, res) => {
   try {
     const {
       groupNumber,
-      groupTitle,        // { en, ta }
-      mainTitle,         // { en, ta }
-      mainDescription,   // { en, ta }
-      mainImage,         // base64 or URL
-      members = [],      // [{ name, role, description, image }]
+      groupTitle,
+      mainTitle,
+      mainDescription,
+      mainImage,          // base64 or URL
+      members = [],       // [{ name, role, description, image }]
     } = req.body;
 
-    // Upload main image
+    // Upload main image if base64
     const mainImg = await uploadIfBase64(mainImage);
 
-    // Members
+    // Upload each member image if base64
     const processedMembers = [];
     for (const m of members) {
       const uploaded = await uploadIfBase64(m.image);
       processedMembers.push({
-        name: m.name,                     // { en, ta }
-        role: m.role,                     // { en, ta }
-        description: m.description,       // { en, ta }
+        name: m.name,
+        role: m.role,
+        description: m.description,
         imageUrl: uploaded.url || m.imageUrl || "",
         cloudinaryId: uploaded.public_id || m.cloudinaryId || "",
       });
@@ -77,9 +71,7 @@ export const createAnbiyam = async (req, res) => {
   }
 };
 
-/* =========================================================
-   PUT : Update Anbiyam
-   ========================================================= */
+/** PUT update existing Anbiyam */
 export const updateAnbiyam = async (req, res) => {
   try {
     const id = req.params.id;
@@ -88,7 +80,7 @@ export const updateAnbiyam = async (req, res) => {
       groupTitle,
       mainTitle,
       mainDescription,
-      mainImage,
+      mainImage, // base64 or existing URL
       members = [],
     } = req.body;
 
@@ -97,40 +89,50 @@ export const updateAnbiyam = async (req, res) => {
       return res.status(404).json({ message: "Anbiyam not found" });
     }
 
-    /* ---------- MAIN IMAGE ---------- */
+    // Main image
     let mainImageUrl = existing.mainImageUrl;
     let mainCloudinaryId = existing.mainCloudinaryId;
 
     if (mainImage && mainImage.startsWith("data:")) {
+      // delete old main image if exists
       if (mainCloudinaryId) {
-        await cloudinary.uploader.destroy(mainCloudinaryId);
+        try {
+          await cloudinary.uploader.destroy(mainCloudinaryId);
+        } catch (e) {
+          console.warn("Failed to delete old main image:", e.message);
+        }
       }
       const uploaded = await uploadIfBase64(mainImage);
       mainImageUrl = uploaded.url;
       mainCloudinaryId = uploaded.public_id;
-    } else if (mainImage) {
-      mainImageUrl = mainImage;
+    } else if (mainImage && !mainImage.startsWith("data:")) {
+      mainImageUrl = mainImage; // unchanged URL
     }
 
-    /* ---------- MEMBERS ---------- */
+    // Members
     const processedMembers = [];
     for (const m of members) {
       let imageUrl = m.imageUrl || "";
       let cloudinaryId = m.cloudinaryId || "";
 
       if (m.image && m.image.startsWith("data:")) {
+        // If there was an old cloudinary image, delete it
         if (cloudinaryId) {
-          await cloudinary.uploader.destroy(cloudinaryId);
+          try {
+            await cloudinary.uploader.destroy(cloudinaryId);
+          } catch (e) {
+            console.warn("Failed to delete old member image:", e.message);
+          }
         }
         const uploaded = await uploadIfBase64(m.image);
         imageUrl = uploaded.url;
         cloudinaryId = uploaded.public_id;
-      } else if (m.image) {
+      } else if (m.image && !m.image.startsWith("data:")) {
         imageUrl = m.image;
       }
 
       processedMembers.push({
-        _id: m._id,
+        _id: m._id, // keep id if exists
         name: m.name,
         role: m.role,
         description: m.description,
@@ -139,7 +141,6 @@ export const updateAnbiyam = async (req, res) => {
       });
     }
 
-    /* ---------- UPDATE ---------- */
     existing.groupNumber = groupNumber;
     existing.groupTitle = groupTitle;
     existing.mainTitle = mainTitle;
@@ -156,27 +157,36 @@ export const updateAnbiyam = async (req, res) => {
   }
 };
 
-/* =========================================================
-   DELETE : Anbiyam + Images
-   ========================================================= */
+/** DELETE one Anbiyam (with images) */
 export const deleteAnbiyam = async (req, res) => {
   try {
-    const record = await Anbiyam.findById(req.params.id);
+    const id = req.params.id;
+    const record = await Anbiyam.findById(id);
     if (!record) {
       return res.status(404).json({ message: "Not found" });
     }
 
+    // delete main image
     if (record.mainCloudinaryId) {
-      await cloudinary.uploader.destroy(record.mainCloudinaryId);
-    }
-
-    for (const m of record.members) {
-      if (m.cloudinaryId) {
-        await cloudinary.uploader.destroy(m.cloudinaryId);
+      try {
+        await cloudinary.uploader.destroy(record.mainCloudinaryId);
+      } catch (e) {
+        console.warn("Failed to delete main image:", e.message);
       }
     }
 
-    await Anbiyam.findByIdAndDelete(req.params.id);
+    // delete member images
+    for (const m of record.members) {
+      if (m.cloudinaryId) {
+        try {
+          await cloudinary.uploader.destroy(m.cloudinaryId);
+        } catch (e) {
+          console.warn("Failed to delete member image:", e.message);
+        }
+      }
+    }
+
+    await Anbiyam.findByIdAndDelete(id);
     res.json({ message: "Deleted successfully" });
   } catch (err) {
     console.error("Delete Anbiyam error:", err);
