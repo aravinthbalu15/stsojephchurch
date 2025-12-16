@@ -17,7 +17,6 @@ const AdminPresident = () => {
     const res = await axios.get(API);
     setData(res.data);
   };
-
   useEffect(() => {
     fetchData();
   }, []);

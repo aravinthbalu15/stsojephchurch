@@ -1,0 +1,129 @@
+/* Page Wrapper */
+.parti_pa_page {
+  padding: 20px;
+  animation: parti_pa_fadeUp 1s ease-in-out;
+}
+
+/* Title */
+.parti_pa_title {
+  text-align: center;
+  font-weight: 700;
+  color: #003060;
+  margin-bottom: 25px;
+}
+
+/* Image */
+.parti_pa_image_wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  animation: parti_pa_zoomIn 1.2s ease;
+}
+
+.parti_pa_image {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: transform 0.4s ease;
+}
+
+.parti_pa_image:hover {
+  transform: scale(1.03);
+}
+
+/* Content */
+.parti_pa_content_wrapper {
+  max-width: 900px;
+  margin: auto;
+  line-height: 1.8;
+  animation: parti_pa_fadeUp 1.4s ease;
+}
+
+/* Subtitles */
+.parti_pa_subtitle {
+  color: #0d6efd;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Quote */
+.parti_pa_quote {
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: #444;
+  margin-bottom: 18px;
+}
+
+/* Paragraph */
+.parti_pa_text {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 14px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .parti_pa_title {
+    font-size: 24px;
+  }
+
+  .parti_pa_quote {
+    font-size: 16px;
+  }
+
+  .parti_pa_text {
+    font-size: 15px;
+  }
+}
+
+/* Animations */
+@keyframes parti_pa_fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes parti_pa_zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* Extra large (≥576px) */
+@media (max-width: 576px) {
+  .parti_pa_page {
+    padding-top: 80px;
+  }
+}
+
+/* Medium devices (≥768px) */
+@media (max-width: 768px) {
+  .parti_pa_page {
+    padding-top: 80px;
+  }
+}
+
+/* Large devices (≥992px) */
+@media (max-width: 992px) {
+  .parti_pa_page {
+    padding-top: 80px;
+  }
+}
+
+
+
+

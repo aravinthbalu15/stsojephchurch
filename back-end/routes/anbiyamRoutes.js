@@ -8,7 +8,6 @@ import {
 
 const router = express.Router();
 
-// base: /api/anbiyam
 router.get("/", getAllAnbiyams);
 router.post("/", createAnbiyam);
 router.put("/:id", updateAnbiyam);

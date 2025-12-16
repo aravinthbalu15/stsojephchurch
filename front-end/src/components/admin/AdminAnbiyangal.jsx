@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./AdminAnbiyangal.css"
+import "./AdminAnbiyangal.css";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/anbiyam`;
+
 const AdminAnbiyam = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  /* ---------- FILE TO BASE64 ---------- */
   const fileToBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -17,6 +19,7 @@ const AdminAnbiyam = () => {
       reader.onerror = (error) => reject(error);
     });
 
+  /* ---------- FETCH ---------- */
   const fetchGroups = async () => {
     try {
       setLoading(true);
@@ -33,12 +36,20 @@ const AdminAnbiyam = () => {
     fetchGroups();
   }, []);
 
-  const handleFieldChange = (index, field, value) => {
+  /* ---------- GROUP FIELD CHANGE ---------- */
+  const handleFieldChange = (index, field, lang, value) => {
     const updated = [...groups];
-    updated[index] = { ...updated[index], [field]: value };
+    updated[index] = {
+      ...updated[index],
+      [field]: {
+        ...(updated[index][field] || { en: "", ta: "" }),
+        [lang]: value,
+      },
+    };
     setGroups(updated);
   };
 
+  /* ---------- MAIN IMAGE ---------- */
   const handleMainImageChange = async (index, file) => {
     if (!file) return;
     const base64 = await fileToBase64(file);
@@ -51,35 +62,44 @@ const AdminAnbiyam = () => {
     setGroups(updated);
   };
 
-  const handleMemberChange = (groupIndex, memberIndex, field, value) => {
+  /* ---------- MEMBER FIELD ---------- */
+  const handleMemberChange = (
+    groupIndex,
+    memberIndex,
+    field,
+    lang,
+    value
+  ) => {
     const updated = [...groups];
-    const group = { ...updated[groupIndex] };
-    const members = [...(group.members || [])];
-
-    members[memberIndex] = { ...members[memberIndex], [field]: value };
-    group.members = members;
-    updated[groupIndex] = group;
-    setGroups(updated);
-  };
-
-  const handleMemberImageChange = async (groupIndex, memberIndex, file) => {
-    if (!file) return;
-    const base64 = await fileToBase64(file);
-    const updated = [...groups];
-    const group = { ...updated[groupIndex] };
-    const members = [...(group.members || [])];
+    const members = [...updated[groupIndex].members];
 
     members[memberIndex] = {
       ...members[memberIndex],
-      image: base64,
-      imageUrl: base64,
+      [field]: {
+        ...(members[memberIndex][field] || { en: "", ta: "" }),
+        [lang]: value,
+      },
     };
 
-    group.members = members;
-    updated[groupIndex] = group;
+    updated[groupIndex].members = members;
     setGroups(updated);
   };
 
+  /* ---------- MEMBER IMAGE ---------- */
+  const handleMemberImageChange = async (groupIndex, memberIndex, file) => {
+    if (!file) return;
+    const base64 = await fileToBase64(file);
+
+    const updated = [...groups];
+    updated[groupIndex].members[memberIndex] = {
+      ...updated[groupIndex].members[memberIndex],
+      image: base64,
+      imageUrl: base64,
+    };
+    setGroups(updated);
+  };
+
+  /* ---------- ADD GROUP ---------- */
   const handleAddGroup = () => {
     const nextNumber =
       groups.length > 0
@@ -90,9 +110,9 @@ const AdminAnbiyam = () => {
       ...groups,
       {
         groupNumber: nextNumber,
-        groupTitle: "",
-        mainTitle: "",
-        mainDescription: "",
+        groupTitle: { en: "", ta: "" },
+        mainTitle: { en: "", ta: "" },
+        mainDescription: { en: "", ta: "" },
         mainImageUrl: "",
         mainImage: "",
         members: [],
@@ -100,23 +120,29 @@ const AdminAnbiyam = () => {
     ]);
   };
 
+  /* ---------- ADD MEMBER ---------- */
   const handleAddMember = (groupIndex) => {
     const updated = [...groups];
-    updated[groupIndex].members = [
-      ...(updated[groupIndex].members || []),
-      { name: "", role: "", description: "", imageUrl: "", image: "" },
-    ];
+    updated[groupIndex].members.push({
+      name: { en: "", ta: "" },
+      role: { en: "", ta: "" },
+      description: { en: "", ta: "" },
+      imageUrl: "",
+      image: "",
+    });
     setGroups(updated);
   };
 
+  /* ---------- REMOVE MEMBER ---------- */
   const handleRemoveMember = (groupIndex, memberIndex) => {
     const updated = [...groups];
     updated[groupIndex].members = updated[groupIndex].members.filter(
-      (_, idx) => idx !== memberIndex
+      (_, i) => i !== memberIndex
     );
     setGroups(updated);
   };
 
+  /* ---------- SAVE ---------- */
   const handleSave = async (index) => {
     const g = groups[index];
 
@@ -126,7 +152,7 @@ const AdminAnbiyam = () => {
       mainTitle: g.mainTitle,
       mainDescription: g.mainDescription,
       mainImage: g.mainImage || g.mainImageUrl || "",
-      members: (g.members || []).map((m) => ({
+      members: g.members.map((m) => ({
         _id: m._id,
         name: m.name,
         role: m.role,
@@ -151,6 +177,7 @@ const AdminAnbiyam = () => {
     }
   };
 
+  /* ---------- DELETE ---------- */
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
       title: "Delete?",
@@ -171,9 +198,12 @@ const AdminAnbiyam = () => {
     }
   };
 
+  /* ---------- UI ---------- */
   return (
     <div className="admin-anbiyam container mt-4 mb-5">
-      <h2 className="text-center fw-bold mb-4">Admin – Anbiyam Management</h2>
+      <h2 className="text-center fw-bold mb-4">
+        Admin – Anbiyam Management
+      </h2>
 
       <div className="text-end mb-3">
         <button className="btn btn-success" onClick={handleAddGroup}>
@@ -197,141 +227,170 @@ const AdminAnbiyam = () => {
             )}
           </div>
 
-          {/* BASIC FIELDS */}
+          {/* GROUP TITLE */}
           <input
-            type="text"
             className="form-control mb-2"
-            placeholder="Group Title"
-            value={g.groupTitle}
+            placeholder="Group Title (English)"
+            value={g.groupTitle?.en || ""}
             onChange={(e) =>
-              handleFieldChange(index, "groupTitle", e.target.value)
+              handleFieldChange(index, "groupTitle", "en", e.target.value)
             }
           />
 
           <input
-            type="text"
             className="form-control mb-2"
-            placeholder="Main Title"
-            value={g.mainTitle}
+            placeholder="Group Title (Tamil)"
+            value={g.groupTitle?.ta || ""}
             onChange={(e) =>
-              handleFieldChange(index, "mainTitle", e.target.value)
+              handleFieldChange(index, "groupTitle", "ta", e.target.value)
+            }
+          />
+
+          {/* MAIN TITLE */}
+          <input
+            className="form-control mb-2"
+            placeholder="Main Title (English)"
+            value={g.mainTitle?.en || ""}
+            onChange={(e) =>
+              handleFieldChange(index, "mainTitle", "en", e.target.value)
+            }
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Main Title (Tamil)"
+            value={g.mainTitle?.ta || ""}
+            onChange={(e) =>
+              handleFieldChange(index, "mainTitle", "ta", e.target.value)
+            }
+          />
+
+          {/* DESCRIPTION */}
+          <textarea
+            className="form-control mb-2"
+            placeholder="Description (English)"
+            value={g.mainDescription?.en || ""}
+            onChange={(e) =>
+              handleFieldChange(index, "mainDescription", "en", e.target.value)
             }
           />
 
           <textarea
             className="form-control mb-3"
-            placeholder="Main Description"
-            rows="3"
-            value={g.mainDescription}
+            placeholder="Description (Tamil)"
+            value={g.mainDescription?.ta || ""}
             onChange={(e) =>
-              handleFieldChange(index, "mainDescription", e.target.value)
+              handleFieldChange(index, "mainDescription", "ta", e.target.value)
             }
           />
 
-          {/* IMAGE Upload */}
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <input
-                type="file"
-                className="form-control"
-                onChange={(e) => handleMainImageChange(index, e.target.files[0])}
-              />
-            </div>
-            <div className="col-md-6">
-              {g.mainImageUrl && (
-                <img
-                  src={g.mainImageUrl}
-                  alt="Main"
-                  className="img-fluid rounded"
-                  style={{ height: "180px", objectFit: "cover" }}
-                />
-              )}
-            </div>
-          </div>
+          {/* MAIN IMAGE */}
+          <input
+            type="file"
+            className="form-control mb-2"
+            onChange={(e) => handleMainImageChange(index, e.target.files[0])}
+          />
+
+          {g.mainImageUrl && (
+            <img
+              src={g.mainImageUrl}
+              className="img-fluid rounded mb-3"
+              style={{ height: "180px", objectFit: "cover" }}
+            />
+          )}
 
           {/* MEMBERS */}
-          <h6 className="fw-bold mt-2">Members</h6>
+          <h6 className="fw-bold">Members</h6>
 
-          {g.members.map((m, memberIndex) => (
-            <div className="border rounded p-3 mb-2" key={memberIndex}>
-              <div className="row">
-                <div className="col-md-4">
-                  <input
-                    type="text"
-                    className="form-control mb-2"
-                    placeholder="Name"
-                    value={m.name}
-                    onChange={(e) =>
-                      handleMemberChange(
-                        index,
-                        memberIndex,
-                        "name",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
+          {g.members.map((m, mi) => (
+            <div className="border p-3 mb-2" key={mi}>
+              <input
+                className="form-control mb-1"
+                placeholder="Name (English)"
+                value={m.name?.en || ""}
+                onChange={(e) =>
+                  handleMemberChange(index, mi, "name", "en", e.target.value)
+                }
+              />
 
-                <div className="col-md-4">
-                  <input
-                    type="text"
-                    className="form-control mb-2"
-                    placeholder="Role"
-                    value={m.role}
-                    onChange={(e) =>
-                      handleMemberChange(
-                        index,
-                        memberIndex,
-                        "role",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
+              <input
+                className="form-control mb-1"
+                placeholder="Name (Tamil)"
+                value={m.name?.ta || ""}
+                onChange={(e) =>
+                  handleMemberChange(index, mi, "name", "ta", e.target.value)
+                }
+              />
 
-                <div className="col-md-4">
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={(e) =>
-                      handleMemberImageChange(
-                        index,
-                        memberIndex,
-                        e.target.files[0]
-                      )
-                    }
-                  />
-                </div>
-              </div>
+              <input
+                className="form-control mb-1"
+                placeholder="Role (English)"
+                value={m.role?.en || ""}
+                onChange={(e) =>
+                  handleMemberChange(index, mi, "role", "en", e.target.value)
+                }
+              />
+
+              <input
+                className="form-control mb-1"
+                placeholder="Role (Tamil)"
+                value={m.role?.ta || ""}
+                onChange={(e) =>
+                  handleMemberChange(index, mi, "role", "ta", e.target.value)
+                }
+              />
 
               <textarea
-                className="form-control mt-2"
-                placeholder="Description"
-                rows="2"
-                value={m.description}
+                className="form-control mb-1"
+                placeholder="Description (English)"
+                value={m.description?.en || ""}
                 onChange={(e) =>
                   handleMemberChange(
                     index,
-                    memberIndex,
+                    mi,
                     "description",
+                    "en",
                     e.target.value
                   )
+                }
+              />
+
+              <textarea
+                className="form-control mb-2"
+                placeholder="Description (Tamil)"
+                value={m.description?.ta || ""}
+                onChange={(e) =>
+                  handleMemberChange(
+                    index,
+                    mi,
+                    "description",
+                    "ta",
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                type="file"
+                className="form-control mb-2"
+                onChange={(e) =>
+                  handleMemberImageChange(index, mi, e.target.files[0])
                 }
               />
 
               {m.imageUrl && (
                 <img
                   src={m.imageUrl}
-                  className="rounded-circle mt-2"
                   width="80"
                   height="80"
+                  className="rounded-circle"
                   style={{ objectFit: "cover" }}
                 />
               )}
 
               <button
-                className="btn btn-sm btn-danger mt-2"
-                onClick={() => handleRemoveMember(index, memberIndex)}
+                className="btn btn-danger btn-sm mt-2"
+                onClick={() => handleRemoveMember(index, mi)}
               >
                 Remove Member
               </button>
@@ -346,7 +405,10 @@ const AdminAnbiyam = () => {
               + Add Member
             </button>
 
-            <button className="btn btn-success" onClick={() => handleSave(index)}>
+            <button
+              className="btn btn-success"
+              onClick={() => handleSave(index)}
+            >
               Save
             </button>
           </div>

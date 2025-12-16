@@ -4,8 +4,14 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "../Style/Anbiyangal.css";
 import { Container, Row, Col } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 const Anbiyangal = () => {
+  const { t, i18n } = useTranslation();
+
+  // language selector (ta / en)
+  const lang = i18n.language === "ta" ? "ta" : "en";
+
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +29,9 @@ const Anbiyangal = () => {
 
   const fetchGroups = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/anbiyam`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/anbiyam`
+      );
       setGroups(res.data);
     } catch (error) {
       console.error("Error loading Anbiyam:", error);
@@ -39,21 +47,24 @@ const Anbiyangal = () => {
   return (
     <>
       {groups.map((group, idx) => (
-        <Container key={group._id || idx} className="anbiyangal-container mt-5 mb-5" data-aos="fade-up">
-
+        <Container
+          key={group._id || idx}
+          className="anbiyangal-container mt-5 mb-5"
+          data-aos="fade-up"
+        >
+          {/* TITLE */}
           <h1 className="section-title" data-aos="fade-down">
-            அன்பியம் - {group.groupNumber}
+            {t("anbiyam")} - {group.groupNumber}
           </h1>
 
           <p className="section-subtitle text-center" data-aos="fade-down">
-            {group.groupTitle}
+            {group.groupTitle?.[lang]}
           </p>
 
           <div className="title-divider"></div>
 
           <div className="inner-wrapper">
             <Row className="align-items-center">
-
               {/* MAIN IMAGE + DETAILS */}
               <Col
                 md={6}
@@ -65,8 +76,14 @@ const Anbiyangal = () => {
                   alt="Main"
                   className="rectss-img"
                 />
-                <h1 className="rect-title">{group.mainTitle}</h1>
-                <p className="rect-desc">{group.mainDescription}</p>
+
+                <h1 className="rect-title">
+                  {group.mainTitle?.[lang]}
+                </h1>
+
+                <p className="rect-desc">
+                  {group.mainDescription?.[lang]}
+                </p>
               </Col>
 
               {/* MEMBERS SECTION */}
@@ -77,24 +94,37 @@ const Anbiyangal = () => {
               >
                 {group.members?.length > 0 ? (
                   group.members.map((m, memberIndex) => (
-                    <div className="image-box d-flex align-items-center" key={memberIndex}>
+                    <div
+                      className="image-box d-flex align-items-center"
+                      key={memberIndex}
+                    >
                       <img
                         src={m.imageUrl || m.image}
-                        alt={m.name}
+                        alt={m.name?.[lang]}
                         className="circle-img"
                       />
+
                       <div className="text-content">
-                        <h1 className="image-title">{m.role}</h1>
-                        <p className="image-desc">{m.name}</p>
-                        <p className="image-desc">{m.description}</p>
+                        <h1 className="image-title">
+                          {m.role?.[lang]}
+                        </h1>
+
+                        <p className="image-desc">
+                          {m.name?.[lang]}
+                        </p>
+
+                        <p className="image-desc">
+                          {m.description?.[lang]}
+                        </p>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="no-member-text">No members available</p>
+                  <p className="no-member-text">
+                    {t("no_members_available")}
+                  </p>
                 )}
               </Col>
-
             </Row>
           </div>
         </Container>
@@ -104,7 +134,9 @@ const Anbiyangal = () => {
       {showButton && (
         <div
           className="scroll-up"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() =>
+            window.scrollTo({ top: 0, behavior: "smooth" })
+          }
         >
           ↑
         </div>

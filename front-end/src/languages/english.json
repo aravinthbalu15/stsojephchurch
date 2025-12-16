@@ -40,7 +40,6 @@
   "foundation_growth": "Foundation Growth Association",
 
   "worship_organizations": "Worship Organizations",
-  "worship_team": "Worship Team",
   "choir": "Choir Group",
   "altar_boys": "Altar Boys",
 
@@ -180,7 +179,20 @@
       "Becoming a powerful community of persons who enjoy the gifts of the Holy Spirit and who have developed skills akin to their aptitude.",
      "Becoming transcendent persons and communities, who in union with God, humanity and nature, finds meaning in working for the great causes of the Kingdom of God."
     ]
-  }
+  },
+
+  "worship_team": "Worship  Team",
+
+  "worship_goal_title": "Objective:",
+  "worship_goal_quote": "Let worship become life and life become worship",
+  "worship_goal_desc": "The goal is to plan worship celebrations with proper preparation, provide formal training to members so that the worship services are meaningful, and integrate worship with life, following the motto: \"Let Worship be Life, and Life be Worship.\"",
+
+  "worship_origin_title": "Origin:",
+  "worship_origin_desc1": "The Worship Committee was started by Rev. Fr. Arul Devadoss on March 15, 2009.",
+  "worship_origin_desc2": "The committee functions with members including 7 Basic Christian Community (BCC) representatives, representatives from various Pious Associations and Movements, and the choir group.",
+  "worship_origin_desc3": "The committee actively works towards meaningful liturgical celebrations, Holy Mass preparation, special feasts, and spiritual programs."
+
+
 
 
 }
