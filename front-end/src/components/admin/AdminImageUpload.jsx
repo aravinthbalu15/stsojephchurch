@@ -41,6 +41,15 @@ const AdminImageUpload = () => {
     }
   };
 
+  /* ================= GROUP BY MONTH ================= */
+  const groupedImages = images.reduce((acc, img) => {
+    if (!acc[img.month]) {
+      acc[img.month] = [];
+    }
+    acc[img.month].push(img);
+    return acc;
+  }, {});
+
   /* ================= RESET ================= */
   const resetFields = () => {
     setMonth("");
@@ -113,17 +122,14 @@ const AdminImageUpload = () => {
   };
 
   /* ================= EDIT ================= */
- const openEditModal = (item) => {
-  setEditItem(item);
-
-  setTitleEn(item.title?.en || "");
-  setTitleTa(item.title?.ta || "");
-
-  setDescEn(item.description?.en || "");
-  setDescTa(item.description?.ta || "");
-
-  setShowModal(true);
-};
+  const openEditModal = (item) => {
+    setEditItem(item);
+    setTitleEn(item.title?.en || "");
+    setTitleTa(item.title?.ta || "");
+    setDescEn(item.description?.en || "");
+    setDescTa(item.description?.ta || "");
+    setShowModal(true);
+  };
 
   const handleUpdate = async () => {
     if (!titleEn || !titleTa || !descEn || !descTa) {
@@ -151,9 +157,7 @@ const AdminImageUpload = () => {
   /* ================= UI ================= */
   return (
     <div className="container admin-upload-image py-5">
-      <h2 className="text-center mb-4">
-        📷 Monthly Gallery – Admin
-      </h2>
+      <h2 className="text-center mb-4">📷 Monthly Gallery – Admin</h2>
 
       {/* ---------- UPLOAD FORM ---------- */}
       <Form onSubmit={handleUpload}>
@@ -171,79 +175,61 @@ const AdminImageUpload = () => {
           ))}
         </Form.Select>
 
-        <Form.Control
-          className="mb-2"
-          placeholder="Title (English)"
-          value={titleEn}
-          onChange={(e) => setTitleEn(e.target.value)}
-        />
+        <Form.Control className="mb-2" placeholder="Title (English)"
+          value={titleEn} onChange={(e) => setTitleEn(e.target.value)} />
 
-        <Form.Control
-          className="mb-2"
-          placeholder="Title (Tamil)"
-          value={titleTa}
-          onChange={(e) => setTitleTa(e.target.value)}
-        />
+        <Form.Control className="mb-2" placeholder="Title (Tamil)"
+          value={titleTa} onChange={(e) => setTitleTa(e.target.value)} />
 
-        <Form.Control
-          as="textarea"
-          className="mb-2"
+        <Form.Control as="textarea" className="mb-2"
           placeholder="Description (English)"
-          value={descEn}
-          onChange={(e) => setDescEn(e.target.value)}
-        />
+          value={descEn} onChange={(e) => setDescEn(e.target.value)} />
 
-        <Form.Control
-          as="textarea"
-          className="mb-3"
+        <Form.Control as="textarea" className="mb-3"
           placeholder="Description (Tamil)"
-          value={descTa}
-          onChange={(e) => setDescTa(e.target.value)}
-        />
+          value={descTa} onChange={(e) => setDescTa(e.target.value)} />
 
-        <Form.Control
-          type="file"
-          ref={fileInputRef}
+        <Form.Control type="file" ref={fileInputRef}
           onChange={(e) => setImageFile(e.target.files[0])}
-          className="mb-3"
-        />
+          className="mb-3" />
 
         <Button type="submit" disabled={uploading}>
           {uploading ? <Spinner size="sm" /> : "Upload"}
         </Button>
       </Form>
 
-      {/* ---------- IMAGE LIST ---------- */}
-      <div className="row mt-5">
-        {images.map((img) => (
-          <div key={img._id} className="col-md-4 mb-4">
-            <div className="gallery-card p-3 shadow rounded">
-              <img
-                src={img.url}
-                className="img-fluid mb-2"
-                style={{ height: 200, objectFit: "cover", width: "100%" }}
-              />
+      {/* ---------- MONTH WISE IMAGE LIST ---------- */}
+      <div className="mt-5">
+        {Object.keys(groupedImages).map((monthName) => (
+          <div key={monthName} className="mb-5">
+            <h4 className="text-primary border-bottom pb-2 mb-3">
+              📅 {monthName}
+            </h4>
 
-              <h6>{img.month}</h6>
-              <h5>{img.title.en}</h5>
-              <p className="small">{img.description.en}</p>
+            <div className="row">
+              {groupedImages[monthName].map((img) => (
+                <div key={img._id} className="col-md-4 mb-4">
+                  <div className="gallery-card p-3 shadow rounded">
+                    <img
+                      src={img.url}
+                      className="img-fluid mb-2 rounded"
+                      style={{ height: 200, objectFit: "cover", width: "100%" }}
+                    />
+                    <h5>{img.title.en}</h5>
+                    <p className="small">{img.description.en}</p>
 
-              <Button
-                size="sm"
-                variant="warning"
-                className="me-2"
-                onClick={() => openEditModal(img)}
-              >
-                Edit
-              </Button>
+                    <Button size="sm" variant="warning" className="me-2"
+                      onClick={() => openEditModal(img)}>
+                      Edit
+                    </Button>
 
-              <Button
-                size="sm"
-                variant="danger"
-                onClick={() => handleDelete(img._id)}
-              >
-                Delete
-              </Button>
+                    <Button size="sm" variant="danger"
+                      onClick={() => handleDelete(img._id)}>
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
@@ -256,31 +242,17 @@ const AdminImageUpload = () => {
         </Modal.Header>
 
         <Modal.Body>
-          <Form.Control
-            className="mb-2"
-            value={titleEn}
-            onChange={(e) => setTitleEn(e.target.value)}
-            placeholder="Title (English)"
-          />
-          <Form.Control
-            className="mb-2"
-            value={titleTa}
-            onChange={(e) => setTitleTa(e.target.value)}
-            placeholder="Title (Tamil)"
-          />
-          <Form.Control
-            as="textarea"
-            className="mb-2"
-            value={descEn}
-            onChange={(e) => setDescEn(e.target.value)}
-            placeholder="Description (English)"
-          />
-          <Form.Control
-            as="textarea"
-            value={descTa}
-            onChange={(e) => setDescTa(e.target.value)}
-            placeholder="Description (Tamil)"
-          />
+          <Form.Control className="mb-2" value={titleEn}
+            onChange={(e) => setTitleEn(e.target.value)} />
+
+          <Form.Control className="mb-2" value={titleTa}
+            onChange={(e) => setTitleTa(e.target.value)} />
+
+          <Form.Control as="textarea" className="mb-2"
+            value={descEn} onChange={(e) => setDescEn(e.target.value)} />
+
+          <Form.Control as="textarea"
+            value={descTa} onChange={(e) => setDescTa(e.target.value)} />
         </Modal.Body>
 
         <Modal.Footer>

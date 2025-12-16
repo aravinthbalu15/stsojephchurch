@@ -14,56 +14,59 @@ const OctoberGallery = () => {
     const fetchGalleryItems = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/images/October`
+          `${import.meta.env.VITE_API_URL}/api/images/month/October`
         );
         setGalleryItems(response.data);
-        setLoading(false);
       } catch (err) {
+        console.error("October Fetch Error:", err);
         setError("Failed to fetch October gallery images");
+      } finally {
         setLoading(false);
-        console.error("Fetch error:", err);
       }
     };
 
     fetchGalleryItems();
   }, []);
 
-  const handleImageClick = (item) => {
-    setSelectedItem(item);
-    setShowModal(true);
-  };
-
   return (
     <div className="gallery-container container py-5 mt-5">
       <h2 className="text-center mb-4 gallery-title">October Gallery</h2>
 
       {loading ? (
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />
-        </div>
+        <Spinner animation="border" className="d-block mx-auto" />
       ) : error ? (
         <Alert variant="danger" className="text-center">{error}</Alert>
       ) : galleryItems.length === 0 ? (
-        <Alert variant="info" className="text-center">No images found for October</Alert>
+        <Alert variant="info" className="text-center">
+          No images found for October
+        </Alert>
       ) : (
         <div className="row g-4 justify-content-center">
           {galleryItems.map((item) => (
             <div key={item._id} className="col-6 col-sm-4 col-md-4 col-lg-3">
               <div
                 className="gallery-card position-relative"
-                onClick={() => handleImageClick(item)}
+                onClick={() => {
+                  setSelectedItem(item);
+                  setShowModal(true);
+                }}
                 style={{ height: "200px" }}
               >
                 <img
                   src={item.url}
-                  alt={item.title}
+                  alt={item.title?.en}
                   className="img-fluid rounded-3"
                   loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
+
                 <div className="gallery-overlay rounded-3">
-                  <h5 className="overlay-title">{item.title}</h5>
-                  <p className="overlay-text">{item.description}</p>
+                  <h5 className="overlay-title">{item.title?.en}</h5>
+                  <p className="overlay-text">{item.description?.en}</p>
                 </div>
               </div>
             </div>
@@ -75,16 +78,17 @@ const OctoberGallery = () => {
         {selectedItem && (
           <>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedItem.title}</Modal.Title>
+              <Modal.Title>{selectedItem.title?.en}</Modal.Title>
             </Modal.Header>
+
             <Modal.Body className="text-center">
               <img
                 src={selectedItem.url}
-                alt={selectedItem.title}
+                alt={selectedItem.title?.en}
                 className="img-fluid rounded-2"
                 style={{ maxHeight: "70vh", objectFit: "contain" }}
               />
-              <p className="mt-3">{selectedItem.description}</p>
+              <p className="mt-3">{selectedItem.description?.en}</p>
             </Modal.Body>
           </>
         )}

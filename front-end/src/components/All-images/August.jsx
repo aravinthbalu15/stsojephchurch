@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import '../../Style/Gallery.css';
+import React, { useEffect, useState } from "react";
+import { Modal, Spinner, Alert } from "react-bootstrap";
+import axios from "axios";
+import "../../Style/Gallery.css";
+import { useTranslation } from "react-i18next";
 
 const August = () => {
+  const { i18n } = useTranslation();
+  const lang = i18n.language === "ta" ? "ta" : "en";
+
   const [galleryItems, setGalleryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -13,62 +17,51 @@ const August = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/images/August`
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/images/month/August`
         );
-        setGalleryItems(response.data);
-        setLoading(false);
+        setGalleryItems(res.data);
       } catch (err) {
-        setError('Failed to fetch gallery images');
+        console.error(err);
+        setError("Failed to fetch gallery images");
+      } finally {
         setLoading(false);
-        console.error('Fetch error:', err);
       }
     };
-
     fetchGalleryItems();
   }, []);
-
-  const handleImageClick = (item) => {
-    setSelectedItem(item);
-    setShowModal(true);
-  };
 
   return (
     <div className="gallery-container container py-5 mt-5">
       <h2 className="text-center mb-4 gallery-title">August Gallery</h2>
 
       {loading ? (
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />
-        </div>
+        <Spinner animation="border" className="d-block mx-auto" />
       ) : error ? (
         <Alert variant="danger" className="text-center">{error}</Alert>
       ) : galleryItems.length === 0 ? (
-        <Alert variant="info" className="text-center">No images found for August</Alert>
+        <Alert variant="info" className="text-center">No images found</Alert>
       ) : (
         <div className="row g-4 justify-content-center">
           {galleryItems.map((item) => (
-            <div key={item._id} className="col-6 col-sm-4 col-md-4 col-lg-3">
+            <div key={item._id} className="col-6 col-md-4 col-lg-3">
               <div
-                className="gallery-card position-relative"
-                onClick={() => handleImageClick(item)}
-                style={{ height: '200px' }}
+                className="gallery-card"
+                onClick={() => {
+                  setSelectedItem(item);
+                  setShowModal(true);
+                }}
+                style={{ height: "200px" }}
               >
-                {item.url ? (
-                  <img
-                    src={item.url}
-                    alt={item.title}
-                    className="img-fluid rounded-3"
-                    loading="lazy"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div className="text-center">Image not available</div>
-                )}
-
-                <div className="gallery-overlay rounded-3">
-                  <h5 className="overlay-title">{item.title}</h5>
-                  <p className="overlay-text">{item.description}</p>
+                <img
+                  src={item.url}
+                  alt={item.title?.[lang]}
+                  className="img-fluid rounded-3"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+                <div className="gallery-overlay">
+                  <h5>{item.title?.[lang]}</h5>
+                  <p>{item.description?.[lang]}</p>
                 </div>
               </div>
             </div>
@@ -80,20 +73,15 @@ const August = () => {
         {selectedItem && (
           <>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedItem.title}</Modal.Title>
+              <Modal.Title>{selectedItem.title?.[lang]}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center">
-              {selectedItem.url ? (
-                <img
-                  src={selectedItem.url}
-                  alt={selectedItem.title}
-                  className="img-fluid rounded-2"
-                  style={{ maxHeight: '70vh', objectFit: 'contain' }}
-                />
-              ) : (
-                <div className="text-center">Image not available</div>
-              )}
-              <p className="mt-3">{selectedItem.description}</p>
+              <img
+                src={selectedItem.url}
+                className="img-fluid"
+                style={{ maxHeight: "70vh" }}
+              />
+              <p className="mt-3">{selectedItem.description?.[lang]}</p>
             </Modal.Body>
           </>
         )}

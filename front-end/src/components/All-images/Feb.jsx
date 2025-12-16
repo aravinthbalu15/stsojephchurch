@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 const February = () => {
   const { t, i18n } = useTranslation();
 
-  // language selector
   const lang = i18n.language === "ta" ? "ta" : "en";
 
   const [galleryItems, setGalleryItems] = useState([]);
@@ -20,14 +19,14 @@ const February = () => {
     const fetchGalleryItems = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/images/February`
+          `${import.meta.env.VITE_API_URL}/api/images/month/February`
         );
         setGalleryItems(response.data);
-        setLoading(false);
       } catch (err) {
-        setError("Failed to fetch gallery images");
-        setLoading(false);
         console.error("Fetch error:", err);
+        setError("Failed to fetch gallery images");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -47,7 +46,7 @@ const February = () => {
 
       {loading ? (
         <div className="text-center">
-          <Spinner animation="border" variant="primary" />
+          <Spinner animation="border" />
         </div>
       ) : error ? (
         <Alert variant="danger" className="text-center">
@@ -60,10 +59,7 @@ const February = () => {
       ) : (
         <div className="row g-4 justify-content-center">
           {galleryItems.map((item) => (
-            <div
-              key={item._id}
-              className="col-6 col-sm-4 col-md-4 col-lg-3"
-            >
+            <div key={item._id} className="col-6 col-sm-4 col-md-4 col-lg-3">
               <div
                 className="gallery-card position-relative"
                 onClick={() => handleImageClick(item)}
@@ -95,7 +91,6 @@ const February = () => {
         </div>
       )}
 
-      {/* MODAL */}
       <Modal
         show={showModal}
         onHide={() => setShowModal(false)}
@@ -115,10 +110,7 @@ const February = () => {
                 src={selectedItem.url}
                 alt={selectedItem.title?.[lang]}
                 className="img-fluid rounded-2"
-                style={{
-                  maxHeight: "70vh",
-                  objectFit: "contain",
-                }}
+                style={{ maxHeight: "70vh", objectFit: "contain" }}
               />
               <p className="mt-3">
                 {selectedItem.description?.[lang]}
