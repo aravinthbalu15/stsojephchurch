@@ -2,7 +2,6 @@ import React from "react";
 import "../Style/Footer.css";
 import { FaFacebook, FaInstagram, FaYoutube, FaTwitter, FaMapMarkerAlt, FaPhone, FaEnvelope, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import Dev_Image from "../images/developer-images/aravinth.png"
 const Footer = () => {
   const { t } = useTranslation();
 
@@ -40,37 +39,66 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Footer Bottom */}
-{/* ================= Developer Signature Section ================= */}
-<div className="dev-signature">
-  <div className="dev-profile">
-    <img
-      src={Dev_Image} // TODO: Replace with your real image or Cloudinary URL
-      alt="Developer - Aravinth Kumar B"
-      className="dev-photo"
-    />
-  </div>
+{/* ================= Developer Team Section ================= */}
+<div className="dev-teams">
 
-  <h3 className="dev-title">Created & Developed By</h3>
-  <h2 className="dev-name">ARAVINTH KUMAR B</h2>
+  <span className="dev-divider"></span>
 
-  <div className="dev-links">
-    <a
-      href="https://www.linkedin.com/in/aravinth-kumar-858851281"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="dev-btn"
-    >
-      <FaLinkedin /> LinkedIn
-    </a>
-    <a
-      href="https://www.instagram.com/aravinth_kumar_ak_cr07_/?next=%2F" 
-      target="_blank"
-      rel="noopener noreferrer"
-      className="dev-btn whatsapp"
-    >
-     <FaInstagram /> Instagram
-    </a>
+  <p className="dev-credit">Website Designed & Developed By</p>
+
+  <div className="dev-cards">
+
+    {/* Developer 1 */}
+    <div className="dev-card">
+      <h3 className="dev-name">Aravinth Kumar B</h3>
+      {/* <p className="dev-role">Full-Stack Web Developer</p> */}
+
+      <div className="dev-links">
+        <a
+          href="https://www.linkedin.com/in/aravinth-kumar-858851281"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+        >
+          <FaLinkedin />
+        </a>
+
+        <a
+          href="https://www.instagram.com/aravinth_kumar_ak_cr07_/?next=%2F"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+        >
+          <FaInstagram />
+        </a>
+      </div>
+    </div>
+
+    {/* Developer 2 (Teammate) */}
+    <div className="dev-card">
+      <h3 className="dev-name">Aju Sabin</h3>
+      {/* <p className="dev-role">Frontend / Backend Developer</p> */}
+
+      <div className="dev-links">
+        <a
+          href="https://www.linkedin.com/in/aju-shabin?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"        >
+          <FaLinkedin />
+        </a>
+
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+        >
+          <FaInstagram />
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
 
