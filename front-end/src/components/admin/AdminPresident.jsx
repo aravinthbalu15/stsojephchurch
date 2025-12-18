@@ -1,36 +1,45 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form, Spinner } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const API = import.meta.env.VITE_API_URL + "/api/president";
+const sections = ["head", "bishop", "parishPriest"];
 
 const AdminPresident = () => {
   const [data, setData] = useState(null);
   const [saving, setSaving] = useState(false);
-
-  const sections = ["head", "bishop", "parishPriest"];
+  const [loading, setLoading] = useState(true);
 
   // ============================
   // FETCH DATA
   // ============================
   const fetchData = async () => {
-    const res = await axios.get(API);
-    setData(res.data);
+    try {
+      setLoading(true);
+      const res = await axios.get(API);
+      setData(res.data);
+    } catch (err) {
+      Swal.fire("Error", "Failed to load data", "error");
+    } finally {
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   // ============================
-  // HANDLE TEXT CHANGE (EN/TA)
+  // HANDLE TEXT CHANGE
   // ============================
-  const handleChange = (section, field, lang, value) => {
+  const handleChange = (sec, field, lang, value) => {
     setData((prev) => ({
       ...prev,
-      [section]: {
-        ...prev[section],
+      [sec]: {
+        ...prev[sec],
         [field]: {
-          ...prev[section][field],
+          ...prev[sec][field],
           [lang]: value,
         },
       },
@@ -38,16 +47,18 @@ const AdminPresident = () => {
   };
 
   // ============================
-  // HANDLE IMAGE UPLOAD (BASE64)
+  // HANDLE IMAGE UPLOAD
   // ============================
-  const handleImage = (section, file) => {
+  const handleImage = (sec, file) => {
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onloadend = () => {
       setData((prev) => ({
         ...prev,
-        [section]: {
-          ...prev[section],
-          image: reader.result, // base64
+        [sec]: {
+          ...prev[sec],
+          image: reader.result,
         },
       }));
     };
@@ -55,45 +66,100 @@ const AdminPresident = () => {
   };
 
   // ============================
-  // SAVE CHANGES
+  // DELETE IMAGE
+  // ============================
+  const deleteImage = async (sec) => {
+    const res = await Swal.fire({
+      title: "Remove image?",
+      text: "Only the image will be removed",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Yes, remove",
+    });
+
+    if (!res.isConfirmed) return;
+
+    setData((prev) => ({
+      ...prev,
+      [sec]: {
+        ...prev[sec],
+        image: "",
+      },
+    }));
+
+    Swal.fire("Removed!", "Image removed successfully", "success");
+  };
+
+  // ============================
+  // SAVE ALL CHANGES
   // ============================
   const handleSave = async () => {
     try {
       setSaving(true);
+
+      Swal.fire({
+        title: "Saving...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
       await axios.put(API, data);
-      fetchData();
-      alert("Updated Successfully!");
+      await fetchData();
+
+      Swal.fire("Success", "Updated successfully", "success");
     } catch (error) {
-      console.log(error);
-      alert("Update failed");
+      Swal.fire("Error", "Update failed", "error");
     } finally {
       setSaving(false);
     }
   };
 
   // ============================
-  // DELETE SECTION
+  // DELETE FULL SECTION
   // ============================
-  const deleteSection = async (section) => {
-    if (!confirm("Delete this section?")) return;
+  const deleteSection = async (sec) => {
+    const res = await Swal.fire({
+      title: "Delete section?",
+      text: "This will remove all text and image",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Yes, delete",
+    });
 
-    await axios.delete(`${API}/section/${section}`);
-    fetchData();
+    if (!res.isConfirmed) return;
+
+    await axios.delete(`${API}/section/${sec}`);
+    await fetchData();
+
+    Swal.fire("Deleted!", "Section deleted successfully", "success");
   };
 
-  if (!data) return <p className="text-center mt-5">Loading...</p>;
+  // ============================
+  // LOADING UI
+  // ============================
+  if (loading) {
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" />
+      </div>
+    );
+  }
 
   // ============================
-  // UI RENDER
+  // UI
   // ============================
   return (
     <Container className="py-4">
       <h2 className="text-center mb-4">President Management</h2>
 
       {sections.map((sec) => (
-        <Card className="mb-4 shadow-sm" key={sec}>
+        <Card key={sec} className="mb-4 shadow-sm">
           <Card.Header className="d-flex justify-content-between align-items-center">
-            <strong className="text-capitalize">{sec.replace(/([A-Z])/g, " $1")}</strong>
+            <strong className="text-capitalize">
+              {sec.replace(/([A-Z])/g, " $1")}
+            </strong>
             <Button variant="danger" size="sm" onClick={() => deleteSection(sec)}>
               Delete Section
             </Button>
@@ -104,115 +170,62 @@ const AdminPresident = () => {
               {/* IMAGE */}
               <Col md={4} className="text-center">
                 <img
-                  src={data[sec].image || "/placeholder.jpg"}
+                  src={data?.[sec]?.image || "/placeholder.jpg"}
                   alt="Preview"
                   className="img-fluid rounded mb-2"
                   style={{ maxHeight: "200px", objectFit: "cover" }}
                 />
 
-                <Form.Group>
-                  <Form.Label>Upload Image</Form.Label>
-                  <Form.Control
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImage(sec, e.target.files[0])}
-                  />
-                </Form.Group>
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  className="mb-2"
+                  onChange={(e) => handleImage(sec, e.target.files[0])}
+                />
+
+                {data?.[sec]?.image && (
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => deleteImage(sec)}
+                  >
+                    Remove Image
+                  </Button>
+                )}
               </Col>
 
               {/* TEXT INPUTS */}
               <Col md={8}>
-                {/* NAME */}
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Name (English)</Form.Label>
+                {[
+                  "name",
+                  "description1",
+                  "description2",
+                  "description3",
+                ].map((field) => (
+                  <Row key={field}>
+                    <Col md={6}>
                       <Form.Control
-                        value={data[sec].name.en}
-                        onChange={(e) => handleChange(sec, "name", "en", e.target.value)}
+                        className="mb-2"
+                        placeholder={`${field} (EN)`}
+                        value={data?.[sec]?.[field]?.en || ""}
+                        onChange={(e) =>
+                          handleChange(sec, field, "en", e.target.value)
+                        }
                       />
-                    </Form.Group>
-                  </Col>
+                    </Col>
 
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Name (Tamil)</Form.Label>
+                    <Col md={6}>
                       <Form.Control
-                        value={data[sec].name.ta}
-                        onChange={(e) => handleChange(sec, "name", "ta", e.target.value)}
+                        className="mb-2"
+                        placeholder={`${field} (TA)`}
+                        value={data?.[sec]?.[field]?.ta || ""}
+                        onChange={(e) =>
+                          handleChange(sec, field, "ta", e.target.value)
+                        }
                       />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* DESCRIPTION 1 */}
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description 1 (EN)</Form.Label>
-                      <Form.Control
-                        value={data[sec].description1.en}
-                        onChange={(e) => handleChange(sec, "description1", "en", e.target.value)}
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description 1 (TA)</Form.Label>
-                      <Form.Control
-                        value={data[sec].description1.ta}
-                        onChange={(e) => handleChange(sec, "description1", "ta", e.target.value)}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* DESCRIPTION 2 */}
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description 2 (EN)</Form.Label>
-                      <Form.Control
-                        value={data[sec].description2.en}
-                        onChange={(e) => handleChange(sec, "description2", "en", e.target.value)}
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description 2 (TA)</Form.Label>
-                      <Form.Control
-                        value={data[sec].description2.ta}
-                        onChange={(e) => handleChange(sec, "description2", "ta", e.target.value)}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* DESCRIPTION 3 */}
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description 3 (EN)</Form.Label>
-                      <Form.Control
-                        value={data[sec].description3.en}
-                        onChange={(e) => handleChange(sec, "description3", "en", e.target.value)}
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description 3 (TA)</Form.Label>
-                      <Form.Control
-                        value={data[sec].description3.ta}
-                        onChange={(e) => handleChange(sec, "description3", "ta", e.target.value)}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+                    </Col>
+                  </Row>
+                ))}
               </Col>
             </Row>
           </Card.Body>
