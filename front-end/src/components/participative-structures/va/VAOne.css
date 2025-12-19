@@ -7,9 +7,15 @@
 /* Title */
 .parti_pa_title {
   text-align: center;
-  font-weight: 700;
   color: #003060;
-  margin-bottom: 25px;
+  /* margin-bottom: 125px; */
+  /* Section Title */
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
 }
 
 /* Image */
