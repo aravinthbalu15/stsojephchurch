@@ -29,7 +29,7 @@
   "children_movement": "Little way Association",
   "iycs": "Young Christian Student Movement",
   "youth_boys": "Youth Movement (Male)",
-  "youth_girls": "Youth Movement (Female)",
+  "youth_girls": "Youth Movement (Women)",
   "women_movement": "Women's Movement",
   "bible_committee": "Bible Committee",
 
@@ -41,7 +41,7 @@
 
   "worship_organizations": "Worship Organizations",
   "choir": "Choir Group",
-  "altar_boys": "Altar Boys",
+  "altar_boys": "Altar Servers",
 
   "main_events": "Main Events",
   "announcements": "Announcements",
@@ -169,7 +169,7 @@
     
     "mission_title": "Mission",
     "mission_points": [
-      "improving maximum participation in all the liturgical, group and social events and activities of the parish.",
+      "Improving maximum participation in all the liturgical, group and social events and activities of the parish.",
       "Becoming a community of disciples of Jesus with deep spirituality enjoying \"Abba\" experience.",
       "Developing leadership among the parishioners and creating opportunities for them to involve in the planned goodworks with a spirit of voluntarism and cooperation.",
       "Developing a culture of administration that takes decisions by discerning God's will with a spirit of democracy and shared responsibility and carries them out effectively.",
