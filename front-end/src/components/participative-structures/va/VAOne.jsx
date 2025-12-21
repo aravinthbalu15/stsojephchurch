@@ -1,5 +1,5 @@
 import React from "react";
-import Image1 from "../../../images/christmas/1.png";
+import Image1 from "./VAOne.png";
 import { useTranslation } from "react-i18next";
 import "./VAOne.css";
 

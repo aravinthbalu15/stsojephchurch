@@ -7,7 +7,7 @@ const VAOne = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="parti_pa_page pt-5 mt-5">
+    <div className=" parti_pa_page">
       {/* Title */}
       <h1 className="parti_pa_title  mt-5">
         {t("worship_team")}

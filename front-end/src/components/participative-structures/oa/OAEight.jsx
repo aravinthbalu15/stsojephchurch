@@ -1,7 +1,7 @@
 import React from "react";
-import Image1 from "./OAThree.png";
+import Image1 from "./OAEight.png";
 import { useTranslation } from "react-i18next";
-// import "./VAOne.css";
+// import "./OATwo.css";
 
 const VAOne = () => {
   const { t } = useTranslation();
@@ -10,7 +10,7 @@ const VAOne = () => {
     <div className=" parti_pa_page">
       {/* Title */}
       <h1 className="parti_pa_title  mt-5">
-        {t("iycs")}
+        {t("Christian Workers Movement")}
       </h1>
 
       {/* Image */}
@@ -33,7 +33,7 @@ const VAOne = () => {
         </p> */}
 
         <p className="parti_pa_text">
-          {t("OAthree.desc")}
+          {t("OAeight.desc")}
         </p>
 
         <h3 className="parti_pa_subtitle mt-4">
@@ -41,7 +41,7 @@ const VAOne = () => {
         </h3>
 
         <p className="parti_pa_text">
-          {t("OAthree.desc1")}
+          {t("OAeight.desc1")}
         </p>
 
         {/* <p className="parti_pa_text">

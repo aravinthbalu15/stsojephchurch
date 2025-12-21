@@ -39,13 +39,15 @@ import AnbiyamCoordination from "./components/AnbiyamCoordination";
 import TKOne from "./components/participative-structures/tk/TKOne";
 import TKTwo from "./components/participative-structures/tk/TKTwo";
 import TKThree from "./components/participative-structures/tk/Three";
-import OAOne from "./components/participative-structures/oa/Eight";
-import OATwo from "./components/participative-structures/oa/OATwo";
+import OAOne from "./components/participative-structures/oa/OAOne";
+import OAEight from "./components/participative-structures/oa/OATwo";
 import OAThree from "./components/participative-structures/oa/OAThree";
 import OAFour from "./components/participative-structures/oa/OAFour";
 import OAFive from "./components/participative-structures/oa/OAFive";
 import OASix from "./components/participative-structures/oa/OASix";
 import OASeven from "./components/participative-structures/oa/OASeven";
+import OATwo from "./components/participative-structures/oa/OAEight";
+
 import SAOne from "./components/participative-structures/sa/SAOne";
 import SATwo from "./components/participative-structures/sa/SATwo";
 import SAThree from "./components/participative-structures/sa/SAThree";
@@ -151,6 +153,8 @@ function App() {
         <Route path="/இளையோர் இயக்கம் ( பெண்கள்)" element={<OAFive/>}/>
         <Route path="/பெண்கள் இயக்கம்" element={<OASix/>}/>
         <Route path="/விவிலியப் பணிக்குழு" element={<OASeven/>}/>
+        <Route path="/கிறிஸ்தவ தொழிலாளர் இயக்கம்" element={<OAEight/>}/>
+
 
         {/* சேவை அமைப்புகள்  */}
         <Route path="/பெண்கள் கிராம முன்னேற்றச் சங்கம்" element={<SAOne />}/>
@@ -160,7 +164,8 @@ function App() {
 
 
               <Route path="/வழிபாட்டுக் குழு" element={< VAOne/>}/>
-                <Route path="/பீடச்சிறார்" element={< VATwo/>}/>
+                <Route path="/பாடகர் குழு" element={< VATwo/>}/>
+                  <Route path="/பீடச்சிறார்" element={< VAThree/>}/>
         {/* Admin Dash */}
         {/* <Route path="/admin" element={<AdminLogin />} /> */}
         <Route path="/admin" element={<AdminLogin />} />

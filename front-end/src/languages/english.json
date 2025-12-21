@@ -190,7 +190,55 @@
   "worship_origin_title": "Origin:",
   "worship_origin_desc1": "The Worship Committee was started by Rev. Fr. Arul Devadoss on March 15, 2009.",
   "worship_origin_desc2": "The committee functions with members including 7 Basic Christian Community (BCC) representatives, representatives from various Pious Associations and Movements, and the choir group.",
-  "worship_origin_desc3": "The committee actively works towards meaningful liturgical celebrations, Holy Mass preparation, special feasts, and spiritual programs."
+  "worship_origin_desc3": "The committee actively works towards meaningful liturgical celebrations, Holy Mass preparation, special feasts, and spiritual programs.",
+
+   "OAone":{
+  "desc": "அன்பினால் ஆண்டவருக்கு தெரசாளின் அவனியை ஆட்கொள்வோம் என்ற தூய குழந்தை கொள்கையை வாழ்வாக்கி, சிறு வயதிலேயே ஆன்மீக ஊட்டி சிறார்களை பண்பட்டவர்களாக உணர்வையும், நல்லொழுக்க அறிவையும் உருவாக்குவதே இவ்வியக்கத்தின் நோக்கமாகும்.",
+  "desc1": "1993-ம் ஆண்டு இயேசுவின் திரு இருதய சகோதரிகளின் வழிகாட்டுதலோடு அருட்பணி லூக்காஸ் அவர்களை இயக்குநராக கொண்டு பாலர்சபை கம்பிளாரில் தொடங்கப்பட்டது."
+ }, 
+  "OAtwo":{
+  "desc": "அன்பினால் ஆண்டவருக்கு தெரசாளின் அவனியை ஆட்கொள்வோம் என்ற தூய குழந்தை கொள்கையை வாழ்வாக்கி, சிறு வயதிலேயே ஆன்மீக ஊட்டி சிறார்களை பண்பட்டவர்களாக உணர்வையும், நல்லொழுக்க அறிவையும் உருவாக்குவதே இவ்வியக்கத்தின் நோக்கமாகும்.",
+  "desc1": "சிறுவழி இயக்கமானது ஆண்டு அருட்பணி. மரியதாஸ் அவர்களால் 1998-துவங்கப்பட்டது. சிறுவழி இயக்கக் கூட்டம் ஞாயிற்றுக்கிழமை காலை திருப்பலிக்கு பின் நடைபெறும்."
+ },
+  "OAthree":{
+  "desc": "To form oneself and, on that foundation, help shape others in good moral values. To nurture students in human values and self-confidence.",
+  "desc1": "The movement was started in the year 2007 by Rev. Fr. Xavier Benedict."
+ }, 
+  "OAfour":{
+  "quote":"Young man, arise and shine",
+  "desc": "To bring together scattered youth and, with human dignity, work towards integral human liberation, creating the Kingdom of God that blossoms towards a fulfilled and meaningful life.",
+  "desc1": "The Youth Movement was started in August 2008 by the then Parish Priest, Rev. Fr. S. Xavier Benedict"
+ },
+ "OAfive":{
+  "desc": "To bring together scattered youth and, with human dignity, work towards integral human liberation by creating the Kingdom of God that blossoms towards divine and meaningful life.",
+  "desc1": "The Youth Movement was started on 17-05-2008 by the then Parish Priest, Rev. Fr. Xavier Benedict."
+ },
+  "OAeight":{
+  "desc": "கிறிஸ்தவ தொழிலாளர் இயக்கம்  என்பது கத்தோலிக்க திருச்சபையின் வழிகாட்டுதலின் கீழ் துவங்கப்பட்ட ஒரு சமூக மற்றும் ஆன்மீக அமைப்பாகும்.",
+  "desc1": "இந்த இயக்கமானது 20.06.2025 அன்று புனித சூசையப்பர் ஆலயத்தில், பங்கு தந்தை அருட்பணி முனைவர் மரிய வில்லியம் அவர்களால் முதல் முறையாகத் துவங்கப்பட்டது."
+ },
+
+
+  "SAone":{
+  "desc": "The objective of this association is to create an environment where everyone receives equal opportunities and lives with human dignity, equality, and participation through collective effort and work.",
+  "desc1": "The Women’s Village Development Association was founded on 03-04-2005 by the Parish Priest, Rev. Fr. Gabriel. At present, it is functioning effectively under the guidance of Rev. Fr. Arul Devadasan. It is operating in collaboration with RMP with a total of 25 members."
+  },
+
+  "SAfour":{
+  "title": "நோக்கம்:",
+  "desc": "To eradicate poverty among socially and economically backward people, to eliminate deprivation, to help poor students attain quality education and flourish, and to promote care and concern for overall well-being in life.",
+  "origin_title": "தோற்றம்:",
+  "desc1": "The society was founded on 25-08-2002 by Rev. Fr. A. Mariyadasan. At present, it is functioning very effectively under the leadership of the Parish Priest, Rev. Fr. Arul Devadasan."
+ },
+   
+"TKone":{
+  "desc": "The objective of the Legion is to glorify God by sanctifying its members. To achieve this goal, the Legion points out two means: prayer and service.",
+  "desc1": "With Rev. Fr. Arul Devadasan as the Spiritual Director, it was started on 15-03-2009 under the name “St. Devasahayam Matha Praesidium” with 16 members. It functions under the Vengode Curia, and meetings are held every Sunday, starting at 5:00 PM in the evening."
+ },
+   "VAthree":{
+  "desc": "அன்பினால் ஆண்டவருக்கு தெரசாளின் அவனியை ஆட்கொள்வோம் என்ற தூய குழந்தை கொள்கையை வாழ்வாக்கி, சிறு வயதிலேயே ஆன்மீக ஊட்டி சிறார்களை பண்பட்டவர்களாக உணர்வையும், நல்லொழுக்க அறிவையும் உருவாக்குவதே இவ்வியக்கத்தின் நோக்கமாகும்.",
+  "desc1": "எமது புனித சூசையப்பர் ஆலய பீட சிறார் பணிக்குழு 13-06-2009 ஞாயிறு அன்று பங்கு தந்தை M. அருள் தேவதாசன் அவர்களால் துவங்கப்பட்டது."
+ }
 
 
 

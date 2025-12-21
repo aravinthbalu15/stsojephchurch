@@ -1,40 +1,59 @@
 import React from "react";
-import Image1 from "../../../images/christmas/1.png"; // Replace with correct path
+// import Image1 from "./VAOne.png";
+import { useTranslation } from "react-i18next";
+// import "./VAOne.css";
 
+const VAOne = () => {
+  const { t } = useTranslation();
 
-const SAOne = () => {
   return (
-    <div className="pt-5 mt-5">
-      {/* <h1 className="section-title mt-5 ">திருத்தூதர்கள் சங்கங்கள்</h1> */}
+    <div className=" parti_pa_page">
+      {/* Title */}
+      <h1 className="parti_pa_title  mt-5">
+        {t("women_selfhelp")}
+      </h1>
 
-      {/* Container 1 */}
-      <h1 className="section-title mt-5">பெண்கள் கிராம முன்னேற்றச் சங்கம்</h1>
-      <div className="body-wrapper">
-        <div className="body-container">
-          {/* Left Side - Text */}
-          <div className="text-section">
-            <p className="description">
-              Asia’s largest shrine to Saint George, about five million people visit it every year.
-              The church is thought to have been founded in 593 AD. It is regarded
-              as one of the oldest churches in Kerala, after the seven churches founded
-              by Thomas the Apostle in the first century AD. 
-              <strong className="read-more"> read more...</strong>
-            </p>
-          </div>
+      {/* Image */}
+      {/* <div className="parti_pa_image_wrapper">
+        <img
+          src={Image1}
+          alt="Worship Team"
+          className="parti_pa_image"
+        />
+      </div> */}
 
-          {/* Right Side - Image */}
-          <div className="image-section2">
-            <img src={Image1} alt="St. Joseph Church" className="image" />
-          </div>
-        </div>
+      {/* Content */}
+      <div className="parti_pa_content_wrapper">
+        <h3 className="parti_pa_subtitle">
+          {t("worship_goal_title")}
+        </h3>
+
+        {/* <p className="parti_pa_quote">
+          "{t("worship_goal_quote")}"
+        </p> */}
+
+        <p className="parti_pa_text">
+          {t("SAone.desc")}
+        </p>
+
+        <h3 className="parti_pa_subtitle mt-4">
+          {t("worship_origin_title")}
+        </h3>
+
+        <p className="parti_pa_text">
+          {t("SAone.desc1")}
+        </p>
+
+        {/* <p className="parti_pa_text">
+          {t("worship_origin_desc2")}
+        </p> */}
+
+        {/* <p className="parti_pa_text">
+          {t("worship_origin_desc3")}
+        </p> */}
       </div>
-
-
-    
-
-      
     </div>
   );
 };
 
-export default SAOne;
+export default VAOne;
