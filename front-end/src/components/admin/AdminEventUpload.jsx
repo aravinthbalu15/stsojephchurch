@@ -204,7 +204,7 @@ const AdminEventUpload = () => {
                   </p>
 
                   <button
-                    className="btn btn-danger w-100"
+                    className="btn btn-danger"
                     onClick={() => handleDelete(event._id)}
                   >
                     Delete

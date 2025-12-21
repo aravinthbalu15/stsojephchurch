@@ -138,7 +138,7 @@ const AdminVideos = () => {
                 <Button
                   variant="danger"
                   size="sm"
-                  className="w-100"
+                  // className="w-100"
                   onClick={() => handleDelete(video._id)}
                 >
                   Delete

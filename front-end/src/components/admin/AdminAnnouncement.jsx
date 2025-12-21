@@ -189,7 +189,7 @@ const AdminAnnouncement = () => {
         <label>Upload PDF (Optional)</label>
         <input type="file" className="form-control mb-2" onChange={handlePDFChange} />
 
-        <button className="btn btn-primary w-100 mt-2">
+        <button className="btn btn-danger mt-2">
           {editingId ? "Update Announcement" : "Add Announcement"}
         </button>
       </form>

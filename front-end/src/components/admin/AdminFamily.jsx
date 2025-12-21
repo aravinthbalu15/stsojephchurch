@@ -60,7 +60,7 @@ const AdminFamily = () => {
           />
         </div>
 
-        <button className="btn btn-primary btn-lg w-100" onClick={handleUpdate}>
+        <button className="btn btn-primary " onClick={handleUpdate}>
           Update
         </button>
       </div>
