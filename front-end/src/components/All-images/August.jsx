@@ -5,7 +5,9 @@ import "../../Style/Gallery.css";
 import { useTranslation } from "react-i18next";
 
 const August = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // language selector
   const lang = i18n.language === "ta" ? "ta" : "en";
 
   const [galleryItems, setGalleryItems] = useState([]);
@@ -17,51 +19,76 @@ const August = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const res = await axios.get(
+        setError(null);
+        setLoading(true);
+
+        const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/images/month/August`
         );
-        setGalleryItems(res.data);
+
+        setGalleryItems(response.data);
       } catch (err) {
-        console.error(err);
-        setError("Failed to fetch gallery images");
+        console.error("August fetch error:", err);
+        setError("fetch_error");
       } finally {
         setLoading(false);
       }
     };
+
     fetchGalleryItems();
   }, []);
 
+  const handleImageClick = (item) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
   return (
     <div className="gallery-container container py-5 mt-5">
-      <h2 className="text-center mb-4 gallery-title">August Gallery</h2>
+      {/* TITLE */}
+      <h2 className="text-center mb-4 gallery-title">
+        {t("august_gallery")}
+      </h2>
 
+      {/* STATES */}
       {loading ? (
         <Spinner animation="border" className="d-block mx-auto" />
       ) : error ? (
-        <Alert variant="danger" className="text-center">{error}</Alert>
+        <Alert variant="danger" className="text-center">
+          {t(error)}
+        </Alert>
       ) : galleryItems.length === 0 ? (
-        <Alert variant="info" className="text-center">No images found</Alert>
+        <Alert variant="info" className="text-center">
+          {t("no_images_found")}
+        </Alert>
       ) : (
         <div className="row g-4 justify-content-center">
           {galleryItems.map((item) => (
             <div key={item._id} className="col-6 col-md-4 col-lg-3">
               <div
-                className="gallery-card"
-                onClick={() => {
-                  setSelectedItem(item);
-                  setShowModal(true);
-                }}
+                className="gallery-card position-relative"
+                onClick={() => handleImageClick(item)}
                 style={{ height: "200px" }}
               >
                 <img
                   src={item.url}
                   alt={item.title?.[lang]}
                   className="img-fluid rounded-3"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
-                <div className="gallery-overlay">
-                  <h5>{item.title?.[lang]}</h5>
-                  <p>{item.description?.[lang]}</p>
+
+                <div className="gallery-overlay rounded-3">
+                  <h5 className="overlay-title">
+                    {item.title?.[lang]}
+                  </h5>
+                  <p className="overlay-text">
+                    {item.description?.[lang]}
+                  </p>
                 </div>
               </div>
             </div>
@@ -69,19 +96,26 @@ const August = () => {
         </div>
       )}
 
+      {/* MODAL */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
         {selectedItem && (
           <>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedItem.title?.[lang]}</Modal.Title>
+              <Modal.Title>
+                {selectedItem.title?.[lang]}
+              </Modal.Title>
             </Modal.Header>
+
             <Modal.Body className="text-center">
               <img
                 src={selectedItem.url}
-                className="img-fluid"
-                style={{ maxHeight: "70vh" }}
+                alt={selectedItem.title?.[lang]}
+                className="img-fluid rounded-2"
+                style={{ maxHeight: "70vh", objectFit: "contain" }}
               />
-              <p className="mt-3">{selectedItem.description?.[lang]}</p>
+              <p className="mt-3">
+                {selectedItem.description?.[lang]}
+              </p>
             </Modal.Body>
           </>
         )}

@@ -2,8 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Modal, Spinner, Alert } from "react-bootstrap";
 import axios from "axios";
 import "../../Style/Gallery.css";
+import { useTranslation } from "react-i18next";
 
 const JulyGallery = () => {
+  const { t, i18n } = useTranslation();
+
+  // language selector
+  const lang = i18n.language === "ta" ? "ta" : "en";
+
   const [galleryItems, setGalleryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -28,9 +34,16 @@ const JulyGallery = () => {
     fetchGalleryItems();
   }, []);
 
+  const handleImageClick = (item) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
   return (
     <div className="gallery-container container py-5 mt-5">
-      <h2 className="text-center mb-4 gallery-title">July Gallery</h2>
+      <h2 className="text-center mb-4 gallery-title">
+        {t("july_gallery")}
+      </h2>
 
       {loading ? (
         <Spinner animation="border" className="d-block mx-auto" />
@@ -38,7 +51,7 @@ const JulyGallery = () => {
         <Alert variant="danger" className="text-center">{error}</Alert>
       ) : galleryItems.length === 0 ? (
         <Alert variant="info" className="text-center">
-          No images found for July
+          {t("no_images_found")}
         </Alert>
       ) : (
         <div className="row g-4 justify-content-center">
@@ -46,16 +59,14 @@ const JulyGallery = () => {
             <div key={item._id} className="col-6 col-sm-4 col-md-4 col-lg-3">
               <div
                 className="gallery-card position-relative"
-                onClick={() => {
-                  setSelectedItem(item);
-                  setShowModal(true);
-                }}
+                onClick={() => handleImageClick(item)}
                 style={{ height: "200px" }}
               >
                 <img
                   src={item.url}
-                  alt={item.title?.en}
+                  alt={item.title?.[lang]}
                   className="img-fluid rounded-3"
+                  loading="lazy"
                   style={{
                     width: "100%",
                     height: "100%",
@@ -64,8 +75,12 @@ const JulyGallery = () => {
                 />
 
                 <div className="gallery-overlay rounded-3">
-                  <h5 className="overlay-title">{item.title?.en}</h5>
-                  <p className="overlay-text">{item.description?.en}</p>
+                  <h5 className="overlay-title">
+                    {item.title?.[lang]}
+                  </h5>
+                  <p className="overlay-text">
+                    {item.description?.[lang]}
+                  </p>
                 </div>
               </div>
             </div>
@@ -77,7 +92,9 @@ const JulyGallery = () => {
         {selectedItem && (
           <>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedItem.title?.en}</Modal.Title>
+              <Modal.Title>
+                {selectedItem.title?.[lang]}
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center">
               <img
@@ -85,7 +102,9 @@ const JulyGallery = () => {
                 className="img-fluid rounded-2"
                 style={{ maxHeight: "70vh", objectFit: "contain" }}
               />
-              <p className="mt-3">{selectedItem.description?.en}</p>
+              <p className="mt-3">
+                {selectedItem.description?.[lang]}
+              </p>
             </Modal.Body>
           </>
         )}
