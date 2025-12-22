@@ -9,8 +9,6 @@ const AdminDashBoard = () => {
     { title: 'Manage Events', route: '/add-events' },
     { title: 'Manage Main Events', route: '/add-festivals' },
     { title: 'Manage-Time', route: '/add-time' },
-
-
     { title: 'Add Announcements', route: '/add-announcement' },
     { title: 'Add Images', route: '/add-images' },
     { title: 'Add Videos', route: '/add-videos' },
@@ -22,10 +20,8 @@ const AdminDashBoard = () => {
     { title: 'Add Home Videos', route: '/add-videoLink' },
     { title: 'Add President', route: '/add-president' },
     { title: 'Add Family Members Total number', route: '/add-adminfaminly-number' },
-      { title: 'Add Anbiyangal', route: '/add-adminanbiyangal' },
-
-
-  ];
+    { title: 'Add Anbiyangal', route: '/add-adminanbiyangal' },
+];
 
   return (
     <div className="admin-dash-board container mt-4 ">
