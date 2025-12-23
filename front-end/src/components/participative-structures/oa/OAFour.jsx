@@ -24,6 +24,7 @@ const VAOne = () => {
 
       {/* Content */}
       <div className="parti_pa_content_wrapper">
+         
         <h3 className="parti_pa_subtitle">
           {t("worship_goal_title")}
         </h3>
@@ -35,6 +36,12 @@ const VAOne = () => {
         <p className="parti_pa_text">
           {t("OAfour.desc")}
         </p>
+          <h3 className="parti_pa_subtitle">
+          {t("OAfour.time")}
+        </h3>
+         <p className="parti_pa_text">
+          {t("OAfour.desc_time")}
+        </p>
 
         <h3 className="parti_pa_subtitle mt-4">
           {t("worship_origin_title")}
@@ -44,13 +51,28 @@ const VAOne = () => {
           {t("OAfour.desc1")}
         </p>
 
-        {/* <p className="parti_pa_text">
-          {t("worship_origin_desc2")}
-        </p> */}
+        <h3 className="parti_pa_subtitle">
+          {t("OAfour.moment")}
+        </h3>
 
-        {/* <p className="parti_pa_text">
-          {t("worship_origin_desc3")}
-        </p> */}
+
+        <p className="parti_pa_text">
+          {t("OAfour.descs1")}
+        </p>
+         <p className="parti_pa_text">
+          {t("OAfour.descs2")}
+        </p>
+         <p className="parti_pa_text">
+          {t("OAfour.descs3")}
+        </p>
+         <p className="parti_pa_text">
+          {t("OAfour.descs4")}
+        </p>
+         <p className="parti_pa_text">
+          {t("OAfour.descs5")}
+        </p>
+
+        
       </div>
     </div>
   );

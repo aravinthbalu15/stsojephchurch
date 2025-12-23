@@ -10,7 +10,7 @@ const VAOne = () => {
     <div className=" parti_pa_page">
       {/* Title */}
       <h1 className="parti_pa_title  mt-5">
-        {t("iycs")}
+        {t("children_movement")}
       </h1>
 
       {/* Image */}
@@ -25,7 +25,7 @@ const VAOne = () => {
       {/* Content */}
       <div className="parti_pa_content_wrapper">
         <h3 className="parti_pa_subtitle">
-          {t("children_movement")}
+          {t("OAtwo.title")}
         </h3>
 
         {/* <p className="parti_pa_quote">

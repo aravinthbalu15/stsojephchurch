@@ -25,7 +25,7 @@ const VAOne = () => {
       {/* Content */}
       <div className="parti_pa_content_wrapper">
         <h3 className="parti_pa_subtitle">
-          {t("children_movement")}
+          {t("OAone.title")}
         </h3>
 
         {/* <p className="parti_pa_quote">

@@ -28,7 +28,7 @@
   "balarsabha": "Childhood Movement",
   "children_movement": "Little way Association",
   "iycs": "Young Christian Student Movement",
-  "youth_boys": "Youth Movement (Male)",
+  "youth_boys": "Youth Movement (Men)",
   "youth_girls": "Youth Movement (Women)",
   "women_movement": "Women's Movement",
   "bible_committee": "Bible Committee",
@@ -194,14 +194,19 @@
   "worship_origin_desc1": "The Worship Committee was started by Rev. Fr. Arul Devadoss on March 15, 2009.",
   "worship_origin_desc2": "The committee functions with members including 7 Basic Christian Community (BCC) representatives, representatives from various Pious Associations and Movements, and the choir group.",
   "worship_origin_desc3": "The committee actively works towards meaningful liturgical celebrations, Holy Mass preparation, special feasts, and spiritual programs.",
+  "VAThree":{
+    "desc1":"Our Altar Servers Ministry of St. Joseph's Church was established on Sunday, June 13, 2009, by the Parish Priest, Rev. Fr. M. Arul Devadhasan."
+   },
 
    "OAone":{
+    "title":"Objective:",
   "desc": "அன்பினால் ஆண்டவருக்கு தெரசாளின் அவனியை ஆட்கொள்வோம் என்ற தூய குழந்தை கொள்கையை வாழ்வாக்கி, சிறு வயதிலேயே ஆன்மீக ஊட்டி சிறார்களை பண்பட்டவர்களாக உணர்வையும், நல்லொழுக்க அறிவையும் உருவாக்குவதே இவ்வியக்கத்தின் நோக்கமாகும்.",
   "desc1": "1993-ம் ஆண்டு இயேசுவின் திரு இருதய சகோதரிகளின் வழிகாட்டுதலோடு அருட்பணி லூக்காஸ் அவர்களை இயக்குநராக கொண்டு பாலர்சபை கம்பிளாரில் தொடங்கப்பட்டது."
  }, 
   "OAtwo":{
-  "desc": "அன்பினால் ஆண்டவருக்கு தெரசாளின் அவனியை ஆட்கொள்வோம் என்ற தூய குழந்தை கொள்கையை வாழ்வாக்கி, சிறு வயதிலேயே ஆன்மீக ஊட்டி சிறார்களை பண்பட்டவர்களாக உணர்வையும், நல்லொழுக்க அறிவையும் உருவாக்குவதே இவ்வியக்கத்தின் நோக்கமாகும்.",
-  "desc1": "சிறுவழி இயக்கமானது ஆண்டு அருட்பணி. மரியதாஸ் அவர்களால் 1998-துவங்கப்பட்டது. சிறுவழி இயக்கக் கூட்டம் ஞாயிற்றுக்கிழமை காலை திருப்பலிக்கு பின் நடைபெறும்."
+    "title":"Objective:",
+  "desc": "The objective of this movement is to embody the holy principle of St. Thérèse of the Child Jesus: \"To conquer the world for the Lord through love\". By providing spiritual nourishment at a young age, the movement aims to transform children into refined individuals and instill a deep sense of emotional maturity and moral knowledge.",
+  "desc1": "Little way Association was founded in 1998 by Rev. Fr. Mariadas. The meetings for the movement are held every Sunday following the morning Holy Mass."
  },
   "OAthree":{
   "desc": "To form oneself and, on that foundation, help shape others in good moral values. To nurture students in human values and self-confidence.",
@@ -210,15 +215,29 @@
   "OAfour":{
   "quote":"Young man, arise and shine",
   "desc": "To bring together scattered youth and, with human dignity, work towards integral human liberation, creating the Kingdom of God that blossoms towards a fulfilled and meaningful life.",
-  "desc1": "The Youth Movement was started in August 2008 by the then Parish Priest, Rev. Fr. S. Xavier Benedict"
+  "time":"Meeting Schedule:",
+  "desc_time":"The meetings are held every Sunday immediately after the Holy Mass, at approximately 10:15 AM, within the St. Joseph’s Church premises.",
+  "desc1": "The Youth Movement was started in August 2008 by the then Parish Priest, Rev. Fr. S. Xavier Benedict",
+  "moment":"Activities of the Movement:",
+  "descs1":" Helping youth recognize their inherent talents, strengths, passions, and the challenges they must face.",
+  "descs2":"Role Identification: Creating awareness about the vital importance of youth within society, the Church, and the family.",
+  "descs3":" Providing training to build right values and healthy interpersonal relationships.",
+  "descs4":"Leadership Development: Offering training to create leaders with clear goals and a spirit of selfless dedication.",
+  "descs5":"Encouraging youth to utilize their talents for the common good and public welfare."
  },
  "OAfive":{
   "desc": "To bring together scattered youth and, with human dignity, work towards integral human liberation by creating the Kingdom of God that blossoms towards divine and meaningful life.",
   "desc1": "The Youth Movement was started on 17-05-2008 by the then Parish Priest, Rev. Fr. Xavier Benedict."
  },
   "OAeight":{
-  "desc": "கிறிஸ்தவ தொழிலாளர் இயக்கம்  என்பது கத்தோலிக்க திருச்சபையின் வழிகாட்டுதலின் கீழ் துவங்கப்பட்ட ஒரு சமூக மற்றும் ஆன்மீக அமைப்பாகும்.",
-  "desc1": "இந்த இயக்கமானது 20.06.2025 அன்று புனித சூசையப்பர் ஆலயத்தில், பங்கு தந்தை அருட்பணி முனைவர் மரிய வில்லியம் அவர்களால் முதல் முறையாகத் துவங்கப்பட்டது."
+    "title":"Origin:",
+  "desc": "The Christian Workers Movement is a social and spiritual organization established under the guidance of the Catholic Church.",
+  "desc1": "This movement was officially inaugurated on June 20, 2025, at St. Joseph’s Church by the Parish Priest, Rev. Fr. Dr. Maria William.",
+  "t":" Who Can Join?",
+  "t1":"Membership is specifically open to all married Catholic men.",
+  "tt":"Primary Duties and Responsibilities:",
+  "tt1":"Welfare of Workers: The foremost duty of this movement is to work selflessly for the welfare of all laborers in the town, without any form of discrimination.",
+  "tt2":"Role Models for Youth: One of the most important responsibilities of the members is to serve as upright role models for the younger generation."
  },
 
 
@@ -226,6 +245,7 @@
   "desc": "The objective of this association is to create an environment where everyone receives equal opportunities and lives with human dignity, equality, and participation through collective effort and work.",
   "desc1": "The Women’s Village Development Association was founded on 03-04-2005 by the Parish Priest, Rev. Fr. Gabriel. At present, it is functioning effectively under the guidance of Rev. Fr. Arul Devadasan. It is operating in collaboration with RMP with a total of 25 members."
   },
+  
 
   "SAfour":{
   "title": "நோக்கம்:",
@@ -235,6 +255,7 @@
  },
    
 "TKone":{
+  "title":"Objective:",
   "desc": "The objective of the Legion is to glorify God by sanctifying its members. To achieve this goal, the Legion points out two means: prayer and service.",
   "desc1": "With Rev. Fr. Arul Devadasan as the Spiritual Director, it was started on 15-03-2009 under the name “St. Devasahayam Matha Praesidium” with 16 members. It functions under the Vengode Curia, and meetings are held every Sunday, starting at 5:00 PM in the evening."
  },

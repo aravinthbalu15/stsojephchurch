@@ -1,5 +1,5 @@
 import React from "react";
-// import Image1 from "./VAOne.png";
+import Image1 from "./SAOne.png";
 import { useTranslation } from "react-i18next";
 // import "./VAOne.css";
 
@@ -14,13 +14,13 @@ const VAOne = () => {
       </h1>
 
       {/* Image */}
-      {/* <div className="parti_pa_image_wrapper">
+      <div className="parti_pa_image_wrapper">
         <img
           src={Image1}
           alt="Worship Team"
           className="parti_pa_image"
         />
-      </div> */}
+      </div>
 
       {/* Content */}
       <div className="parti_pa_content_wrapper">

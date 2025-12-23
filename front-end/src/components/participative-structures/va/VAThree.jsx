@@ -24,24 +24,24 @@ const VAOne = () => {
 
       {/* Content */}
       <div className="parti_pa_content_wrapper">
-        <h3 className="parti_pa_subtitle">
+        {/* <h3 className="parti_pa_subtitle">
           {t("worship_goal_title")}
-        </h3>
+        </h3> */}
 
         {/* <p className="parti_pa_quote">
           "{t("OAfour.quote")}"
         </p> */}
 
-        <p className="parti_pa_text">
+        {/* <p className="parti_pa_text">
           {t("VAthree.desc")}
-        </p>
+        </p> */}
 
         <h3 className="parti_pa_subtitle mt-4">
           {t("worship_origin_title")}
         </h3>
 
         <p className="parti_pa_text">
-          {t("VAthree.desc1")}
+          {t("VAThree.desc1")}
         </p>
 
         {/* <p className="parti_pa_text">

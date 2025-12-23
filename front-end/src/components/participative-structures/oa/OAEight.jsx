@@ -43,10 +43,23 @@ const VAOne = () => {
         <p className="parti_pa_text">
           {t("OAeight.desc1")}
         </p>
+        <h3 className="parti_pa_subtitle mt-4">
+          {t("OAeight.t")}
+        </h3>
+        <p className="parti_pa_text">
+          {t("OAeight.t1")}
+        </p>
+        <h3 className="parti_pa_subtitle mt-4">
+          {t("OAeight.tt")}
+        </h3>
+         <p className="parti_pa_text">
+          {t("OAeight.tt1")}
+        </p>
+         <p className="parti_pa_text">
+          {t("OAeight.tt2")}
+        </p>
 
-        {/* <p className="parti_pa_text">
-          {t("worship_origin_desc2")}
-        </p> */}
+        
 
         {/* <p className="parti_pa_text">
           {t("worship_origin_desc3")}

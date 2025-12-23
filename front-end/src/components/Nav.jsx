@@ -508,7 +508,7 @@ const switchLanguage = (lang) => {
                 </li>,
                 <li key="p3-2">
                   <Link
-                    to="/கோல்பிங் இயக்கம்"
+                    to="/கோல்பிங்  இயக்கம்"
                     className="dropdown-item4"
                     onClick={closeMenu}
                   >

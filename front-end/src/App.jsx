@@ -40,13 +40,13 @@ import TKOne from "./components/participative-structures/tk/TKOne";
 import TKTwo from "./components/participative-structures/tk/TKTwo";
 import TKThree from "./components/participative-structures/tk/Three";
 import OAOne from "./components/participative-structures/oa/OAOne";
-import OAEight from "./components/participative-structures/oa/OATwo";
+import OATwo from "./components/participative-structures/oa/OATwo";
 import OAThree from "./components/participative-structures/oa/OAThree";
 import OAFour from "./components/participative-structures/oa/OAFour";
 import OAFive from "./components/participative-structures/oa/OAFive";
 import OASix from "./components/participative-structures/oa/OASix";
 import OASeven from "./components/participative-structures/oa/OASeven";
-import OATwo from "./components/participative-structures/oa/OAEight";
+import OAEight from "./components/participative-structures/oa/OAEight";
 
 import SAOne from "./components/participative-structures/sa/SAOne";
 import SATwo from "./components/participative-structures/sa/SATwo";
