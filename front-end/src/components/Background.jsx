@@ -7,11 +7,14 @@ import Image4 from "../images/image4.png";
 import Image5 from "../images/image5.png";
 import Image6 from "../images/image6.png";
 import Image7 from "../images/image7.png";
+import Image8 from "../images/image8.png";
+import Image9 from "../images/image9.png";
+
 
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useTranslation } from "react-i18next"; // Language
 
-const images = [Image1,Image2,Image3,Image4,Image5,Image6,Image7];
+const images = [Image1,Image2,Image3,Image4,Image5,Image6,Image7,Image8,Image9];
 
 const BackgroundSlider = () => {
   const { t } = useTranslation();

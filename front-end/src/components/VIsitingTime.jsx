@@ -52,9 +52,9 @@ const VisitingTime = () => {
             <p className="text-muted">{t("vt_desc")}</p>
 
             <h5 className="text-success">{t("vt_re")}</h5>
-            <p>{t("vt_mon_sun")}: {visitingTime.regularDays.mondayToFriday}</p>
-            <p>{t("vt_sa")}: {visitingTime.regularDays.saturday}</p>
-            <p>{t("vt_su")}: {visitingTime.regularDays.sunday}</p>
+            <p> {visitingTime.regularDays.mondayToFriday}</p>
+            <p> {visitingTime.regularDays.saturday}</p>
+            <p> {visitingTime.regularDays.sunday}</p>
 
             <motion.div
               initial={{ height: 0, opacity: 0 }}
