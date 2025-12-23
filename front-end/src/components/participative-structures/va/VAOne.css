@@ -2,6 +2,10 @@
 .parti_pa_page {
   padding: 20px;
   animation: parti_pa_fadeUp 1s ease-in-out;
+    text-align: center;
+    margin: auto;
+    background-color: #f5f3f3;
+    padding-top: 140px;
 }
 
 /* Title */
