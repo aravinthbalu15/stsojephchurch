@@ -16,15 +16,15 @@ const Footer = () => {
 
           <div className="contact-info">
             <p><FaMapMarkerAlt /> {t("church_address")}</p>
-            <p><FaPhone /> +91 8248588520</p>
-            <p><FaEnvelope /> stjosephchurch@gmail.com</p>
+            {/* <p><FaPhone /> +91 8248588520</p> */}
+            <p><FaEnvelope />stjosephchurchkamplar@gmail.com</p>
           </div>
 
           <div className="social-icons">
             <a href="#"><FaFacebook /></a>
             <a href="https://www.instagram.com/st_josephs_church_kamplar?igsh=MWF3NjQwbXNwN21nZQ%3D%3D&utm_source=qr" target="_blank"><FaInstagram /></a>
             <a href="#"><FaYoutube /></a>
-            <a href="#"><FaTwitter /></a>
+            {/* <a href="#"><FaTwitter /></a> */}
           </div>
         </div>
 

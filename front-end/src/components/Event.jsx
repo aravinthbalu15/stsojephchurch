@@ -81,7 +81,7 @@ const UpcomingEvents = () => {
                   <div
                     key={ev._id}
                     className="event-card"
-                    onClick={() => handleEventClick(ev._id)}
+                    // onClick={() => handleEventClick(ev._id)}
                   >
                     <img src={ev.image} alt="event" className="event-image" />
                     <p className="event-caption">{getDescription(ev)}</p>
@@ -107,7 +107,9 @@ const UpcomingEvents = () => {
                   <div
                     key={ev._id}
                     className="event-card"
-                    onClick={() => handleEventClick(ev._id)}
+                    // onClick={() => handleEventClick(ev._id)
+
+                    // }
                   >
                     <img src={ev.image} alt="event" className="event-image" />
                     <p className="event-caption">{getDescription(ev)}</p>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/History.css"; // Bootstrap not needed here
-import Image1 from "../images/image4.png";
+import Image1 from "../images/Home.png";
 import { useTranslation } from "react-i18next";
 const History = () => {
   const { t } = useTranslation();

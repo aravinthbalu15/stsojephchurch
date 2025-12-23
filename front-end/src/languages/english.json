@@ -59,18 +59,24 @@
   "no_upcoming_events": "No upcoming events.",
 
 
-  "slider_proverbs": [
-    "Faith moves mountains",
-    "Grace guides the humble heart",
-    "In His light we see light",
-    "Love never fails"
-  ],
-  "slider_paragraphs": [
-    "John 15:13",
-    "Psalm 23:1",
-    "John 3:16",
-    "Love 3:90"
-  ],
+ "slider_proverbs": [
+  "Faith can move mountains",
+  "With God, all things are possible",
+  "The Lord is my shepherd",
+  "Love never fails",
+  "Walk by faith, not by sight",
+  "The Lord is my strength and shield",
+  "Let your light shine before others"
+],
+"slider_paragraphs": [
+  "Matthew 17:20",
+  "Matthew 19:26",
+  "Psalm 23:1",
+  "1 Corinthians 13:8",
+  "2 Corinthians 5:7",
+  "Psalm 28:7",
+  "Matthew 5:16"
+],
   "parish_subhead":"",
   "parish_head":"",
   "parish_members":"",
@@ -118,42 +124,43 @@
   "show_less": "Show Less",
 
   "Our_people_at_Gods_Service": "Our People at God's Service",
+  "person1_name": "Rev.Fr.Alphonse",
 
-  "person1_name": "Rev. Sr. Armella S R A",
-  "person1_dob": "03.07.1994",
-  "person1_birthplace": "Kamplar",
-  "person1_ordination": "14.04.2024",
-  "person1_ministry": "Co-Pastor, Mathiravilai",
-
-  "person2_name": "Rev. Br. Maria Simson",
+  "person2_name": "Rev. Sr. Armella S R A",
   "person2_dob": "03.07.1994",
   "person2_birthplace": "Kamplar",
   "person2_ordination": "14.04.2024",
   "person2_ministry": "Co-Pastor, Mathiravilai",
 
-  "person3_name": "Rev. Sr. Crystal Shylla",
+  "person3_name": "Rev. Br. Maria Simson",
   "person3_dob": "03.07.1994",
   "person3_birthplace": "Kamplar",
   "person3_ordination": "14.04.2024",
   "person3_ministry": "Co-Pastor, Mathiravilai",
 
-  "person4_name": "Rev. Sr. Ezhil",
+  "person4_name": "Rev. Sr. Crystal Shylla",
   "person4_dob": "03.07.1994",
   "person4_birthplace": "Kamplar",
   "person4_ordination": "14.04.2024",
   "person4_ministry": "Co-Pastor, Mathiravilai",
 
-  "person5_name": "Rev. Sr. Jenisha",
+  "person5_name": "Rev. Sr. Ezhil",
   "person5_dob": "03.07.1994",
-  "person5_birthplace": "Vellore",
-  "person5_ordination": "21-06-2021",
-  "person5_ministry": "Sacred Heart Novitiate",
+  "person5_birthplace": "Kamplar",
+  "person5_ordination": "14.04.2024",
+  "person5_ministry": "Co-Pastor, Mathiravilai",
 
-  "person6_name": "Rev. Fr. Anish",
+  "person6_name": "Rev. Sr. Jenisha",
   "person6_dob": "03.07.1994",
   "person6_birthplace": "Vellore",
   "person6_ordination": "21-06-2021",
   "person6_ministry": "Sacred Heart Novitiate",
+
+  "person7_name": "Rev. Fr. Anish",
+  "person7_dob": "03.07.1994",
+  "person7_birthplace": "Vellore",
+  "person7_ordination": "21-06-2021",
+  "person7_ministry": "Sacred Heart Novitiate",
 
   "Name": "Name",
   "Date_of_Birth": "Date of Birth",
