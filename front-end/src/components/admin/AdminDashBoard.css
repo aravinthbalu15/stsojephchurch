@@ -70,3 +70,42 @@
     padding: 8px 0;
   }
 }
+
+
+
+/* -----------------------------------------
+   📈 Visitor Analytics Card
+----------------------------------------- */
+.visitor-card {
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e8f5e9, #ffffff);
+}
+
+.visitor-title {
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.visitor-subtitle {
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.visitor-btn {
+  padding: 10px 24px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* -----------------------------------------
+   📱 Mobile Responsive
+----------------------------------------- */
+@media (max-width: 768px) {
+  .visitor-title {
+    font-size: 1.3rem;
+  }
+
+  .visitor-btn {
+    width: 100%;
+  }
+}

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import './AdminDashBoard.css'
+import './AdminDashBoard.css';
+
 const AdminDashBoard = () => {
   const navigate = useNavigate();
 
@@ -21,20 +22,48 @@ const AdminDashBoard = () => {
     { title: 'Add President', route: '/add-president' },
     { title: 'Add Family Members Total number', route: '/add-adminfaminly-number' },
     { title: 'Add Anbiyangal', route: '/add-adminanbiyangal' },
-];
+  ];
 
   return (
-    <div className="admin-dash-board container mt-4 ">
-      <h2 className="text-center mb-4">📊 Admin Dashboard</h2>
+    <div className="admin-dash-board container mt-4">
+
+      {/* 🔥 VISITOR ANALYTICS CARD */}
+      <Row className="mb-4">
+        <Col xs={12}>
+          <Card className="visitor-card shadow-sm border-0 text-center">
+            <Card.Body>
+              <h4 className="visitor-title">📈 Website Visitors</h4>
+              <p className="visitor-subtitle">
+                Real-time & total visitors (Google Analytics)
+              </p>
+              <Button
+                variant="success"
+                className="visitor-btn"
+                onClick={() =>
+                  window.open('https://analytics.google.com/analytics/web/?authuser=1#/a378465907p517327383/realtime/overview?params=_u..nav%3Dmaui', '_blank')
+                }
+              >
+                View Analytics
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* DASHBOARD BUTTONS */}
+      <h2 className="text-center mb-4 dashboard-title">📊 Admin Dashboard</h2>
+
       <Row className="g-4">
         {buttons.map((btn, index) => (
           <Col md={4} sm={6} xs={12} key={index}>
-            <Card className="text-center shadow-sm border-0 h-100">
+            <Card className="dashboard-card text-center shadow-sm border-0 h-100">
               <Card.Body>
-                <Card.Title>{btn.title}</Card.Title>
+                <Card.Title className="dashboard-card-title">
+                  {btn.title}
+                </Card.Title>
                 <Button
                   variant="primary"
-                  className="mt-3"
+                  className="dashboard-btn mt-3"
                   onClick={() => navigate(btn.route)}
                 >
                   Go to {btn.title}
