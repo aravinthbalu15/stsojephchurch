@@ -36,7 +36,7 @@ const Service = () => {
           </div>
 
           <div className="col-md-8">
-            <p className="text-center"><strong>{t("Name")}:</strong> {t(`${p.key}_name`)}</p>
+            <p className="text-center"><strong></strong> {t(`${p.key}_name`)}</p>
             {/* <p><strong>{t("Date_of_Birth")}:</strong> {t(`${p.key}_dob`)}</p> */}
             {/* <p><strong>{t("Place_of_Birth")}:</strong> {t(`${p.key}_birthplace`)}</p>
             <p><strong>{t("Date_of_Ordination")}:</strong> {t(`${p.key}_ordination`)}</p>
