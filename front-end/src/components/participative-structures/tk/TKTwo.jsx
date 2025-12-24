@@ -9,12 +9,12 @@ const VAOne = () => {
   return (
     <div className=" parti_pa_page">
       {/* Title */}
-      <h1 className="parti_pa_title  mt-5">
+      <h1 className="parti_pa_title  mt-5 text-center">
         {t("vincent_de_paul")}
       </h1>
 
       {/* Image */}
-      <div className="parti_pa_image_wrapper">
+      <div className="parti_pa_image_wrapper ">
         <img
           src={Image2}
           alt="Worship Team"

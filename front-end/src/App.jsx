@@ -88,11 +88,11 @@ function App() {
   }, [location.pathname]);
   useEffect(() => {
     if (window.gtag) {
-      window.gtag('config', 'G-K5ME5WWLWC', {
+      window.gtag('config', 'G-M49ZYM1EFE', {
         page_path: location.pathname,
       });
     }
-  }, [location]);
+  }, [location.pathname]);
   
 
   return (

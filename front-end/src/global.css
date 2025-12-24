@@ -11,12 +11,5 @@
 :root {
   /* Fonts */
   --font-english-primary: 'Noto Sans', sans-serif;
---font-english-heading: 'Poppins', sans-serif;
---font-english-serif: 'Merriweather', serif;
---font-english-display: 'Montserrat', sans-serif;
---font-english-light: 'Nunito', sans-serif;
-
-  --font-tamil: 'Catamaran', 'Noto Sans Tamil', sans-serif;
-
-  --padding: 2px;
+--font-english-heading: 'Playfair Display', sans-serif;
 }

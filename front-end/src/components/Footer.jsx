@@ -76,7 +76,7 @@ const Footer = () => {
 
     {/* Developer 2 (Teammate) */}
     <div className="dev-card">
-      <h3 className="dev-name">Aju Sabin</h3>
+      <h3 className="dev-name">Aju Shabin</h3>
       {/* <p className="dev-role">Frontend / Backend Developer</p> */}
 
       <div className="dev-links">

@@ -9,7 +9,7 @@ const VAOne = () => {
   return (
     <div className=" parti_pa_page">
       {/* Title */}
-      <h1 className="parti_pa_title  mt-5">
+      <h1 className="parti_pa_title  mt-5 text-center" >
         {t("catholic_service")}
       </h1>
 

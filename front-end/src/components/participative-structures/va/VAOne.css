@@ -1,28 +1,31 @@
-/* Page Wrapper */
+/* =========================
+   Page Wrapper
+========================= */
 .parti_pa_page {
+  min-height: 100vh;
   padding: 20px;
+  padding-top: 140px;
+  /* text-align: center; */
+  margin: auto;
+  background-color: #f5f3f3;
   animation: parti_pa_fadeUp 1s ease-in-out;
-    text-align: center;
-    margin: auto;
-    background-color: #f5f3f3;
-    padding-top: 140px;
 }
 
-/* Title */
+/* =========================
+   Title
+========================= */
 .parti_pa_title {
-  text-align: center;
   color: #003060;
-  /* margin-bottom: 125px; */
-  /* Section Title */
-  font-size: 2.5rem;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
   font-weight: 700;
   margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-
 }
 
-/* Image */
+/* =========================
+   Image Wrapper
+========================= */
 .parti_pa_image_wrapper {
   display: flex;
   justify-content: center;
@@ -30,12 +33,16 @@
   animation: parti_pa_zoomIn 1.2s ease;
 }
 
+/* =========================
+   Image
+========================= */
 .parti_pa_image {
   width: 100%;
-  max-width: 800px;
-  height: auto;
+  max-width: 550px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: transform 0.4s ease;
 }
 
@@ -43,7 +50,9 @@
   transform: scale(1.03);
 }
 
-/* Content */
+/* =========================
+   Content Wrapper
+========================= */
 .parti_pa_content_wrapper {
   max-width: 900px;
   margin: auto;
@@ -51,45 +60,61 @@
   animation: parti_pa_fadeUp 1.4s ease;
 }
 
-/* Subtitles */
+/* =========================
+   Subtitles
+========================= */
 .parti_pa_subtitle {
   color: #0d6efd;
   font-weight: 600;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   margin-bottom: 10px;
 }
 
-/* Quote */
+/* =========================
+   Quote
+========================= */
 .parti_pa_quote {
   text-align: center;
   font-weight: bold;
-  font-size: 18px;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   color: #444;
   margin-bottom: 18px;
+  font-style: italic;
 }
 
-/* Paragraph */
+/* =========================
+   Paragraph
+========================= */
 .parti_pa_text {
-  font-size: 16px;
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
   color: #333;
   margin-bottom: 14px;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .parti_pa_title {
-    font-size: 24px;
-  }
-
-  .parti_pa_quote {
-    font-size: 16px;
-  }
-
-  .parti_pa_text {
-    font-size: 15px;
+/* =========================
+   Responsive Padding Fix
+========================= */
+@media (max-width: 992px) {
+  .parti_pa_page {
+    padding-top: 120px;
   }
 }
 
-/* Animations */
+@media (max-width: 768px) {
+  .parti_pa_page {
+    padding-top: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .parti_pa_page {
+    padding-top: 80px;
+  }
+}
+
+/* =========================
+   Animations
+========================= */
 @keyframes parti_pa_fadeUp {
   from {
     opacity: 0;
@@ -111,29 +136,3 @@
     transform: scale(1);
   }
 }
-
-
-/* Extra large (≥576px) */
-@media (max-width: 576px) {
-  .parti_pa_page {
-    padding-top: 80px;
-  }
-}
-
-/* Medium devices (≥768px) */
-@media (max-width: 768px) {
-  .parti_pa_page {
-    padding-top: 80px;
-  }
-}
-
-/* Large devices (≥992px) */
-@media (max-width: 992px) {
-  .parti_pa_page {
-    padding-top: 80px;
-  }
-}
-
-
-
-

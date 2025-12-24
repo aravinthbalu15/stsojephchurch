@@ -1,5 +1,7 @@
 /* ================= FOOTER MAIN ================= */
 
+@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Monsieur+La+Doulaise&family=Quintessential&display=swap');
 .footer {
   background: linear-gradient(135deg, #1e1e2f, #6a11cb);
   color: #ffffff;
@@ -28,6 +30,7 @@
 }
 
 .brand-name {
+  font-family: var(--font-english-heading);
   font-size: 2rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -86,7 +89,7 @@
 
 /* ================= DEVELOPER TEAM SECTION ================= */
 
-/* .dev-team {
+.dev-team {
   margin-top: 40px;
   padding: 28px 18px;
   background: rgba(255, 255, 255, 0.06);
@@ -95,7 +98,7 @@
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
-} */
+}
 
 /* Divider */
 .dev-divider {
@@ -109,6 +112,9 @@
 
 /* Credit text */
 .dev-credit {
+   font-family: "Quintessential", serif;
+  font-weight: 400;
+  font-style: normal;
   font-size: 0.85rem;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -133,9 +139,9 @@
 
 /* Developer name */
 .dev-name {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 6px;
+ font-family: "Lavishly Yours", cursive;
+  font-weight: 550;
+  font-style: normal;
 }
 
 /* Developer role */
@@ -206,3 +212,6 @@
     font-size: 0.85rem;
   }
 }
+
+
+
