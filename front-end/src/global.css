@@ -7,9 +7,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght=400;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
 
 
+@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Monsieur+La+Doulaise&family=Noto+Sans+Tamil:wght@100..900&family=Quintessential&display=swap');
+
 /* ---------- ROOT VARIABLES ---------- */
 :root {
   /* Fonts */
   --font-english-primary: 'Noto Sans', sans-serif;
 --font-english-heading: 'Playfair Display', sans-serif;
+
+/* Tamil */
+  --font-tamil-primary: 'Noto Sans Tamil', sans-serif;
+  --font-tamil-heading: 'Noto Sans Tamil', sans-serif;
 }

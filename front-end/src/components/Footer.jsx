@@ -89,7 +89,7 @@ const Footer = () => {
         </a>
 
         <a
-          href="#"
+          href="https://www.instagram.com/aju_shabi?igsh=bWF6aGRyd3k3NWtw&utm_source=qr"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Instagram"
