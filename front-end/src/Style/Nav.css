@@ -2,15 +2,18 @@
 /* ================= TAMIL LANGUAGE TWEAKS ================= */
 @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Monsieur+La+Doulaise&family=Noto+Sans+Tamil:wght@100..900&family=Quintessential&display=swap');
 
-html[lang="ta"] .nav-link2,
-html[lang="ta"] .dropdown-item4,
-html[lang="ta"] .dropdown-link55,
+
 html[lang="ta"] .brand-title,
 html[lang="ta"] .brand-subtitle {
   font-size: 1.4rem;
   font-family:"Noto Sans Tamil", sans-serif;
   font-weight: 700;
 }
+/* html[lang="ta"] .nav-link2,
+html[lang="ta"] .dropdown-item4,
+html[lang="ta"] .dropdown-link55,{
+
+} */
 
 
 /* Tablet */
@@ -104,7 +107,7 @@ html[lang="ta"] .brand-subtitle {
 
 .brand-title {
   font-family: var(--font-english-heading);
-  font-size: 2.4rem;
+  font-size: 2.0rem;
   font-weight: 800;
   color: #ffffff;
   text-transform: uppercase;

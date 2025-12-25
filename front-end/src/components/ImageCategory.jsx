@@ -44,7 +44,7 @@ const ImageCategory = () => {
   };
 
   return (
-    <Container className="gallery-container ">
+    <Container className="container mt-5 ">
       <h2 className="section-title mt-5">{t("image-category")}</h2>
       <Row>
         {categories.map((category, index) => (
