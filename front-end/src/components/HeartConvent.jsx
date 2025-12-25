@@ -49,7 +49,7 @@ const HeartConvent = () => {
   }, []);
 
   return (
-    <div className="heart-convent container">
+    <div className="heart-convent container mt-5">
       {/* ================= TITLE ================= */}
       <h2 className="text-center mb-5 section-title scroll-reveal">
         {t("heart_convent")}

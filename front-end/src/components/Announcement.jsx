@@ -39,78 +39,59 @@ const Announcement = () => {
   const pdfs = announcements.filter(a => a.pdfUrl);
 
   return (
-    <div className="ann-viewr announcement-wrapper container my-4">
+   <div className="ann-viewr container">
 
-      <h3 className="section-title">Announcements</h3>
-      <div className="scroll-container">
-        <div className="scroll-content">
-          {general.map((g) => (
-            <span key={g._id} className="scroll-item">
-              <span className={`badge-category badge-${g.category}`}>
-                {g.category.toUpperCase()}
-              </span>
-              📌 {g.title}
-              &nbsp;&nbsp;&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <h3 className="section-title">Events & Highlights</h3>
-      <div className="scroll-container">
-        <div className="scroll-content">
-          {images.map((img) => (
-            <div
-              className="image-box"
-              key={img._id}
-              onClick={() => openImageModal(img.imageUrl)}
-            >
-              <img src={img.imageUrl} className="event-img" alt={img.title} />
-              <span className={`badge-category badge-${img.category}`}>
-                {img.category.toUpperCase()}
-              </span>
-              <p className="img-title mt-2 fw-bold">{img.title}</p>
-              <small className="text-muted">{new Date(img.createdAt).toLocaleDateString()}</small>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <h3 className="section-title">Important Documents</h3>
-      <div className="scroll-container">
-        <div className="scroll-content">
-          {pdfs.map((p) => (
-            <span key={p._id} className="scroll-item">
-
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
-                alt="pdf"
-                className="pdf-svg-icon"
-              />
-
-              {p.title} —
-
-              <a href={p.pdfUrl} target="_blank" download className="btn btn-link download-btn">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/992/992651.png"
-                  alt="download"
-                  className="download-icon"
-                />
-              </a>
-
-              &nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* IMAGE POPUP MODAL */}
-      <Modal centered show={showImageModal} onHide={() => setShowImageModal(false)} size="lg">
-        <Modal.Body className="text-center">
-          <img src={selectedImage} alt="view" className="modal-view-img img-fluid rounded" />
-        </Modal.Body>
-      </Modal>
+  {/* LATEST ANNOUNCEMENTS */}
+  <h3 className="section-title">Latest Announcements</h3>
+  <div className="announce-ticker mb-5">
+    <div className="ticker-track">
+      {general.map(g => (
+        <span key={g._id} className="ticker-item">
+          <span className={`badge-category badge-${g.category}`}>
+            {g.category.toUpperCase()}
+          </span>
+          &nbsp;{g.title}
+        </span>
+      ))}
     </div>
+  </div>
+
+  {/* EVENTS */}
+  <h3 className="section-title">Events & Highlights</h3>
+  <div className="event-grid mb-5">
+    {images.map(img => (
+      <div
+        className="event-card"
+        key={img._id}
+        onClick={() => openImageModal(img.imageUrl)}
+      >
+        <img src={img.imageUrl} className="event-img" alt={img.title} />
+        <div className="event-body">
+          <span className={`badge-category badge-${img.category}`}>
+            {img.category.toUpperCase()}
+          </span>
+          <div className="event-title">{img.title}</div>
+          <div className="event-date">
+            {new Date(img.createdAt).toLocaleDateString()}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* DOCUMENTS */}
+  <h3 className="section-title">Important Documents</h3>
+  <div className="doc-list">
+    {pdfs.map(p => (
+      <div className="doc-item" key={p._id}>
+        <span className="doc-title">📄 {p.title}</span>
+        <a href={p.pdfUrl} target="_blank" download>Download ⬇</a>
+      </div>
+    ))}
+  </div>
+
+</div>
+
   );
 };
 

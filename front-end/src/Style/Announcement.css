@@ -1,85 +1,96 @@
+/* ================= WRAPPER ================= */
 .ann-viewr {
-  padding-top: 140px;
-  padding-bottom: 40px;
+  padding-top: 130px;
+  padding-bottom: 60px;
 }
 
-/* SECTION TITLE */
+/* ================= SECTION TITLE ================= */
 .section-title {
+  font-size: 26px;
   font-weight: 700;
-  font-size: 28px;
-  color: #003060;
-  border-left: 6px solid #0d6efd;
-  padding-left: 14px;
-  margin: 25px 0 18px 0;
+  color: #0b2c5d;
+  margin-bottom: 18px;
+  /* border-left: 5px solid #0d6efd; */
+  padding-left: 12px;
 }
 
-/* SCROLL CONTAINER */
-.scroll-container {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 12px 0;
-  margin-bottom: 30px;
-  background: #ffffffc4;
+/* ================= ANNOUNCEMENT TICKER ================= */
+.announce-ticker {
+  background: #f8f9fa;
   border-radius: 12px;
-  border: 1px solid #dbe2ef;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
-  cursor: grab;
+  padding: 14px 0;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
 }
 
-.scroll-content {
+.ticker-track {
   display: inline-block;
-  animation: scroll-left 18s linear infinite;
+  white-space: nowrap;
+  animation: ticker 22s linear infinite;
   padding-left: 100%;
 }
 
-.scroll-container:hover .scroll-content {
+.announce-ticker:hover .ticker-track {
   animation-play-state: paused;
 }
 
-/* SCROLLER ITEM */
-.scroll-item {
-  font-size: 18px;
-  font-weight: 500;
+.ticker-item {
   display: inline-block;
-  margin-right: 70px;
+  margin-right: 80px;
+  font-size: 17px;
   color: #222;
 }
 
-/* IMAGE CARD */
-.image-box {
-  display: inline-block;
-  width: 270px;
-  margin-right: 26px;
-  padding: 12px;
-  border-radius: 14px;
-  background: #fff;
-  text-align: center;
-  transition: 0.35s ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+/* ================= EVENT GRID ================= */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
 }
 
-.image-box:hover {
+.event-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.event-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 10px 26px rgba(0,0,0,0.22);
 }
 
 .event-img {
   width: 100%;
   height: 170px;
-  border-radius: 12px;
   object-fit: cover;
-  cursor: pointer;
 }
 
-/* BADGES */
-.badge-category {
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 12px;
-  margin-right: 8px;
-  color: white;
+.event-body {
+  padding: 14px;
+}
+
+.event-title {
   font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.event-date {
+  font-size: 13px;
+  color: #777;
+}
+
+/* ================= BADGES ================= */
+.badge-category {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  color: #fff;
 }
 
 .badge-general { background:#0d6efd; }
@@ -87,42 +98,58 @@
 .badge-meeting { background:#198754; }
 .badge-mass { background:#6f42c1; }
 .badge-festival { background:#fd7e14; }
-.badge-obituary { background:#000; }
-.badge-youth { background:#20c997; }
-.badge-children { background:#ffb703; }
 
-/* PDF ICONS */
-.pdf-svg-icon {
-  width: 22px;
-  height: 22px;
-  margin-right: 8px;
+/* ================= DOCUMENT LIST ================= */
+.doc-list {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
 }
 
-.download-icon {
-  width: 22px;
-  margin-left: 5px;
-  opacity: 0.8;
+.doc-item {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
 }
 
-.download-icon:hover {
-  opacity: 1;
+.doc-item:last-child {
+  border-bottom: none;
 }
 
-/* MODAL IMAGE VIEW */
+.doc-title {
+  font-weight: 500;
+}
+
+.doc-item a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* ================= MODAL IMAGE ================= */
 .modal-view-img {
   max-height: 85vh;
   object-fit: contain;
 }
 
-/* SCROLL ANIMATION */
-@keyframes scroll-left {
+/* ================= ANIMATION ================= */
+@keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
 
-/* RESPONSIVE */
+/* ================= MOBILE ================= */
 @media (max-width: 576px) {
-  .event-img { height: 140px; }
-  .image-box { width: 210px; }
-  .scroll-item { font-size: 15px; }
+  .section-title {
+    font-size: 22px;
+  }
+
+  .event-img {
+    height: 150px;
+  }
+
+  .ticker-item {
+    font-size: 15px;
+  }
 }

@@ -3,7 +3,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   opacity: 0;
   animation: fadeIn 1s ease-out forwards;
-  padding-top: 145px;
+  padding-top: 120px;
 }
 
 /* Fade In Animation */
@@ -63,7 +63,7 @@
 /* Circular Gallery Images */
 .gallery2-img {
   width: 250px;
-  height: 300px;
+  height: 250px;
   object-fit: cover;
   border-radius: 50%;
   transition: 0.3s ease;

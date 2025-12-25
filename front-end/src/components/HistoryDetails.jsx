@@ -2,7 +2,10 @@ import React from 'react';
 import '../Style/HistoryDetails.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import Image1 from "../images/History/1.png";
-import Image2 from "../images/History/2.png";
+import Image2 from "../images/image1.png";
+import Image3 from "../images/image4.png";
+import Image4 from "../images/image7.png";
+
 import { useTranslation } from "react-i18next"; // 🆕 Added
 
 
@@ -41,7 +44,7 @@ const HistoryDetails = () => {
 <Row className="align-items-center">
   {/* Left Side - Image */}
   <Col md={6} className="text-center">
-    <img src={Image2} alt="Church History" className="rect-img-HD31 img-fluid"/>
+    <img src={Image4} alt="Church History" className="rect-img-HD31 img-fluid"/>
   </Col>
 
   {/* Right Side - Text */}
@@ -57,7 +60,7 @@ const HistoryDetails = () => {
 
   {/* Right Side - Image */}
   <Col md={6} className="text-center">
-    <img src={Image2} alt="Church History" className="rect-img-HD31 img-fluid" />
+    <img src={Image3} alt="Church History" className="rect-img-HD31 img-fluid" />
   </Col>
 </Row>
     </Container>
