@@ -9,6 +9,7 @@ import VIsitingTime from "../components/VIsitingTime";
 import Event from "../components/Event";
 import History from "../components/History";
 import VIdeoLink from "../components/VIdeoLink"
+import HomeAnnouncement from "../components/HomeAnnouncement"
 import ParticipateStructers from "../components/participative-structures/ParticipateStructers";
 
 const Home = () => {
@@ -30,6 +31,7 @@ const Home = () => {
       <BackgroundSlider />
       <div className={`content ${showContent ? "visible" : "hidden"}`}>
       <Event />
+      <HomeAnnouncement />
       <President />
       <History />
      

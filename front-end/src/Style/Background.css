@@ -113,7 +113,7 @@ html[lang="ta"] .quote-mark {
 }
 
 @media (max-width: 480px) {
-  .background-slider { height: 95vh; }
+  .background-slider { height: 100vh; }
 
   .proverb {
     margin-top: 40%;

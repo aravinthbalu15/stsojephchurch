@@ -30,7 +30,7 @@ const WordOfGod = () => {
 
   return (
     <section className="word-of-god">
-      <Container>
+      {/* <Container>
         <div className="justify-content-center align-items-center">
           <Col md={10} className="text-center">
             <p className="subheading">WORD OF GOD</p>
@@ -40,7 +40,7 @@ const WordOfGod = () => {
             <p className="references">{quotes[currentQuote].reference}</p>
           </Col>
         </div>
-      </Container>
+      </Container> */}
     </section>
   );
 };

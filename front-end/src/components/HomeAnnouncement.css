@@ -1,0 +1,177 @@
+/* Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+.ann-viewrs {
+  font-family: "Poppins", sans-serif;
+}
+
+/* =======================
+   TICKER CONTAINER
+======================= */
+.announce-ticker {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff, #f6f7fb);
+  border-left: 4px solid #6a11cb;
+  padding: 14px 0;
+}
+
+/* Soft inner shadow */
+.announce-ticker::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.03);
+  pointer-events: none;
+}
+
+/* =======================
+   MOVING TRACK
+======================= */
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: scroll-left 28s linear infinite;
+}
+
+/* Pause animation on hover (desktop) */
+@media (hover: hover) {
+  .announce-ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+}
+
+/* =======================
+   TICKER ITEM
+======================= */
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 40px;
+  font-size: 15px;
+  color: #2c2c2c;
+  position: relative;
+}
+
+/* Separator dot */
+.ticker-item::after {
+  content: "•";
+  margin-left: 22px;
+  color: #bbb;
+  font-size: 18px;
+}
+
+.ticker-item:last-child::after {
+  content: "";
+}
+
+/* =======================
+   TEXT & BADGES
+======================= */
+.ann-text {
+  margin-left: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  line-height: 1.4;
+}
+
+.ann-badge {
+  padding: 4px 10px;
+  font-size: 10.5px;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Category colors */
+.ann-general {
+  background-color: #0d6efd;
+}
+.ann-urgent {
+  background-color: #dc3545;
+}
+.ann-event {
+  background-color: #198754;
+}
+
+/* =======================
+   ANIMATIONS
+======================= */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Fade-in */
+.announce-ticker {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =======================
+   RESPONSIVENESS
+======================= */
+
+/* Tablets */
+@media (max-width: 992px) {
+  .ticker-item {
+    font-size: 14px;
+    margin-right: 30px;
+  }
+
+  .ann-text {
+    margin-left: 8px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .announce-ticker {
+    padding: 10px 0;
+    border-left-width: 3px;
+  }
+
+  .ticker-track {
+    animation-duration: 35s; /* slower for readability */
+  }
+
+  .ticker-item {
+    font-size: 13px;
+    margin-right: 25px;
+  }
+
+  .ann-text {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ann-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .ann-text {
+    max-width: 160px;
+  }
+}

@@ -43,7 +43,7 @@ const BackgroundSlider = () => {
         />
       ))}
 
-      <div className="overlay">
+      {/* <div className="overlay">
         {proverbs.map((text, i) => (
           <div key={i} className={`proverb ${i === index ? "show" : "hide"}`}>
             <span className="quote-mark left">“</span>
@@ -53,7 +53,7 @@ const BackgroundSlider = () => {
             <h1 className="verse-text">{paragraphs[i]}</h1>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <button className="arrow left-arrow" onClick={prevSlide}>
         <FaArrowLeft />
