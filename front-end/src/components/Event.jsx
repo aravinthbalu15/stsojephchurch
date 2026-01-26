@@ -6,9 +6,11 @@ import "slick-carousel/slick/slick-theme.css";
 import "../Style/Event.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import PresidentSkeleton from "./PresidentSkeleton"; // ✅ skeleton
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ loading state
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -21,20 +23,22 @@ const UpcomingEvents = () => {
         setEvents(response.data);
       } catch (error) {
         console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false); // ✅ stop skeleton
       }
     };
 
     fetchEvents();
   }, []);
 
-  // Click → Open full event page
+  // Navigate to event page
   const handleEventClick = (eventId) => {
     navigate(`/event/${eventId}`);
   };
 
   // Slider settings
   const getSliderSettings = (count) => ({
-    dots: true,
+    dots: count > 1,
     infinite: count > 1,
     speed: 500,
     slidesToShow: 1,
@@ -53,17 +57,24 @@ const UpcomingEvents = () => {
   });
 
   // Categorize events
-  const currentEvents = events.filter(e => e.category === "current");
-  const upcomingEvents = events.filter(e => e.category === "upcoming");
+  const currentEvents = events.filter((e) => e.category === "current");
+  const upcomingEvents = events.filter((e) => e.category === "upcoming");
 
-  // Select correct description based on language
+  // Language-based description
   const getDescription = (ev) => {
-    return i18n.language === "ta" ? ev.description_ta : ev.description_en;
+    return i18n.language === "ta"
+      ? ev.description_ta
+      : ev.description_en;
+  };
+
+  // ✅ Cloudinary optimization
+  const getOptimizedImage = (url) => {
+    if (!url || !url.includes("cloudinary")) return url;
+    return url.replace("/upload/", "/upload/f_auto,q_auto,w_600/");
   };
 
   return (
     <div className="upcoming-events container py-4">
-
       <div className="row justify-content-between">
 
         {/* CURRENT EVENTS */}
@@ -73,7 +84,9 @@ const UpcomingEvents = () => {
               {t("current_events")}
             </h3>
 
-            {currentEvents.length === 0 ? (
+            {loading ? (
+              <PresidentSkeleton />
+            ) : currentEvents.length === 0 ? (
               <p className="text-center">{t("no_current_events")}</p>
             ) : (
               <Slider {...getSliderSettings(currentEvents.length)}>
@@ -83,8 +96,15 @@ const UpcomingEvents = () => {
                     className="event-card"
                     // onClick={() => handleEventClick(ev._id)}
                   >
-                    <img src={ev.image} alt="event" className="event-image" />
-                    <p className="event-caption">{getDescription(ev)}</p>
+                    <img
+                      src={getOptimizedImage(ev.image)}
+                      alt="event"
+                      className="event-image"
+                      loading="lazy"
+                    />
+                    <p className="event-caption">
+                      {getDescription(ev)}
+                    </p>
                   </div>
                 ))}
               </Slider>
@@ -99,7 +119,9 @@ const UpcomingEvents = () => {
               {t("upcoming_events")}
             </h3>
 
-            {upcomingEvents.length === 0 ? (
+            {loading ? (
+              <PresidentSkeleton />
+            ) : upcomingEvents.length === 0 ? (
               <p className="text-center">{t("no_upcoming_events")}</p>
             ) : (
               <Slider {...getSliderSettings(upcomingEvents.length)}>
@@ -107,12 +129,17 @@ const UpcomingEvents = () => {
                   <div
                     key={ev._id}
                     className="event-card"
-                    // onClick={() => handleEventClick(ev._id)
-
-                    // }
+                    // onClick={() => handleEventClick(ev._id)}
                   >
-                    <img src={ev.image} alt="event" className="event-image" />
-                    <p className="event-caption">{getDescription(ev)}</p>
+                    <img
+                      src={getOptimizedImage(ev.image)}
+                      alt="event"
+                      className="event-image"
+                      loading="lazy"
+                    />
+                    <p className="event-caption">
+                      {getDescription(ev)}
+                    </p>
                   </div>
                 ))}
               </Slider>
