@@ -40,7 +40,7 @@ const Footer = () => {
       </div>
 
 {/* ================= Developer Team Section ================= */}
-<div className="dev-teams">
+{/* <div className="dev-teams">
 
   <span className="dev-divider"></span>
 
@@ -48,17 +48,14 @@ const Footer = () => {
 
   <div className="dev-cards">
 
-    {/* Developer 1 */}
     <div className="dev-card">
       <h3 className="dev-name">Aravinth Kumar B</h3>
-      {/* <p className="dev-role">Full-Stack Web Developer</p> */}
 
       <div className="dev-links">
         <a
           href="https://www.linkedin.com/in/aravinth-kumar-858851281"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="LinkedIn"
         >
           <FaLinkedin />
         </a>
@@ -67,32 +64,28 @@ const Footer = () => {
           href="https://www.instagram.com/aravinth_kumar_ak_cr07_/?next=%2F"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Instagram"
         >
           <FaInstagram />
         </a>
       </div>
     </div>
 
-    {/* Developer 2 (Teammate) */}
     <div className="dev-card">
       <h3 className="dev-name">Aju Shabin</h3>
-      {/* <p className="dev-role">Frontend / Backend Developer</p> */}
 
       <div className="dev-links">
         <a
-          href="https://www.linkedin.com/in/aju-shabin?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+          href="https://www.linkedin.com/in/aju-shabin"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="LinkedIn"        >
+        >
           <FaLinkedin />
         </a>
 
         <a
-          href="https://www.instagram.com/aju_shabi?igsh=bWF6aGRyd3k3NWtw&utm_source=qr"
+          href="https://www.instagram.com/aju_shabi"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Instagram"
         >
           <FaInstagram />
         </a>
@@ -100,7 +93,8 @@ const Footer = () => {
     </div>
 
   </div>
-</div>
+</div> */}
+
 
 
     </footer>
