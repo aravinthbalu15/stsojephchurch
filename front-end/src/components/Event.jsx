@@ -6,11 +6,11 @@ import "slick-carousel/slick/slick-theme.css";
 import "../Style/Event.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import PresidentSkeleton from "./PresidentSkeleton"; // ✅ skeleton
+import PresidentSkeleton from "./PresidentSkeleton";
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -24,19 +24,17 @@ const UpcomingEvents = () => {
       } catch (error) {
         console.error("Error fetching events:", error);
       } finally {
-        setLoading(false); // ✅ stop skeleton
+        setLoading(false);
       }
     };
 
     fetchEvents();
   }, []);
 
-  // Navigate to event page
   const handleEventClick = (eventId) => {
     navigate(`/event/${eventId}`);
   };
 
-  // Slider settings
   const getSliderSettings = (count) => ({
     dots: count > 1,
     infinite: count > 1,
@@ -56,45 +54,61 @@ const UpcomingEvents = () => {
     ],
   });
 
-  // Categorize events
-  const currentEvents = events.filter((e) => e.category === "current");
-  const upcomingEvents = events.filter((e) => e.category === "upcoming");
+  // ✅ Validate image
+  const hasValidImage = (img) =>
+    img && typeof img === "string" && img.trim() !== "";
 
-  // Language-based description
-  const getDescription = (ev) => {
-    return i18n.language === "ta"
-      ? ev.description_ta
-      : ev.description_en;
-  };
+  // ✅ Filter events with valid images
+  const currentEvents = events.filter(
+    (e) => e.category === "current" && hasValidImage(e.image)
+  );
 
-  // ✅ Cloudinary optimization
+  const upcomingEvents = events.filter(
+    (e) => e.category === "upcoming" && hasValidImage(e.image)
+  );
+
+  const getDescription = (ev) =>
+    i18n.language === "ta" ? ev.description_ta : ev.description_en;
+
   const getOptimizedImage = (url) => {
     if (!url || !url.includes("cloudinary")) return url;
     return url.replace("/upload/", "/upload/f_auto,q_auto,w_600/");
   };
 
+  // ✅ Layout Logic
+  const showCurrent = !loading && currentEvents.length > 0;
+  const showUpcoming = !loading && upcomingEvents.length > 0;
+  const isSingleSection = showCurrent ^ showUpcoming;
+
   return (
     <div className="upcoming-events container py-4">
-      <div className="row justify-content-between">
-
+      <div
+        className={`row ${
+          isSingleSection
+            ? "single-event-center"
+            : "justify-content-between"
+        }`}
+      >
         {/* CURRENT EVENTS */}
-        <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
-          <div className="event-box p-3 shadow-sm">
-            <h3 className="text-center event-titles">
-              {t("current_events")}
-            </h3>
+        {showCurrent && (
+          <div
+            className={`${
+              isSingleSection
+                ? "col-lg-6 col-md-8 col-sm-12"
+                : "col-lg-5 col-md-6 col-sm-12"
+            } mb-4`}
+          >
+            <div className="event-box p-3 shadow-sm">
+              <h3 className="text-center event-titles">
+                {t("current_events")}
+              </h3>
 
-            {loading ? (
-              <PresidentSkeleton />
-            ) : currentEvents.length === 0 ? (
-              <p className="text-center">{t("no_current_events")}</p>
-            ) : (
               <Slider {...getSliderSettings(currentEvents.length)}>
                 {currentEvents.map((ev) => (
                   <div
                     key={ev._id}
                     className="event-card"
-                    // onClick={() => handleEventClick(ev._id)}
+                    onClick={() => handleEventClick(ev._id)}
                   >
                     <img
                       src={getOptimizedImage(ev.image)}
@@ -108,28 +122,30 @@ const UpcomingEvents = () => {
                   </div>
                 ))}
               </Slider>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* UPCOMING EVENTS */}
-        <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
-          <div className="event-box p-3 shadow-sm">
-            <h3 className="text-center event-titles">
-              {t("upcoming_events")}
-            </h3>
+        {showUpcoming && (
+          <div
+            className={`${
+              isSingleSection
+                ? "col-lg-6 col-md-8 col-sm-12"
+                : "col-lg-5 col-md-6 col-sm-12"
+            } mb-4`}
+          >
+            <div className="event-box p-3 shadow-sm">
+              <h3 className="text-center event-titles">
+                {t("upcoming_events")}
+              </h3>
 
-            {loading ? (
-              <PresidentSkeleton />
-            ) : upcomingEvents.length === 0 ? (
-              <p className="text-center">{t("no_upcoming_events")}</p>
-            ) : (
               <Slider {...getSliderSettings(upcomingEvents.length)}>
                 {upcomingEvents.map((ev) => (
                   <div
                     key={ev._id}
                     className="event-card"
-                    // onClick={() => handleEventClick(ev._id)}
+                    onClick={() => handleEventClick(ev._id)}
                   >
                     <img
                       src={getOptimizedImage(ev.image)}
@@ -143,10 +159,21 @@ const UpcomingEvents = () => {
                   </div>
                 ))}
               </Slider>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
+        {/* Skeleton Loader */}
+        {loading && (
+          <>
+            <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+              <PresidentSkeleton />
+            </div>
+            <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+              <PresidentSkeleton />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
