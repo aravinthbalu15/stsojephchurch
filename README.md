@@ -102,9 +102,4 @@ The application is fully responsive and accessible across:
 - Payment Gateway Integration
 - Member Portal System
 
----
-
-## 👨‍💻 Developed By
-
-Aravinth Kumar B  
-Panimalar Engineering College
+]
