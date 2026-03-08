@@ -104,6 +104,9 @@ The application is fully responsive and accessible across:
 
 ]
 
-----
-Developed BY
-Aravinth Kumar B
+
+## 👨‍💻 Developed By
+
+Aravinth Kumar B  
+Panimalar Engineering College
+
