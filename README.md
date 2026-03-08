@@ -103,3 +103,7 @@ The application is fully responsive and accessible across:
 - Member Portal System
 
 ]
+
+----
+Developed BY
+Aravinth Kumar B
