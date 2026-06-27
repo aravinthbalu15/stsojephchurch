@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,7 +10,6 @@ import PresidentSkeleton from "./PresidentSkeleton";
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -30,10 +28,6 @@ const UpcomingEvents = () => {
 
     fetchEvents();
   }, []);
-
-  const handleEventClick = (eventId) => {
-    navigate(`/event/${eventId}`);
-  };
 
   const getSliderSettings = (count) => ({
     dots: count > 1,
@@ -54,11 +48,11 @@ const UpcomingEvents = () => {
     ],
   });
 
-  // ✅ Validate image
+  // Validate image
   const hasValidImage = (img) =>
     img && typeof img === "string" && img.trim() !== "";
 
-  // ✅ Filter events with valid images
+  // Filter events with valid images
   const currentEvents = events.filter(
     (e) => e.category === "current" && hasValidImage(e.image)
   );
@@ -75,7 +69,7 @@ const UpcomingEvents = () => {
     return url.replace("/upload/", "/upload/f_auto,q_auto,w_600/");
   };
 
-  // ✅ Layout Logic
+  // Layout Logic
   const showCurrent = !loading && currentEvents.length > 0;
   const showUpcoming = !loading && upcomingEvents.length > 0;
   const isSingleSection = showCurrent ^ showUpcoming;
@@ -105,11 +99,7 @@ const UpcomingEvents = () => {
 
               <Slider {...getSliderSettings(currentEvents.length)}>
                 {currentEvents.map((ev) => (
-                  <div
-                    key={ev._id}
-                    className="event-card"
-                    onClick={() => handleEventClick(ev._id)}
-                  >
+                  <div key={ev._id} className="event-card">
                     <img
                       src={getOptimizedImage(ev.image)}
                       alt="event"
@@ -142,11 +132,7 @@ const UpcomingEvents = () => {
 
               <Slider {...getSliderSettings(upcomingEvents.length)}>
                 {upcomingEvents.map((ev) => (
-                  <div
-                    key={ev._id}
-                    className="event-card"
-                    onClick={() => handleEventClick(ev._id)}
-                  >
+                  <div key={ev._id} className="event-card">
                     <img
                       src={getOptimizedImage(ev.image)}
                       alt="event"
